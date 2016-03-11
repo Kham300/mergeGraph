@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (!editText.getText().toString().isEmpty()) {
-                    view.setN(Integer.parseInt(editText.getText().toString()));
+//                    view.setN(Integer.parseInt(editText.getText().toString()));
                     view.invalidate();
                 }
             }

@@ -15,7 +15,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * TODO: document your custom view class.
@@ -32,16 +35,52 @@ public class MyView extends View {
     boolean isScroll;
     float leftBlok;
 
+    static class Myclass {
+        float i;
+        String name;
+
+        public float getI() {
+            return i;
+        }
+
+        public Myclass(String name, int i) {
+            this.i = i;
+            this.name = name;
+        }
+    }
+
+    static ArrayList<Myclass> arrayList = new ArrayList<Myclass>();
+    Map<String, Integer> fg = new TreeMap<>();
+
+    private static float maxvalueDan;
+
+    static {
+        arrayList.add(new Myclass("Января", 200));
+        arrayList.add(new Myclass("Февраль ", 565));
+        arrayList.add(new Myclass(" Март", 745));
+        arrayList.add(new Myclass(" Апрель", 24));
+        arrayList.add(new Myclass(" Май", 74));
+        arrayList.add(new Myclass("Июнь", 374));
+        arrayList.add(new Myclass("Июль ", 625));
+        arrayList.add(new Myclass("Август", 365));
+        arrayList.add(new Myclass("Сентябрь", 347));
+        arrayList.add(new Myclass("Октябрь", 345));
+        arrayList.add(new Myclass("Ноябрь", 353));
+        arrayList.add(new Myclass("Декабрь", 746));
+        for (int i = 0; i < arrayList.size(); i++)
+            if (arrayList.get(i).getI() > maxvalueDan) maxvalueDan = arrayList.get(i).getI();
 
 
-
-    public void setN(int n) {
-        this.n = n;
-        this.x = 0;
     }
 
 
-    int n = 5;
+//    public void setN(int n) {
+//        this.n = n;
+//        this.x = 0;
+//    }
+
+
+    int n = arrayList.size();
 
     public MyView(Context context) {
         super(context);
@@ -63,13 +102,12 @@ public class MyView extends View {
 //    }
     public void init() {
 
-
+        setLayerType(View.LAYER_TYPE_SOFTWARE, null);
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
-
-
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
         minWidthBlock = getWidth() / nHideMonitor;
         minWidthBorder = minWidthBlock / 3;
         mPaint.setStrokeWidth(10);
@@ -84,7 +122,10 @@ public class MyView extends View {
             leftBlok = (getWidth() - minWidthBorder * 2) / n;
 
         }
+    }
 
+    @Override
+    protected void onDraw(Canvas canvas) {
 
 
         //border
@@ -93,9 +134,10 @@ public class MyView extends View {
         canvas.drawRect(0, 0, minWidthBorder, getHeight(), mPaint);
         canvas.drawRect(0, getHeight() - minWidthBorder, getWidth(), getHeight(), mPaint);
         canvas.drawRect(0, 0, getWidth(), minWidthBorder / 3, mPaint);
+        //border
 
 
-        //
+        //start for
 
         for (int i = 0; i < n; i++) {
 
@@ -104,19 +146,79 @@ public class MyView extends View {
                 if (i % 2 == 0) mPaint.setColor(getResources().getColor(R.color.block));
                 if (i % 2 == 1) mPaint.setColor(getResources().getColor(R.color.border));
                 canvas.drawRect(minWidthBorder + x + leftBlok * i, minWidthBorder / 3, minWidthBorder + x + leftBlok * (i + 1), getHeight() - minWidthBorder, mPaint);
-Paint textPaint=new Paint();
-               textPaint.setAntiAlias(true);
+                Paint textPaint = new Paint();
+                textPaint.setAntiAlias(true);
                 textPaint.setColor(Color.BLACK);
-                String text="проба";
-                textPaint.getTextBounds(text, 0, text.length(), new Rect());
-                float mTextWidth = textPaint.measureText(text);
-                canvas.drawText("проба",minWidthBorder + x + leftBlok * (i),getHeight()-minWidthBorder*2/3,textPaint);
+                String text = arrayList.get(i).name;
+//                textPaint.getTextBounds(text, 0, text.length(), new Rect());
+                textPaint.setTextAlign(Paint.Align.CENTER);
+//
+                canvas.drawText(text, minWidthBorder + x + leftBlok * (i + 1.0f / 2.0f), getHeight() - minWidthBorder * 2 / 3, textPaint);
+//
+
+
+                mPaint.setColor(getResources().getColor(R.color.strel1));
+
+
+                canvas.drawRect(minWidthBorder + x + leftBlok * i + minWidthBorder / 2, (getHeight() - minWidthBorder * 3) / maxvalueDan * arrayList.get(i).getI(), minWidthBorder + x + leftBlok * (i + 1) - minWidthBorder / 2, getHeight() - minWidthBorder, mPaint);
+
             }
 
 
         }
+//end for!
+//
 
 
+//border
+
+// дорисовка выделенной
+        mPaint.setColor(Color.YELLOW);
+        float leftrect = minWidthBorder + x + leftBlok * npointTouch;
+        float rightrect = minWidthBorder + x + leftBlok * (npointTouch + 1);
+
+        if (!(rightrect < minWidthBorder && leftrect > getWidth() - minWidthBorder)) {
+
+
+            Paint shadowPaint1 = new Paint();
+            shadowPaint1.setAntiAlias(true);
+            shadowPaint1.setColor(getResources().getColor(R.color.vblock));
+            shadowPaint1.setTextSize(35.0f);
+            shadowPaint1.setStrokeWidth(2.0f);
+            shadowPaint1.setStyle(Paint.Style.FILL_AND_STROKE);
+            shadowPaint1.setShadowLayer(8.0f, 0.0f, 0.0f, Color.BLACK);
+            canvas.drawRect(leftrect, minWidthBorder / 3, rightrect, getHeight() - minWidthBorder, shadowPaint1);
+
+            mPaint.setColor(getResources().getColor(R.color.vstrel1));
+            if (npointTouch != -1)
+                canvas.drawRect(minWidthBorder + x + leftBlok * npointTouch + minWidthBorder / 2, (getHeight() - minWidthBorder * 3) / maxvalueDan * arrayList.get(npointTouch).getI(), minWidthBorder + x + leftBlok * (npointTouch + 1) - minWidthBorder / 2, getHeight() - minWidthBorder, mPaint);
+
+
+        }
+        // треугольник снизу
+        if (leftrect < minWidthBorder) leftrect = minWidthBorder;
+        if (rightrect > getWidth() - minWidthBorder) rightrect = getWidth() - minWidthBorder;
+
+        if ((rightrect - leftrect) > 15) {
+            Path mPath = new Path();
+            mPaint.setColor(getResources().getColor(R.color.strel1));
+
+
+            float lr = (rightrect - leftrect) / 3;
+            mPath.moveTo(leftrect + lr, getHeight() - minWidthBorder / 3);
+            mPath.lineTo(rightrect - lr, getHeight() - minWidthBorder / 3);
+            mPath.lineTo((leftrect + rightrect) / 2, getHeight() - minWidthBorder * 2 / 3);
+
+            canvas.drawPath(mPath, mPaint);
+        }
+//треугольник снизу
+
+        //border боковые
+        mPaint.setColor(getResources().getColor(R.color.border));
+        canvas.drawRect(getWidth() - minWidthBorder, 0, getWidth(), getHeight(), mPaint);
+        canvas.drawRect(0, 0, minWidthBorder, getHeight(), mPaint);
+
+//line
 
         shadowPaint.setAntiAlias(true);
         shadowPaint.setColor(getContext().getResources().getColor(R.color.vblockborde));
@@ -131,50 +233,7 @@ Paint textPaint=new Paint();
         canvas.drawLine(minWidthBorder, minWidthBorder / 3, minWidthBorder, getHeight() - minWidthBorder, shadowPaint);
         canvas.drawLine(getWidth() - minWidthBorder, minWidthBorder / 3, getWidth() - minWidthBorder, getHeight() - minWidthBorder, shadowPaint);
 
-//
-
-
-//border
-
-// дорисовка выделенной
-        mPaint.setColor(Color.YELLOW);
-        float leftrect = minWidthBorder + x + leftBlok * npointTouch;
-        float rightrect = minWidthBorder + x + leftBlok * (npointTouch + 1);
-
-        if (!(rightrect < minWidthBorder && leftrect > getWidth() - minWidthBorder)) {
-
-            if (leftrect < minWidthBorder) leftrect = minWidthBorder;
-            if (rightrect > getWidth() - minWidthBorder) rightrect = getWidth() - minWidthBorder;
-
-
-//
-
-//
-
-
-
-            mPaint.setColor(getContext().getResources().getColor(R.color.vblock));
-            canvas.drawRect(leftrect, minWidthBorder / 3, rightrect, getHeight() - minWidthBorder, mPaint);
-            canvas.drawRect(leftrect, minWidthBorder/3, rightrect, getHeight() - minWidthBorder, shadowPaint);
-
-        }
-        // треугольник снизу
-
-        if ((rightrect - leftrect) > 15) {
-            Path mPath = new Path();
-            mPaint.setColor(getResources().getColor(R.color.strel1));
-
-
-
-float lr=(rightrect-leftrect)/3;
-            mPath.moveTo(leftrect+lr, getHeight()-minWidthBorder/3);
-            mPath.lineTo(rightrect-lr, getHeight()-minWidthBorder/3);
-            mPath.lineTo((leftrect + rightrect) / 2, getHeight() - minWidthBorder*2/3);
-
-            canvas.drawPath(mPath, mPaint);
-        }
-//треугольник снизу
-
+        //border боковые
 
         //стрелки для скрола
         if (isScroll) {
