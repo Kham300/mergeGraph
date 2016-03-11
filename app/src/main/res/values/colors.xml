@@ -3,4 +3,10 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="vblock">#17000000</color>
+    <color name="vblockborde">#989b9698</color>
+    <color name="block">#f0f1f2</color>
+    <color name="border">#e7e9eb</color>
+    <color name="strel1">#179ba0</color>
+
 </resources>
