@@ -15,16 +15,20 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Кнопка"
+        android:text="Первые данные"
         android:id="@+id/button" />
 
-    <EditText
-        android:layout_width="wrap_content"
+    <Button
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="number"
-        android:ems="10"
-        android:id="@+id/editText"
-        android:layout_gravity="center_horizontal" />
+        android:text="Вторые данные"
+        android:id="@+id/button2" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="3 данные"
+        android:id="@+id/button3" />
 
     <com.lardis.ivan.testcustomview.MyView
         android:id="@+id/myview"
