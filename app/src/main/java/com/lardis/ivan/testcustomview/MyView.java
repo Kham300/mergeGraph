@@ -13,9 +13,6 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
 import android.graphics.Shader;
-import android.os.Handler;
-import android.os.Message;
-import android.provider.SyncStateContract;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -25,14 +22,13 @@ import android.view.animation.AccelerateInterpolator;
 
 import java.util.ArrayList;
 import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * TODO: document your custom view class.
  */
 public class MyView extends View {
-
-     ValueAnimator animator;
+    final float MINHEIGHTBLOCK = 50;
+    ValueAnimator animator;
     Paint shadowPaint = new Paint();
     Paint mPaint = new Paint();
     float minX = 0;
@@ -47,7 +43,7 @@ public class MyView extends View {
     int npointTouch = -1;
     //толщина блока минимуи
     float minWidthBlock = 100;
-    float WidthBorder = 35;
+    float widthBorder = 35;
     //скролим или влазеет
     boolean isScroll;
     ArrayList<String> arrayListStolbName = new ArrayList<String>();
@@ -55,7 +51,7 @@ public class MyView extends View {
     ArrayList<Integer> arrayListStolbValuesilka = new ArrayList<Integer>();
 
     //максимальное значение столбцов
-    private static float maxValueData=0;
+    private static float maxValueData = 0;
     private static float maxValueDatasilka;
     private static float maxValueDatabuf;
 
@@ -66,61 +62,11 @@ public class MyView extends View {
     String name = "";
     int version = 0;
 
-    public void setArrayList(String name, int version1,   ArrayList<String> arrayListStolbNamesilka,    ArrayList<Integer> arrayListStolbValuesilk) {
-       this.arrayListStolbValuesilka=arrayListStolbValuesilk;
-        if(arrayListStolbNamesilka!=null) {
-            this.arrayListStolbName = (ArrayList<String>) arrayListStolbNamesilka.clone();
-            nArrayListSize = arrayListStolbValuesilka.size();
-        }
-
-        if (    this.arrayListStolbName.size() == arrayListStolbValuesilk.size()) {
-
-            animator.cancel();
-            this.name = name;
-            version = version1;
-            offsetX = 0;
-            npointTouch = -1;
-
-
-maxValueData=0;
-            for(int i=0;i<nArrayListSize;i++)
-
-            {
-                if (maxValueData<arrayListStolbValuesilka.get(i))maxValueData=arrayListStolbValuesilka.get(i);
-
-
-            }
-            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-
-                    float value = ((Float) (animation.getAnimatedValue()))
-                            .floatValue();
-//                   arrayListStolbValue.clear();
-                    for (int i = 0; i < nArrayListSize; i++) {
-//
-
-                        arrayListStolbValue.add(i, (int) (value * arrayListStolbValuesilka.get(i)));
-                    }
-
-                    invalidate();
-
-                }
-            });
-
-            animator.start();
-
-
-        }
-//
-
-    }
-
-
     public MyView(Context context) {
         super(context);
         init();
     }
+
 
     public MyView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -132,9 +78,7 @@ maxValueData=0;
         init();
     }
 
-    //    public MyView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-//        super(context, attrs, defStyleAttr, defStyleRes);
-//    }
+
     public void init() {
 
 
@@ -166,6 +110,57 @@ maxValueData=0;
         animator.setInterpolator(new AccelerateInterpolator());
     }
 
+    public void setArrayList(String name, int version1, ArrayList<String> arrayListStolbNamesilka, ArrayList<Integer> arrayListStolbValuesilk) {
+        this.arrayListStolbValuesilka = arrayListStolbValuesilk;
+        if (arrayListStolbNamesilka != null) {
+            this.arrayListStolbName = (ArrayList<String>) arrayListStolbNamesilka.clone();
+            nArrayListSize = arrayListStolbValuesilka.size();
+        }
+
+        if (this.arrayListStolbName.size() == arrayListStolbValuesilk.size()) {
+
+            animator.cancel();
+            this.name = name;
+            version = version1;
+            offsetX = 0;
+            npointTouch = -1;
+
+
+            maxValueData = 0;
+            for (int i = 0; i < nArrayListSize; i++)
+
+            {
+                if (maxValueData < arrayListStolbValuesilka.get(i))
+                    maxValueData = arrayListStolbValuesilka.get(i);
+
+
+            }
+            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+
+                    float value = ((Float) (animation.getAnimatedValue()))
+                            .floatValue();
+//                   arrayListStolbValue.clear();
+                    for (int i = 0; i < nArrayListSize; i++) {
+//
+
+                        arrayListStolbValue.add(i, (int) (value * arrayListStolbValuesilka.get(i)));
+                    }
+
+                    invalidate();
+
+                }
+            });
+
+            animator.start();
+
+
+        }
+//
+
+    }
+
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
@@ -178,7 +173,7 @@ maxValueData=0;
         if (nArrayListSize != 0) {
 
 
-            maxX = (nArrayListSize - getWidth() / minWidthBlock) * minWidthBlock + WidthBorder * 2;
+            maxX = (nArrayListSize - getWidth() / minWidthBlock) * minWidthBlock + widthBorder * 2;
             isScroll = !(minWidthBlock < getWidth() / nArrayListSize);
 
 
@@ -186,17 +181,17 @@ maxValueData=0;
                 leftBlok = minWidthBlock;
             } else {
 
-                leftBlok = (getWidth() - WidthBorder * 2) / nArrayListSize;
+                leftBlok = (getWidth() - widthBorder * 2) / nArrayListSize;
 
             }
         }
 
         if (nArrayListSize != 0) {
             //border
-            canvas.drawRect(getWidth() - WidthBorder, 0, getWidth(), getHeight(), mPaintBorder);
-            canvas.drawRect(0, 0, WidthBorder, getHeight(), mPaintBorder);
-            canvas.drawRect(0, getHeight() - WidthBorder, getWidth(), getHeight(), mPaintBorder);
-            canvas.drawRect(0, 0, getWidth(), WidthBorder / 3, mPaintBorder);
+            canvas.drawRect(getWidth() - widthBorder, 0, getWidth(), getHeight(), mPaintBorder);
+            canvas.drawRect(0, 0, widthBorder, getHeight(), mPaintBorder);
+            canvas.drawRect(0, getHeight() - widthBorder, getWidth(), getHeight(), mPaintBorder);
+            canvas.drawRect(0, 0, getWidth(), widthBorder / 3, mPaintBorder);
             //border
 
 
@@ -208,18 +203,18 @@ maxValueData=0;
                 {
                     if (i % 2 == 0) mPaint.setColor(getResources().getColor(R.color.block0));
                     if (i % 2 == 1) mPaint.setColor(getResources().getColor(R.color.block1));
-                    canvas.drawRect(WidthBorder + offsetX + leftBlok * i, WidthBorder / 3, WidthBorder + offsetX + leftBlok * (i + 1), getHeight() - WidthBorder, mPaint);
+                    canvas.drawRect(widthBorder + offsetX + leftBlok * i, widthBorder / 3, widthBorder + offsetX + leftBlok * (i + 1), getHeight() - widthBorder, mPaint);
 
-                    String text = arrayListStolbName.get(i) ;
+                    String text = arrayListStolbName.get(i);
                     //                textPaint.getTextBounds(text, 0, text.length(), new Rect());
 
                     //
-                    canvas.drawText(text, WidthBorder + offsetX + leftBlok * (i + 1.0f / 2.0f), getHeight() - WidthBorder * 2 / 3, textPaint);
+                    canvas.drawText(text, widthBorder + offsetX + leftBlok * (i + 1.0f / 2.0f), getHeight() - widthBorder * 2 / 3, textPaint);
                     //
 
                     mPaintPunctGtafica.setShader(new LinearGradient(0, 0, 0, getHeight(), getResources().getColor(R.color.vstrel1), getResources().getColor(R.color.strel1), Shader.TileMode.MIRROR));
 
-                    canvas.drawPath(getPathtopRoundRect(WidthBorder + offsetX + leftBlok * i + WidthBorder / 2,getHeight() - WidthBorder*1.5f- (getHeight() - WidthBorder * 3) / maxValueData * arrayListStolbValue.get(i) , WidthBorder + offsetX + leftBlok * (i + 1) - WidthBorder / 2, getHeight() - WidthBorder, 10), mPaintPunctGtafica);
+                    canvas.drawPath(getPathtopRoundRect(widthBorder + offsetX + leftBlok * i + widthBorder / 2, getHeight() - widthBorder * 1.5f - (getHeight() - widthBorder * 4) / maxValueData * arrayListStolbValue.get(i), widthBorder + offsetX + leftBlok * (i + 1) - widthBorder / 2, getHeight() - widthBorder, 10), mPaintPunctGtafica);
 
 
                 }
@@ -228,10 +223,11 @@ maxValueData=0;
             }
 //end for!
 // дорисовка выделенной
-            float leftrect = WidthBorder + offsetX + leftBlok * npointTouch;
-            float rightrect = WidthBorder + offsetX + leftBlok * (npointTouch + 1);
 
-            if (!(rightrect < WidthBorder && leftrect > getWidth() - WidthBorder)) {
+            float leftrect = widthBorder + offsetX + leftBlok * npointTouch;
+            float rightrect = widthBorder + offsetX + leftBlok * (npointTouch + 1);
+
+            if (!(rightrect < widthBorder && leftrect > getWidth() - widthBorder)) {
 
 
                 mPaintSelectedColumn.setAntiAlias(true);
@@ -239,38 +235,31 @@ maxValueData=0;
                     mPaintSelectedColumn.setColor(getResources().getColor(R.color.vblocksvet));
                 if (npointTouch % 2 == 1)
                     mPaintSelectedColumn.setColor(getResources().getColor(R.color.vblocktem));
-                canvas.drawRect(leftrect, WidthBorder / 3, rightrect, getHeight() - WidthBorder, mPaintSelectedColumn);
+                canvas.drawRect(leftrect, widthBorder / 3, rightrect, getHeight() - widthBorder, mPaintSelectedColumn);
 
 
                 if (npointTouch != -1) {
-//                    RectF rectF=new RectF(WidthBorder + offsetX + leftBlok * npointTouch + WidthBorder / 2,
-//                            (getHeight() - WidthBorder * 3) / maxValueData * arrayList.get(npointTouch).getI(),
-//                            WidthBorder + offsetX + leftBlok * (npointTouch + 1) - WidthBorder / 2, getHeight() - WidthBorder);
+ 
+                    canvas.drawPath(getPathtopRoundRect(widthBorder + offsetX + leftBlok * npointTouch + widthBorder / 2,
+                            getHeight() - widthBorder * 1.5f - (getHeight() - widthBorder * 4) / maxValueData * arrayListStolbValue.get(npointTouch),
+                            widthBorder + offsetX + leftBlok * (npointTouch + 1) - widthBorder / 2, getHeight() - widthBorder, 10), mPaintPunctGtafica);
 
-                    //                    canvas.drawRoundRect(rectF,15,15, mPaint);
-
-                    canvas.drawPath(getPathtopRoundRect(WidthBorder + offsetX + leftBlok * npointTouch + WidthBorder / 2,
-                            getHeight() - WidthBorder*1.5f- (getHeight() - WidthBorder * 3) / maxValueData * arrayListStolbValue.get(npointTouch) ,
-                            WidthBorder + offsetX + leftBlok * (npointTouch + 1) - WidthBorder / 2, getHeight() - WidthBorder, 10), mPaintPunctGtafica);
-
-
-//                    canvas.drawPath(path, mPaint);
                 }
 
             }
             // end дорисовка выделенной
             // start треугольник снизу
-            if (leftrect < WidthBorder) leftrect = WidthBorder;
-            if (rightrect > getWidth() - WidthBorder) rightrect = getWidth() - WidthBorder;
+            if (leftrect < widthBorder) leftrect = widthBorder;
+            if (rightrect > getWidth() - widthBorder) rightrect = getWidth() - widthBorder;
 
             if ((rightrect - leftrect) > 15) {
                 Path mPath = new Path();
 
 
                 float lr = (rightrect - leftrect) / 3;
-                mPath.moveTo(leftrect + lr, getHeight() - WidthBorder / 3);
-                mPath.lineTo(rightrect - lr, getHeight() - WidthBorder / 3);
-                mPath.lineTo((leftrect + rightrect) / 2, getHeight() - WidthBorder * 2 / 3);
+                mPath.moveTo(leftrect + lr, getHeight() - widthBorder / 3);
+                mPath.lineTo(rightrect - lr, getHeight() - widthBorder / 3);
+                mPath.lineTo((leftrect + rightrect) / 2, getHeight() - widthBorder * 2 / 3);
 
                 canvas.drawPath(mPath, mPaintTriangle);
             }
@@ -278,8 +267,8 @@ maxValueData=0;
 
             //start border боковые
             mPaint.setColor(getResources().getColor(R.color.border));
-            canvas.drawRect(getWidth() - WidthBorder, 0, getWidth(), getHeight(), mPaint);
-            canvas.drawRect(0, 0, WidthBorder, getHeight(), mPaint);
+            canvas.drawRect(getWidth() - widthBorder, 0, getWidth(), getHeight(), mPaint);
+            canvas.drawRect(0, 0, widthBorder, getHeight(), mPaint);
 
 
 //end border боковые
@@ -289,13 +278,13 @@ maxValueData=0;
 
             shadowPaint.setStrokeWidth(1.0f);
             shadowPaint.setStyle(Paint.Style.STROKE);
-            canvas.drawLine(0, getHeight() - WidthBorder, getWidth(), getHeight() - WidthBorder, shadowPaint);
-            canvas.drawLine(0, WidthBorder / 3, getWidth(), WidthBorder / 3, shadowPaint);
+            canvas.drawLine(0, getHeight() - widthBorder, getWidth(), getHeight() - widthBorder, shadowPaint);
+            canvas.drawLine(0, widthBorder / 3, getWidth(), widthBorder / 3, shadowPaint);
             canvas.drawLine(0, 0, 0, getHeight(), shadowPaint);
             canvas.drawLine(getWidth(), 0, getWidth(), getHeight(), shadowPaint);
             shadowPaint.setColor(getContext().getResources().getColor(R.color.vblockborde));
-            canvas.drawLine(WidthBorder, WidthBorder / 3, WidthBorder, getHeight() - WidthBorder, shadowPaint);
-            canvas.drawLine(getWidth() - WidthBorder, WidthBorder / 3, getWidth() - WidthBorder, getHeight() - WidthBorder, shadowPaint);
+            canvas.drawLine(widthBorder, widthBorder / 3, widthBorder, getHeight() - widthBorder, shadowPaint);
+            canvas.drawLine(getWidth() - widthBorder, widthBorder / 3, getWidth() - widthBorder, getHeight() - widthBorder, shadowPaint);
 
             //end line тени для border
 
@@ -311,39 +300,42 @@ maxValueData=0;
                 canvas.drawBitmap(mBitmap, getWidth() - minWidthBlock / 3, getHeight() - minWidthBlock, mPaint);
 
             }
-        }
 
 
 
-//        дорисовка лининий
+        //        дорисовка лининий пунктира
 ////        maxValueData
-//        Paint mpa=new Paint();
-//        mpa.setAntiAlias(true);
-//        mpa.setColor(Color.BLACK);
-//        mpa.setStrokeWidth(2);
+        Paint mpa = new Paint();
+        mpa.setAntiAlias(true);
+        mpa.setColor(Color.BLACK);
+        mpa.setStrokeWidth(2);
 //
-//        float[] intervals = new float[] { 2.0f, 8.0f };
-//        float phase = 0;
-//
-//
-//        mpa.setPathEffect(new DashPathEffect(intervals, phase));
-//
-////       1.5f*WidthBorder;
-//              float buf= getHeight()-WidthBorder*2.5f;
-//        int my=0;
-//                my=(int)(buf/100);
-//        for(int k=1;k<=my;k++)
-//        {
+        float[] intervals = new float[]{2.0f, 8.0f};
+        float phase = 0;
 //
 //
-//            canvas.drawLine(0,getHeight() - WidthBorder*1.5f- (getHeight() - WidthBorder * 3)/maxValueData*100*k ,getRight(),getHeight() - WidthBorder*1.5f- (getHeight() - WidthBorder * 3)/maxValueData*100*k ,mpa);
+        mpa.setPathEffect(new DashPathEffect(intervals, phase));
 //
-//        }
-//        canvas.drawPath(getPathtopRoundRect(WidthBorder + offsetX + leftBlok * npointTouch + WidthBorder / 2,
-//                getHeight() - WidthBorder*1.5f- (getHeight() - WidthBorder * 3) / maxValueData * arrayList.get(npointTouch).getI(),
-//                WidthBorder + offsetX + leftBlok * (npointTouch + 1) - WidthBorder / 2, getHeight() - WidthBorder, 10), mPaintPunctGtafica);
+////       1.5f*widthBorder;
+        float buf = getHeight()- widthBorder * 1.5f;
+        float my = 0;
+        my =   (buf / MINHEIGHTBLOCK);
+int step=getStepWeidht(my,maxValueData,1);
 
-        //end стрелки для скрола
+
+        for (int k = 1; k <= my ; k++)
+        {
+
+ float y=          getHeight() - widthBorder * 1.5f - (getHeight() - widthBorder * 4) / maxValueData * step*k;
+            canvas.drawLine(0,y
+
+                    , getRight(), y, mpa);
+
+            canvas.drawText(step*k+"",widthBorder/2,y-2,textPaint);
+
+        }
+        }
+        //        дорисовка лининий пунктира
     }
 
     @NonNull
@@ -384,11 +376,11 @@ maxValueData=0;
             case (MotionEvent.ACTION_UP):
                 if (Math.abs(bufX - offsetX) < 4) {
                     if (isScroll)
-                        npointTouch = (int) ((motionEvent.getX() - bufX - WidthBorder) / minWidthBlock);
+                        npointTouch = (int) ((motionEvent.getX() - bufX - widthBorder) / minWidthBlock);
                     else
-                        npointTouch = (int) ((motionEvent.getX() - WidthBorder - bufX) * nArrayListSize / (getWidth() - WidthBorder * 2));
+                        npointTouch = (int) ((motionEvent.getX() - widthBorder - bufX) * nArrayListSize / (getWidth() - widthBorder * 2));
 
-//                    (WidthBorder + offsetX + (getWidth() - WidthBorder * 2) * i / nArrayListSize, 0, WidthBorder + offsetX + (getWidth() - WidthBorder * 2) * (i + 1) / nArrayListSize, getHeight(), mPaint);
+//                    (widthBorder + offsetX + (getWidth() - widthBorder * 2) * i / nArrayListSize, 0, widthBorder + offsetX + (getWidth() - widthBorder * 2) * (i + 1) / nArrayListSize, getHeight(), mPaint);
 
                 }
                 offsetX = bufX - (bufmy - motionEvent.getX());
@@ -404,5 +396,18 @@ maxValueData=0;
         return true;
     }
 
+    int getStepWeidht(float nElement, float maxValueData, int step) {
+        if (  (maxValueData / (step * nElement)) > 5)
+            step = getStepWeidht(nElement, maxValueData, step * 10);
+        else if (  (maxValueData / (step * nElement)) > 2)
+            step = getStepWeidht(nElement, maxValueData, step * 5);
+
+        else if (  (maxValueData / (step * nElement)) > 1)
+            step = getStepWeidht(nElement, maxValueData, step * 2);
+
+
+        return step;
+
+    }
 
 }
