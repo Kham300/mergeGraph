@@ -84,13 +84,13 @@ public class MainActivity extends AppCompatActivity {
     }
     private ArrayList<Integer> testdanStolbValue() {
         ArrayList<Integer> arrayList=new ArrayList<>();
-        arrayList.add(124);
+        arrayList.add(1000);
         arrayList.add(154);
         arrayList.add(864);
         arrayList.add(383);
         arrayList.add(783);
         arrayList.add(157);
-        arrayList.add(10946);
+        arrayList.add(54);
         arrayList.add(683);
         arrayList.add(13);
         arrayList.add(888);

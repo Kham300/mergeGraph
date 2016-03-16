@@ -27,18 +27,29 @@ import java.util.Timer;
  * TODO: document your custom view class.
  */
 public class MyView extends View {
+    float workOblGrafik;
+    float nStep;
+    int step;
     final float MINHEIGHTBLOCK = 50;
+    float canvasWidht;
+    Paint mPaintLinePunctire;
+    Matrix matrixRotate;
+    float canvasHeight;
     ValueAnimator animator;
-    Paint shadowPaint = new Paint();
+    Paint mPaintLineForBorder = new Paint();
+    Paint mPaintLinePunctireop = new Paint();
+    Paint mPaintLinePunctireaverageValueData = new Paint();
     Paint mPaint = new Paint();
     float minX = 0;
     float maxX;
     Paint mPaintTriangle = new Paint();
     Paint mPaintPunctGtafica = new Paint();
+    Paint mPaintPunctGtaficav = new Paint();
     Paint mPaintBorder = new Paint();
     float offsetX;
     Paint mPaintSelectedColumn = new Paint();
     Paint textPaint = new Paint();
+    Paint textPaintaverageValueData = new Paint();
     //номер выделеной
     int npointTouch = -1;
     //толщина блока минимуи
@@ -52,10 +63,8 @@ public class MyView extends View {
 
     //максимальное значение столбцов
     private static float maxValueData = 0;
-    private static float maxValueDatasilka;
-    private static float maxValueDatabuf;
+    private static float averageValueData = 0;
 
-    Timer timer;
     float leftBlok;
     //колво столбцов
     static int nArrayListSize;
@@ -80,21 +89,53 @@ public class MyView extends View {
 
 
     public void init() {
+        matrixRotate = new Matrix();
+        matrixRotate.postRotate(180);
+
+        mPaintLineForBorder.setAntiAlias(true);
+        mPaintLineForBorder.setColor(getContext().getResources().getColor(R.color.vblockborde));
+
+        mPaintLineForBorder.setStrokeWidth(1.0f);
+        mPaintLineForBorder.setStyle(Paint.Style.STROKE);
 
 
+
+        mPaintLinePunctire = new Paint();
+        mPaintLinePunctire.setAntiAlias(true);
+        mPaintLinePunctire.setColor(getContext().getResources().getColor(R.color.mPaintLinePunctire));
+        mPaintLinePunctire.setStrokeWidth(4);
+
+        mPaintLinePunctireop = new Paint();
+        mPaintLinePunctireop.setAntiAlias(true);
+        mPaintLinePunctireop.setColor(getContext().getResources().getColor(R.color.mPaintLinePunctireop));
+        mPaintLinePunctireop.setStrokeWidth(4);
+
+        mPaintLinePunctireaverageValueData.setPathEffect(new DashPathEffect(new float[]{3.0f, 8.0f}, 0));
+
+        mPaintLinePunctireaverageValueData.setAntiAlias(true);
+        mPaintLinePunctireaverageValueData.setTextSize(100);
+        mPaintLinePunctireaverageValueData.setColor(getContext().getResources().getColor(R.color.mPaintLinePunctireaverageValueData));
+        mPaintLinePunctireaverageValueData.setStrokeWidth(5);
+
+        mPaintSelectedColumn.setAntiAlias(true);
         setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
 
-        mPaintTriangle.setColor(getResources().getColor(R.color.strel1));
+        mPaintTriangle.setColor(getResources().getColor(R.color.mPaintTriangle));
 
-        mPaintPunctGtafica.setColor(getResources().getColor(R.color.strel1));
+        mPaintPunctGtafica.setColor(getResources().getColor(R.color.mPaintPunctGtafica));
         mPaintPunctGtafica.setAntiAlias(true);
+        mPaintPunctGtaficav.setColor(getResources().getColor(R.color.mPaintPunctGtafica));
+        mPaintPunctGtaficav.setAntiAlias(true);
+        mPaintPunctGtaficav.setShader(new LinearGradient(0, 0, 0, getHeight(), getResources().getColor(R.color.vverxstrel1), getResources().getColor(R.color.vnizstrel1), Shader.TileMode.MIRROR));
+
+        mPaintPunctGtafica.setShader(new LinearGradient(0, 0, 0, getHeight(), getResources().getColor(R.color.verxstrel1), getResources().getColor(R.color.nizstrel1), Shader.TileMode.MIRROR));
 
 
         mPaintSelectedColumn.setTextSize(35.0f);
         mPaintSelectedColumn.setStrokeWidth(2.0f);
         mPaintSelectedColumn.setStyle(Paint.Style.FILL_AND_STROKE);
-        mPaintSelectedColumn.setShadowLayer(8.0f, 0.0f, 0.0f, Color.BLACK);
+        mPaintSelectedColumn.setShadowLayer(10.0f, 0.0f, 0.0f, getResources().getColor(R.color.mPaintSelectedColumnShadowLayer));
 
 
         mPaintBorder.setStrokeWidth(10);
@@ -105,6 +146,10 @@ public class MyView extends View {
         textPaint.setColor(Color.BLACK);
         textPaint.setTextAlign(Paint.Align.CENTER);
 
+        textPaintaverageValueData.setAntiAlias(true);
+        textPaintaverageValueData.setTextSize(18);
+        textPaintaverageValueData.setColor(getContext().getResources().getColor(R.color.mPaintLinePunctireaverageValueData));
+        textPaintaverageValueData.setTextAlign(Paint.Align.CENTER);
         animator = ValueAnimator.ofFloat(0, 1);
 //            animator.setDuration(SyncStateContract.Constants.ANIM_DURATION);
         animator.setInterpolator(new AccelerateInterpolator());
@@ -115,6 +160,7 @@ public class MyView extends View {
         if (arrayListStolbNamesilka != null) {
             this.arrayListStolbName = (ArrayList<String>) arrayListStolbNamesilka.clone();
             nArrayListSize = arrayListStolbValuesilka.size();
+            offsetX = 0;
         }
 
         if (this.arrayListStolbName.size() == arrayListStolbValuesilk.size()) {
@@ -122,19 +168,45 @@ public class MyView extends View {
             animator.cancel();
             this.name = name;
             version = version1;
-            offsetX = 0;
+
             npointTouch = -1;
 
 
             maxValueData = 0;
+            averageValueData=0;
             for (int i = 0; i < nArrayListSize; i++)
 
             {
                 if (maxValueData < arrayListStolbValuesilka.get(i))
                     maxValueData = arrayListStolbValuesilka.get(i);
-
+                averageValueData=averageValueData+arrayListStolbValuesilka.get(i);
 
             }
+            averageValueData=averageValueData/arrayListStolbValuesilka.size();
+
+
+            if (nArrayListSize != 0) {
+
+
+                maxX = (nArrayListSize - canvasWidht / minWidthBlock) * minWidthBlock + widthBorder * 2;
+                isScroll = !(minWidthBlock < canvasWidht  / nArrayListSize);
+
+
+                if (isScroll) {
+                    leftBlok = minWidthBlock;
+                } else {
+
+                    leftBlok = (canvasWidht - widthBorder * 2) / nArrayListSize;
+
+                }
+            }
+
+            step=getStepWeidht( (( canvasHeight- widthBorder * 1.5f) / MINHEIGHTBLOCK),maxValueData,1);
+            nStep=maxValueData/step;
+
+            workOblGrafik=         (canvasHeight - widthBorder * 1.33f-20 ) / maxValueData ;
+
+
             animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
@@ -161,30 +233,16 @@ public class MyView extends View {
 
     }
 
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
 
-    }
+
+
 
     @Override
     protected void onDraw(Canvas canvas) {
 //        Log.d("Mylog",maxValueData+"=maxValueData,"+arrayList.get(2).getI()+"arrayList.get(2).getI()");
-        if (nArrayListSize != 0) {
+       canvasWidht= getWidth();
+       canvasHeight= getHeight();
 
-
-            maxX = (nArrayListSize - getWidth() / minWidthBlock) * minWidthBlock + widthBorder * 2;
-            isScroll = !(minWidthBlock < getWidth() / nArrayListSize);
-
-
-            if (isScroll) {
-                leftBlok = minWidthBlock;
-            } else {
-
-                leftBlok = (getWidth() - widthBorder * 2) / nArrayListSize;
-
-            }
-        }
 
         if (nArrayListSize != 0) {
             //border
@@ -195,7 +253,7 @@ public class MyView extends View {
             //border
 
 
-            //start for
+            //прямоугольники текс снизу  график
 
             for (int i = 0; i < nArrayListSize; i++) {
 
@@ -205,49 +263,24 @@ public class MyView extends View {
                     if (i % 2 == 1) mPaint.setColor(getResources().getColor(R.color.block1));
                     canvas.drawRect(widthBorder + offsetX + leftBlok * i, widthBorder / 3, widthBorder + offsetX + leftBlok * (i + 1), getHeight() - widthBorder, mPaint);
 
-                    String text = arrayListStolbName.get(i);
-                    //                textPaint.getTextBounds(text, 0, text.length(), new Rect());
+                    canvas.drawText(arrayListStolbName.get(i), widthBorder + offsetX + leftBlok * (i + 1.0f / 2.0f), getHeight() - widthBorder * 2 / 3, textPaint);
 
-                    //
-                    canvas.drawText(text, widthBorder + offsetX + leftBlok * (i + 1.0f / 2.0f), getHeight() - widthBorder * 2 / 3, textPaint);
-                    //
 
-                    mPaintPunctGtafica.setShader(new LinearGradient(0, 0, 0, getHeight(), getResources().getColor(R.color.vstrel1), getResources().getColor(R.color.strel1), Shader.TileMode.MIRROR));
 
-                    canvas.drawPath(getPathtopRoundRect(widthBorder + offsetX + leftBlok * i + widthBorder / 2, getHeight() - widthBorder * 1.5f - (getHeight() - widthBorder * 4) / maxValueData * arrayListStolbValue.get(i), widthBorder + offsetX + leftBlok * (i + 1) - widthBorder / 2, getHeight() - widthBorder, 10), mPaintPunctGtafica);
+//                    canvas.drawPath(getPathtopRoundRect(widthBorder + offsetX + leftBlok * i + widthBorder / 2,
+// getHeight() - widthBorder * 1.5f - (getHeight() - widthBorder * 4) / maxValueData * arrayListStolbValue.get(i),
+// widthBorder + offsetX + leftBlok * (i + 1) - widthBorder / 2, getHeight() - widthBorder, 10), mPaintPunctGtafica);
 
 
                 }
 
 
             }
-//end for!
-// дорисовка выделенной
-
+            //end прямоугольники текс снизу  график
             float leftrect = widthBorder + offsetX + leftBlok * npointTouch;
             float rightrect = widthBorder + offsetX + leftBlok * (npointTouch + 1);
 
-            if (!(rightrect < widthBorder && leftrect > getWidth() - widthBorder)) {
 
-
-                mPaintSelectedColumn.setAntiAlias(true);
-                if (npointTouch % 2 == 0)
-                    mPaintSelectedColumn.setColor(getResources().getColor(R.color.vblocksvet));
-                if (npointTouch % 2 == 1)
-                    mPaintSelectedColumn.setColor(getResources().getColor(R.color.vblocktem));
-                canvas.drawRect(leftrect, widthBorder / 3, rightrect, getHeight() - widthBorder, mPaintSelectedColumn);
-
-
-                if (npointTouch != -1) {
- 
-                    canvas.drawPath(getPathtopRoundRect(widthBorder + offsetX + leftBlok * npointTouch + widthBorder / 2,
-                            getHeight() - widthBorder * 1.5f - (getHeight() - widthBorder * 4) / maxValueData * arrayListStolbValue.get(npointTouch),
-                            widthBorder + offsetX + leftBlok * (npointTouch + 1) - widthBorder / 2, getHeight() - widthBorder, 10), mPaintPunctGtafica);
-
-                }
-
-            }
-            // end дорисовка выделенной
             // start треугольник снизу
             if (leftrect < widthBorder) leftrect = widthBorder;
             if (rightrect > getWidth() - widthBorder) rightrect = getWidth() - widthBorder;
@@ -262,8 +295,14 @@ public class MyView extends View {
                 mPath.lineTo((leftrect + rightrect) / 2, getHeight() - widthBorder * 2 / 3);
 
                 canvas.drawPath(mPath, mPaintTriangle);
+                mPath.moveTo(leftrect + lr,  widthBorder / 3+3);
+                mPath.lineTo(rightrect - lr, widthBorder / 3+3);
+                mPath.lineTo((leftrect + rightrect) / 2,  widthBorder * 2 / 3+3);
+
+                canvas.drawPath(mPath, mPaintTriangle);
             }
 //end треугольник снизу
+
 
             //start border боковые
             mPaint.setColor(getResources().getColor(R.color.border));
@@ -272,19 +311,16 @@ public class MyView extends View {
 
 
 //end border боковые
-//start line тени для border
-            shadowPaint.setAntiAlias(true);
-            shadowPaint.setColor(getContext().getResources().getColor(R.color.vblockborde));
 
-            shadowPaint.setStrokeWidth(1.0f);
-            shadowPaint.setStyle(Paint.Style.STROKE);
-            canvas.drawLine(0, getHeight() - widthBorder, getWidth(), getHeight() - widthBorder, shadowPaint);
-            canvas.drawLine(0, widthBorder / 3, getWidth(), widthBorder / 3, shadowPaint);
-            canvas.drawLine(0, 0, 0, getHeight(), shadowPaint);
-            canvas.drawLine(getWidth(), 0, getWidth(), getHeight(), shadowPaint);
-            shadowPaint.setColor(getContext().getResources().getColor(R.color.vblockborde));
-            canvas.drawLine(widthBorder, widthBorder / 3, widthBorder, getHeight() - widthBorder, shadowPaint);
-            canvas.drawLine(getWidth() - widthBorder, widthBorder / 3, getWidth() - widthBorder, getHeight() - widthBorder, shadowPaint);
+//start line тени для border
+
+            canvas.drawLine(0, getHeight() - widthBorder, getWidth(), getHeight() - widthBorder, mPaintLineForBorder);
+            canvas.drawLine(0, widthBorder / 3, getWidth(), widthBorder / 3, mPaintLineForBorder);
+            canvas.drawLine(0, 0, 0, getHeight(), mPaintLineForBorder);
+            canvas.drawLine(getWidth(), 0, getWidth(), getHeight(), mPaintLineForBorder);
+
+            canvas.drawLine(widthBorder, widthBorder / 3, widthBorder, getHeight() - widthBorder, mPaintLineForBorder);
+            canvas.drawLine(getWidth() - widthBorder, widthBorder / 3, getWidth() - widthBorder, getHeight() - widthBorder, mPaintLineForBorder);
 
             //end line тени для border
 
@@ -294,50 +330,120 @@ public class MyView extends View {
                 mBitmap = Bitmap.createScaledBitmap(mBitmap, (int) (minWidthBlock / 3), (int) (minWidthBlock / 3), false);
 
                 canvas.drawBitmap(mBitmap, 0, getHeight() - minWidthBlock, mPaint);
-                Matrix matrix = new Matrix();
-                matrix.postRotate(180);
-                mBitmap = Bitmap.createBitmap(mBitmap, 0, 0, mBitmap.getWidth(), mBitmap.getHeight(), matrix, true);
+
+                mBitmap = Bitmap.createBitmap(mBitmap, 0, 0, mBitmap.getWidth(), mBitmap.getHeight(), matrixRotate, true);
                 canvas.drawBitmap(mBitmap, getWidth() - minWidthBlock / 3, getHeight() - minWidthBlock, mPaint);
 
             }
-
+            //end стрелки для скрола
 
 
         //        дорисовка лининий пунктира
-////        maxValueData
-        Paint mpa = new Paint();
-        mpa.setAntiAlias(true);
-        mpa.setColor(Color.BLACK);
-        mpa.setStrokeWidth(2);
-//
-        float[] intervals = new float[]{2.0f, 8.0f};
-        float phase = 0;
-//
-//
-        mpa.setPathEffect(new DashPathEffect(intervals, phase));
-//
-////       1.5f*widthBorder;
-        float buf = getHeight()- widthBorder * 1.5f;
-        float my = 0;
-        my =   (buf / MINHEIGHTBLOCK);
-int step=getStepWeidht(my,maxValueData,1);
 
 
-        for (int k = 1; k <= my ; k++)
+
+
+
+
+
+        for (int k = 1; k <= nStep ; k++)
         {
 
- float y=          getHeight() - widthBorder * 1.5f - (getHeight() - widthBorder * 4) / maxValueData * step*k;
-            canvas.drawLine(0,y
+            if (Math.abs(step*k-averageValueData)>step/2) {
+                canvas.drawLine(0,  getHeight() - widthBorder -1 - workOblGrafik * step*k
 
-                    , getRight(), y, mpa);
+                        , getRight(),  getHeight() - widthBorder -1 - workOblGrafik * step*k, mPaintLinePunctire);
 
-            canvas.drawText(step*k+"",widthBorder/2,y-2,textPaint);
+                canvas.drawText(step*k+"",widthBorder/2,getHeight() - widthBorder -1 - workOblGrafik* step*k-2,textPaint);
+            }
 
         }
-        }
+
         //        дорисовка лининий пунктира
-    }
 
+
+
+        canvas.clipRect(widthBorder,widthBorder/3,getWidth()-widthBorder,getHeight()-widthBorder);
+        // дорисовка выделенной
+
+
+
+        if (!(rightrect < widthBorder && leftrect > getWidth() - widthBorder)) {
+
+            if (npointTouch != -1) {
+
+                if (npointTouch % 2 == 0)                    mPaintSelectedColumn.setColor(getResources().getColor(R.color.vblocksvet));
+                if (npointTouch % 2 == 1)                    mPaintSelectedColumn.setColor(getResources().getColor(R.color.vblocktem));
+                canvas.drawRect(leftrect, widthBorder / 3, rightrect, getHeight() - widthBorder, mPaintSelectedColumn);
+
+
+
+
+            }
+
+        }
+        // end дорисовка выделенной
+
+//пунктир для выделеной
+
+            for (int k = 1; k <= nStep ; k++)
+            {
+
+
+                canvas.drawLine(leftrect, getHeight() - widthBorder - 1 - workOblGrafik * step * k
+
+                        , rightrect, getHeight() - widthBorder - 1 - workOblGrafik * step * k, mPaintLinePunctireop);
+
+
+
+            }
+            //пунктир для выделеной
+
+//пункты графика
+
+
+
+
+
+
+
+
+
+
+            for (int i = 0; i < nArrayListSize; i++) {
+
+                mPaintPunctGtafica.setShader(new LinearGradient(0,    getHeight() - widthBorder -1 - workOblGrafik *arrayListStolbValue.get(i), 0, getHeight(), getResources().getColor(R.color.verxstrel1), getResources().getColor(R.color.nizstrel1), Shader.TileMode.MIRROR));
+
+            canvas.drawPath(getPathtopRoundRect(widthBorder + offsetX + leftBlok * i + widthBorder / 2,
+                    getHeight() - widthBorder -1 - workOblGrafik *arrayListStolbValue.get(i), widthBorder + offsetX + leftBlok * (i + 1) - widthBorder / 2, getHeight() , 10), mPaintPunctGtafica);
+
+
+        }
+
+        if (npointTouch != -1) {
+            mPaintPunctGtaficav.setShader(new LinearGradient(0,    getHeight() - widthBorder -1 - workOblGrafik *arrayListStolbValue.get(npointTouch), 0, getHeight(), getResources().getColor(R.color.vverxstrel1), getResources().getColor(R.color.vnizstrel1), Shader.TileMode.MIRROR));
+
+            canvas.drawPath(getPathtopRoundRect(widthBorder + offsetX + leftBlok * npointTouch + widthBorder / 2,
+                    getHeight() - widthBorder -1 - workOblGrafik  * arrayListStolbValue.get(npointTouch),
+                    widthBorder + offsetX + leftBlok * (npointTouch + 1) - widthBorder / 2, getHeight() , 10), mPaintPunctGtaficav);
+
+        } }
+
+//пункты графика
+
+
+        //пунктир средней
+canvas.restore();
+        canvas.drawLine(0,  getHeight() - widthBorder -1 - workOblGrafik * averageValueData
+
+                , getRight(),  getHeight() - widthBorder -1 - workOblGrafik * averageValueData, mPaintLinePunctireaverageValueData);
+
+        canvas.drawText( "ср",widthBorder/2,getHeight() - widthBorder -3 - workOblGrafik*averageValueData-2,textPaintaverageValueData);
+
+        //пунктир средней
+
+    }
+//end onDraw
     @NonNull
     private Path getPathtopRoundRect(float left, float top, float right, float bottom, float radius) {
         Path path = new Path();
