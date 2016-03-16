@@ -31,9 +31,8 @@ import java.util.TimerTask;
  * TODO: document your custom view class.
  */
 public class MyView extends View {
-    ArrayList<ItemArrayListData> arrayListsilka;
-    ArrayList<ItemArrayListData> bufArrayList;
 
+     ValueAnimator animator;
     Paint shadowPaint = new Paint();
     Paint mPaint = new Paint();
     float minX = 0;
@@ -51,9 +50,12 @@ public class MyView extends View {
     float WidthBorder = 35;
     //скролим или влазеет
     boolean isScroll;
-    ArrayList<ItemArrayListData> arrayList = new ArrayList<ItemArrayListData>();
+    ArrayList<String> arrayListStolbName = new ArrayList<String>();
+    ArrayList<Integer> arrayListStolbValue = new ArrayList<Integer>();
+    ArrayList<Integer> arrayListStolbValuesilka = new ArrayList<Integer>();
+
     //максимальное значение столбцов
-    private static float maxValueData;
+    private static float maxValueData=0;
     private static float maxValueDatasilka;
     private static float maxValueDatabuf;
 
@@ -64,91 +66,53 @@ public class MyView extends View {
     String name = "";
     int version = 0;
 
-    public void setArrayList(String name, int version1, final ArrayList<ItemArrayListData> arrayList1) {
+    public void setArrayList(String name, int version1,   ArrayList<String> arrayListStolbNamesilka,    ArrayList<Integer> arrayListStolbValuesilk) {
+       this.arrayListStolbValuesilka=arrayListStolbValuesilk;
+        if(arrayListStolbNamesilka!=null) {
+            this.arrayListStolbName = (ArrayList<String>) arrayListStolbNamesilka.clone();
+            nArrayListSize = arrayListStolbValuesilka.size();
+        }
 
-        if (!(this.name.equals(name) && version1 == version)) {
-//            this.arrayList = arrayList1;
+        if (    this.arrayListStolbName.size() == arrayListStolbValuesilk.size()) {
+
+            animator.cancel();
             this.name = name;
             version = version1;
             offsetX = 0;
             npointTouch = -1;
-            arrayList=new ArrayList<ItemArrayListData>();
 
 
-            for (int i = 0; i < arrayList1.size(); i++) {
-                arrayList.add(i, new ItemArrayListData(arrayList1.get(i).name, 0));
-                Log.d("Mylog",arrayList.get(i).getI()+"I");
+maxValueData=0;
+            for(int i=0;i<nArrayListSize;i++)
+
+            {
+                if (maxValueData<arrayListStolbValuesilka.get(i))maxValueData=arrayListStolbValuesilka.get(i);
+
+
             }
-            maxValueData=0;
-            for (int i = 0; i < arrayList1.size(); i++)
-                if (arrayList1.get(i).getI() > maxValueData)
-                    maxValueData = arrayList1.get(i).getI();
-
-
-            nArrayListSize = arrayList.size();
-
-//          this.arrayList.clear();
-
-//arrayListsilka= (ArrayList<ItemArrayListData>) arrayList1.clone();
-            final ValueAnimator animator1 = ValueAnimator.ofFloat(0, 1);
-//            animator.setDuration(SyncStateContract.Constants.ANIM_DURATION);
-            animator1.setInterpolator(new AccelerateInterpolator());
-//            animator.setStartDelay(delay);
-            animator1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-
-                    float value = ((Float) (animation.getAnimatedValue()))
-                            .floatValue();
-//                    Log.d("Mylog", maxValueData+"=maxValueData");
-                    for (int i = 0; i < nArrayListSize; i++) {
-                        arrayList.get(i).setI(arrayList1.get(i).getI()*value);
-                    }
-
-//arrayList= (ArrayList<ItemArrayListData>) arrayList1.clone();
-                    invalidate();
-
-                }
-            });
-
-            animator1.start();
-
-
-        } else
-
-        {
-
-            arrayListsilka = (ArrayList<ItemArrayListData>) arrayList1.clone();
-            bufArrayList = (ArrayList<ItemArrayListData>) arrayList.clone();
-            maxValueDatasilka = 0;
-
-            for (int i = 0; i < arrayList.size(); i++)
-                if (arrayList1.get(i).getI() > maxValueDatasilka)
-                    maxValueDatasilka = arrayList1.get(i).getI();
-            maxValueDatabuf = maxValueData;
-            final ValueAnimator animator = ValueAnimator.ofFloat(0, 1);
-//            animator.setDuration(SyncStateContract.Constants.ANIM_DURATION);
-            animator.setInterpolator(new AccelerateInterpolator());
-//            animator.setStartDelay(delay);
             animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
 
                     float value = ((Float) (animation.getAnimatedValue()))
                             .floatValue();
-
+//                   arrayListStolbValue.clear();
                     for (int i = 0; i < nArrayListSize; i++) {
-                        arrayList.get(i).setI(bufArrayList.get(i).getI() + (arrayListsilka.get(i).getI() - bufArrayList.get(i).getI()) * value);
+//
+
+                        arrayListStolbValue.add(i, (int) (value * arrayListStolbValuesilka.get(i)));
                     }
-                    maxValueData = maxValueDatabuf + (maxValueDatasilka - maxValueDatabuf) * value;
-                    Log.d("maxValueData", maxValueData + "");
+
                     invalidate();
 
                 }
             });
 
             animator.start();
+
+
         }
+//
 
     }
 
@@ -197,7 +161,9 @@ public class MyView extends View {
         textPaint.setColor(Color.BLACK);
         textPaint.setTextAlign(Paint.Align.CENTER);
 
-
+        animator = ValueAnimator.ofFloat(0, 1);
+//            animator.setDuration(SyncStateContract.Constants.ANIM_DURATION);
+        animator.setInterpolator(new AccelerateInterpolator());
     }
 
     @Override
@@ -208,7 +174,7 @@ public class MyView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        Log.d("Mylog",maxValueData+"=maxValueData,"+arrayList.get(2).getI()+"arrayList.get(2).getI()");
+//        Log.d("Mylog",maxValueData+"=maxValueData,"+arrayList.get(2).getI()+"arrayList.get(2).getI()");
         if (nArrayListSize != 0) {
 
 
@@ -244,7 +210,7 @@ public class MyView extends View {
                     if (i % 2 == 1) mPaint.setColor(getResources().getColor(R.color.block1));
                     canvas.drawRect(WidthBorder + offsetX + leftBlok * i, WidthBorder / 3, WidthBorder + offsetX + leftBlok * (i + 1), getHeight() - WidthBorder, mPaint);
 
-                    String text = arrayList.get(i).name;
+                    String text = arrayListStolbName.get(i) ;
                     //                textPaint.getTextBounds(text, 0, text.length(), new Rect());
 
                     //
@@ -253,7 +219,7 @@ public class MyView extends View {
 
                     mPaintPunctGtafica.setShader(new LinearGradient(0, 0, 0, getHeight(), getResources().getColor(R.color.vstrel1), getResources().getColor(R.color.strel1), Shader.TileMode.MIRROR));
 
-                    canvas.drawPath(getPathtopRoundRect(WidthBorder + offsetX + leftBlok * i + WidthBorder / 2,getHeight() - WidthBorder*1.5f- (getHeight() - WidthBorder * 3) / maxValueData * arrayList.get(i).getI(), WidthBorder + offsetX + leftBlok * (i + 1) - WidthBorder / 2, getHeight() - WidthBorder, 10), mPaintPunctGtafica);
+                    canvas.drawPath(getPathtopRoundRect(WidthBorder + offsetX + leftBlok * i + WidthBorder / 2,getHeight() - WidthBorder*1.5f- (getHeight() - WidthBorder * 3) / maxValueData * arrayListStolbValue.get(i) , WidthBorder + offsetX + leftBlok * (i + 1) - WidthBorder / 2, getHeight() - WidthBorder, 10), mPaintPunctGtafica);
 
 
                 }
@@ -284,7 +250,7 @@ public class MyView extends View {
                     //                    canvas.drawRoundRect(rectF,15,15, mPaint);
 
                     canvas.drawPath(getPathtopRoundRect(WidthBorder + offsetX + leftBlok * npointTouch + WidthBorder / 2,
-                            getHeight() - WidthBorder*1.5f- (getHeight() - WidthBorder * 3) / maxValueData * arrayList.get(npointTouch).getI(),
+                            getHeight() - WidthBorder*1.5f- (getHeight() - WidthBorder * 3) / maxValueData * arrayListStolbValue.get(npointTouch) ,
                             WidthBorder + offsetX + leftBlok * (npointTouch + 1) - WidthBorder / 2, getHeight() - WidthBorder, 10), mPaintPunctGtafica);
 
 

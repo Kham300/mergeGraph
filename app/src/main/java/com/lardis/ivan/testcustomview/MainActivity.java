@@ -24,81 +24,112 @@ public class MainActivity extends AppCompatActivity {
 
 
         view = (MyView) findViewById(R.id.myview);
-        view.setArrayList( "1",1,testdan());
+        view.setArrayList("1", 1, null,testdanStolbValue());
+//        view.setArrayList("1", 1, testdanStolbName(),testdanStolbValue());
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                view.setArrayList("1", 1, testdan());
+                view.setArrayList("1", 1, testdanStolbName(), testdanStolbValue());
                 view.invalidate();
             }
         });
+
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                    view.setArrayList("1",1,testdan1());
-                    view.invalidate();
-
+                view.setArrayList("1", 1, null,testdanStolbValue1());
+                view.invalidate();
             }
         });
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                    view.setArrayList("2",2,testdan2());
-                    view.invalidate();
-
+                view.setArrayList("1", 1, testdanStolbNameyear(),testdanStolbValueyear());
+                view.invalidate();
             }
         });
     }
 
-    private ArrayList<ItemArrayListData> testdan2() {
-        ArrayList<ItemArrayListData> arrayList=new ArrayList<>();
-        arrayList.add(new ItemArrayListData("Января", 200));
-        arrayList.add(new ItemArrayListData("Февраль ", 565));
-        arrayList.add(new ItemArrayListData(" Март", 7405));
-        arrayList.add(new ItemArrayListData(" Апрель", 24));
-        arrayList.add(new ItemArrayListData(" Май", 74));
-        arrayList.add(new ItemArrayListData("Июнь", 374));
-        arrayList.add(new ItemArrayListData("Июль ", 625));
-        arrayList.add(new ItemArrayListData("Август", 365));
-        arrayList.add(new ItemArrayListData("Сентябрь", 447));
-        arrayList.add(new ItemArrayListData("Октябрь", 345));
-        arrayList.add(new ItemArrayListData("Ноябрь", 153));
-        arrayList.add(new ItemArrayListData("Декабрь", 746));
+    private ArrayList<String> testdanStolbName() {
+        ArrayList<String> arrayList=new ArrayList<>();
+        arrayList.add("Января");
+        arrayList.add("Февраль");
+        arrayList.add("Март");
+        arrayList.add("Апрель");
+        arrayList.add("Май");
+        arrayList.add("Июнь");
+        arrayList.add("Июль");
+        arrayList.add("Август");
+        arrayList.add("Сентябрь");
+        arrayList.add("Октябрь");
+        arrayList.add("Ноябрь");
+        arrayList.add("Декабрь");
+
         return arrayList;
     }
-  private ArrayList<ItemArrayListData> testdan1() {
-        ArrayList<ItemArrayListData> arrayList=new ArrayList<>();
-        arrayList.add(new ItemArrayListData("Января", 200));
-        arrayList.add(new ItemArrayListData("Февраль ", 565));
-        arrayList.add(new ItemArrayListData(" Март", 745));
-        arrayList.add(new ItemArrayListData(" Апрель", 24));
-        arrayList.add(new ItemArrayListData(" Май", 74));
-        arrayList.add(new ItemArrayListData("Июнь", 374));
-        arrayList.add(new ItemArrayListData("Июль ", 625));
-        arrayList.add(new ItemArrayListData("Август", 365));
-        arrayList.add(new ItemArrayListData("Сентябрь", 447));
-        arrayList.add(new ItemArrayListData("Октябрь", 345));
-        arrayList.add(new ItemArrayListData("Ноябрь", 153));
-        arrayList.add(new ItemArrayListData("Декабрь", 746));
+    private ArrayList<String> testdanStolbNameyear() {
+        ArrayList<String> arrayList=new ArrayList<>();
+        arrayList.add("2000");
+        arrayList.add("2001");
+        arrayList.add("2002");
+        arrayList.add("2003");
+        arrayList.add("2004");
+        arrayList.add("2005");
+        arrayList.add("2006");
+        arrayList.add("2007");
+        arrayList.add("2008");
+
+
+        return arrayList;
+    }
+    private ArrayList<Integer> testdanStolbValue() {
+        ArrayList<Integer> arrayList=new ArrayList<>();
+        arrayList.add(124);
+        arrayList.add(154);
+        arrayList.add(864);
+        arrayList.add(383);
+        arrayList.add(783);
+        arrayList.add(157);
+        arrayList.add(946);
+        arrayList.add(683);
+        arrayList.add(13);
+        arrayList.add(888);
+        arrayList.add(444);
+        arrayList.add(777);
+
+        return arrayList;
+    }
+    private ArrayList<Integer> testdanStolbValueyear() {
+        ArrayList<Integer> arrayList=new ArrayList<>();
+
+        arrayList.add(383);
+        arrayList.add(783);
+        arrayList.add(157);
+        arrayList.add(946);
+        arrayList.add(683);
+        arrayList.add(13);
+        arrayList.add(888);
+        arrayList.add(444);
+        arrayList.add(557);
+
+        return arrayList;
+    }
+    private ArrayList<Integer> testdanStolbValue1() {
+        ArrayList<Integer> arrayList=new ArrayList<>();
+        arrayList.add(1224);
+        arrayList.add( 514);
+        arrayList.add(364);
+        arrayList.add(583);
+        arrayList.add(183);
+        arrayList.add(557);
+
+        arrayList.add(888);
+        arrayList.add(444);
+        arrayList.add(777);
+        arrayList.add(946);
+        arrayList.add(683);
+        arrayList.add(13);
         return arrayList;
     }
 
-    private ArrayList<ItemArrayListData> testdan() {
-        ArrayList<ItemArrayListData> arrayList=new ArrayList<>();
-        arrayList.add(new ItemArrayListData("Января", 1));
-        arrayList.add(new ItemArrayListData("Февраль ", 405));
-        arrayList.add(new ItemArrayListData(" Март", 75));
-        arrayList.add(new ItemArrayListData(" Апрель", 124));
-        arrayList.add(new ItemArrayListData(" Май", 724));
-        arrayList.add(new ItemArrayListData("Июнь", 34));
-        arrayList.add(new ItemArrayListData("Июль ", 325));
-        arrayList.add(new ItemArrayListData("Август", 765));
-        arrayList.add(new ItemArrayListData("Сентябрь", 147));
-        arrayList.add(new ItemArrayListData("Октябрь", 845));
-        arrayList.add(new ItemArrayListData("Ноябрь", 453));
-        arrayList.add(new ItemArrayListData("Декабрь", 146));
-        return arrayList;
-    }
 }
