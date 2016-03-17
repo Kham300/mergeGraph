@@ -10,9 +10,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
-    Button button,button1,button2;
+    Button button,button1,button2,button4,button5;
     MyView view;
-    MyView view1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,22 +25,23 @@ public class MainActivity extends AppCompatActivity {
         button = (Button) findViewById(R.id.button);
         button1 = (Button) findViewById(R.id.button2);
         button2 = (Button) findViewById(R.id.button3);
+        button4 = (Button) findViewById(R.id.button4);
+        button5 = (Button) findViewById(R.id.button5);
 
 
 
 
         view = (MyView) findViewById(R.id.myview);
-        view1 = (MyView) findViewById(R.id.myview1);
 
 
-        view.setTwoArrayListNameStringValueInt(null, testdanStolbValue());
+
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                view.setTwoArrayListNameStringValueInt(testdanStolbName(), testdanStolbValue());
+
+                        view.setStartDayArayDay(28, 1, 2016, testdanStolbValue());
                 view.invalidate();
-                        view1.setStartDayArayDay(28, 1, 2016, testdanStolbValue());
-                view1.invalidate();
 
             }
         });
@@ -48,23 +49,42 @@ public class MainActivity extends AppCompatActivity {
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                view.setTwoArrayListNameStringValueInt(null, testdanStolbValue1());
+
+                view.setStartMonthArayMonth(10, testdanStolbValue1());
                 view.invalidate();
-                view1.setStartMonthArayMonth(10, testdanStolbValue1());
-                view1.invalidate();
             }
         });
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
 
             public void onClick(View v) {
-                view.setTwoArrayListNameStringValueInt(testdanStolbNameyear(), testdanStolbValueyear());
-                view.invalidate();
 
-                view1.setStartDayArrayWeek(28, 1, 2016, testdanStolbValue1());
-                view1.invalidate();
+
+                view.setStartDayArrayWeek(28, 1, 2016, testdanStolbValue1());
+                view.invalidate();
             }
         });
+        button4.setOnClickListener(new View.OnClickListener() {
+            @Override
+
+            public void onClick(View v) {
+
+
+                view.setStarMonthArrayDay(  2, 2016, testdanStolbValueDataInMonth());
+                view.invalidate();
+            }
+        });
+        button5.setOnClickListener(new View.OnClickListener() {
+            @Override
+
+            public void onClick(View v) {
+
+
+                view.setStartDayArrayWeek(28, 1, 2016, testdanStolbValue1());
+                view.invalidate();
+            }
+        });
+
     }
 
     private ArrayList<String> testdanStolbName() {
@@ -146,6 +166,50 @@ public class MainActivity extends AppCompatActivity {
         arrayList.add(946);
         arrayList.add(683);
         arrayList.add(13);
+        return arrayList;
+    }
+    private ArrayList<Integer> testdanStolbValueDataInMonth() {
+        ArrayList<Integer> arrayList=new ArrayList<>();
+
+        arrayList.add(1224);
+        arrayList.add( 514);
+        arrayList.add(364);
+        arrayList.add(583);
+        arrayList.add(183);
+
+        arrayList.add(557);
+        arrayList.add(888);
+        arrayList.add(444);
+        arrayList.add(777);
+        arrayList.add(946);
+
+        arrayList.add(1224);
+        arrayList.add( 514);
+        arrayList.add(364);
+        arrayList.add(583);
+        arrayList.add(183);
+
+        arrayList.add(557);
+        arrayList.add(888);
+        arrayList.add(444);
+        arrayList.add(777);
+        arrayList.add(946);
+
+        arrayList.add(1224);
+        arrayList.add( 514);
+        arrayList.add(364);
+        arrayList.add(583);
+        arrayList.add(183);
+
+        arrayList.add(557);
+        arrayList.add(888);
+        arrayList.add(444);
+        arrayList.add(777);
+        arrayList.add(946);
+
+        arrayList.add(946);
+
+
         return arrayList;
     }
 
