@@ -261,24 +261,7 @@ public class MyView extends View {
             leftRectSelected = widthBorder + offsetX + leftBlok * npointTouch;
             rightRectSelected = widthBorder + offsetX + leftBlok * (npointTouch + 1);
 
-            // start треугольник снизу и сверху выделеного блока
-            if (leftRectSelected < widthBorder) leftRectSelected = widthBorder;
-            if (rightRectSelected > getWidth() - widthBorder)
-                rightRectSelected = getWidth() - widthBorder;
-            if ((rightRectSelected - leftRectSelected) > 15) {
-                float lr = (rightRectSelected - leftRectSelected) / 3;
-                mPath.moveTo(leftRectSelected + lr, getHeight() - widthBorder / 3);
-                mPath.lineTo(rightRectSelected - lr, getHeight() - widthBorder / 3);
-                mPath.lineTo((leftRectSelected + rightRectSelected) / 2, getHeight() - widthBorder * 2 / 3);
 
-                canvas.drawPath(mPath, mPaintTriangle);
-                mPath.moveTo(leftRectSelected + lr, widthBorder / 3 + 3);
-                mPath.lineTo(rightRectSelected - lr, widthBorder / 3 + 3);
-                mPath.lineTo((leftRectSelected + rightRectSelected) / 2, widthBorder * 2 / 3 + 3);
-
-                canvas.drawPath(mPath, mPaintTriangle);
-            }
-//end  треугольник снизу и сверху выделеного блока
 
             //start border боковые
             mPaint.setColor(getResources().getColor(R.color.border));
@@ -363,10 +346,29 @@ public class MyView extends View {
 
             }
 //пункты графика
-
-
-            //пунктир средней
             canvas.restore();
+            // start треугольник снизу и сверху выделеного блока
+            if (leftRectSelected < widthBorder) leftRectSelected = widthBorder;
+            if (rightRectSelected > getWidth() - widthBorder)
+                rightRectSelected = getWidth() - widthBorder;
+            if ((rightRectSelected - leftRectSelected) > 15) {
+                mPath.reset();
+                float lr = (rightRectSelected - leftRectSelected) / 3;
+                mPath.moveTo(leftRectSelected + lr, getHeight() - widthBorder / 3);
+                mPath.lineTo(rightRectSelected - lr, getHeight() - widthBorder / 3);
+                mPath.lineTo((leftRectSelected + rightRectSelected) / 2, getHeight() - widthBorder * 2 / 3);
+
+                canvas.drawPath(mPath, mPaintTriangle);
+                mPath.reset();
+                mPath.moveTo(leftRectSelected + lr, widthBorder / 3 + 3);
+                mPath.lineTo(rightRectSelected - lr, widthBorder / 3 + 3);
+                mPath.lineTo((leftRectSelected + rightRectSelected) / 2, widthBorder * 2 / 3 + 3);
+
+                canvas.drawPath(mPath, mPaintTriangle);
+            }
+//end  треугольник снизу и сверху выделеного блока
+            //пунктир средней
+
             canvas.drawLine(0, getHeight() - widthBorder - 1 - workOblGrafik * averageValueData
                     , getRight(), getHeight() - widthBorder - 1 - workOblGrafik * averageValueData, mPaintLinePunctireaverageValueData);
             canvas.drawText("ср", widthBorder / 2, getHeight() - widthBorder - 3 - workOblGrafik * averageValueData - 2, textPaintaverageValueData);

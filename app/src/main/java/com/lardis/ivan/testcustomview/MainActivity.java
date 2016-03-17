@@ -25,7 +25,6 @@ public class MainActivity extends AppCompatActivity {
 
         view = (MyView) findViewById(R.id.myview);
         view.setArrayList("1", 1, null,testdanStolbValue());
-//        view.setArrayList("1", 1, testdanStolbName(),testdanStolbValue());
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
