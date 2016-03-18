@@ -13,6 +13,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
+import android.graphics.Region;
 import android.graphics.Shader;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
@@ -23,23 +24,30 @@ import android.view.animation.AccelerateInterpolator;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * TODO: document your custom view class.
  */
 public class MyView extends View {
-
+      float shiftPuctInValueDay = 0;
+    float nValueInPuctInValueDay = 1;
+    float nPuct = 0;
+    int days;
+    ArrayList<Integer> daysInPunctArrayList =new ArrayList<Integer>();
     //входящие данные из layout
     public static final String NAMEVALUE = "name-value";
-    public static final String  VALUEDAY = "day-value";
+    public static final String VALUEDAYININEMONTH = "day-value";
+    public static final String VALUEWEEKINPeriof = "VALUEWEEKINPeriof";
     public static final String NAMETWOVALUE = "name-two-value";
-ArrayList<String> arrayListTwoName;
+    ArrayList<String> arrayListTwoName;
     private String typeView = NAMEVALUE;
     private int dayMonday;
     private int nNepolWeek;
     //размеры экрана
     private final float MINHEIGHTBLOCK = 25;
 
+    Region.Op regionREPLACE = Region.Op.REPLACE;
 
     private float canvasWidht;
     private float canvasHeight;
@@ -52,6 +60,8 @@ ArrayList<String> arrayListTwoName;
     //толщина блока минимуи
     private float minWidthBlock = 100;
     private float widthBorder = 35;
+    private float punctBorder = 13;
+    private float punctRadius = 10;
 
 
     private float minX = 0;
@@ -267,7 +277,7 @@ ArrayList<String> arrayListTwoName;
 
     }
 
-    public void setStartMonthArayMonth(int month, ArrayList<Integer> arrayList1) {
+    public void setStartMonthArrayMonth(int month, List<Integer> arrayList1) {
 
 
         if (arrayList1 != null) {
@@ -297,44 +307,42 @@ ArrayList<String> arrayListTwoName;
 
     }
 
-    public void setStarMonthArrayDay(int month,int year, ArrayList<Integer> arrayList1)
-
-
-    {
-        ArrayList<String> arrayListName =new ArrayList<>();
-        if (arrayList1!=null) {
+    public void setStarMonthArrayDay(int month, int year, ArrayList<Integer> arrayList1)    {
+        ArrayList<String> arrayListName = new ArrayList<>();
+        if (arrayList1 != null) {
             Calendar myCalendar = (Calendar) Calendar.getInstance().clone();
             myCalendar.set(year, month, 1);
             int max_date = myCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-            if(max_date==arrayList1.size())
-            {
-                typeView=VALUEDAY;
+            if (max_date == arrayList1.size()) {
+                typeView = VALUEDAYININEMONTH;
 
-                int monday =(1-myCalendar.get(Calendar.DAY_OF_WEEK)+7+2)%7;
+                int monday = (1 - myCalendar.get(Calendar.DAY_OF_WEEK) + 7 + 2) % 7;
 
-                if(monday ==0) monday =7;
+                if (monday == 0) monday = 7;
 
-                Log.d("Mylog", monday +"");
 
-                for(int i=0;i<arrayList1.size();i++) {
-                   if((i+1)%monday==0) arrayListName.add(i+1+"");
-                  else arrayListName.add( "");
+
+                for (int i = 0; i < arrayList1.size(); i++) {
+                    if ((i + 1) % monday == 0) arrayListName.add(i + 1 + "");
+                    else arrayListName.add("");
 
                 }
-                dayMonday=monday;
-                nNepolWeek = myCalendar.getActualMaximum(Calendar.DAY_OF_MONTH)/7;
-                if(monday!=1) nNepolWeek++;
-                if(myCalendar.getActualMaximum(Calendar.DAY_OF_MONTH)%7+1-monday>0) nNepolWeek++;
-
-
-                Log.d("Mylog", nNepolWeek +"");
-
-
-setTwoArrayListNameStringValueInt(arrayListName,arrayList1);
+                dayMonday = monday;
+                nNepolWeek = myCalendar.getActualMaximum(Calendar.DAY_OF_MONTH) / 7;
+                if (monday != 1) nNepolWeek++;
+                if (myCalendar.getActualMaximum(Calendar.DAY_OF_MONTH) % 7 + 1 - monday > 0)
+                    nNepolWeek++;
+                dayMonday = 7;
+                if (dayMonday == 1) shiftPuctInValueDay = 0;
+                else shiftPuctInValueDay = (8f - dayMonday) / 7f;
+                nValueInPuctInValueDay = 7;
+                Log.d("Mylog", nNepolWeek + "");
+                punctBorder = 2;
+                punctRadius = 3;
+                nPuct = nNepolWeek;
+                setTwoArrayListNameStringValueInt(arrayListName, arrayList1);
 
             }
-
-
 
 
         }
@@ -343,14 +351,13 @@ setTwoArrayListNameStringValueInt(arrayListName,arrayList1);
     }
 
 
-
-
-    public void setStartDayArrayWeek(int day, int month, int year, ArrayList<Integer> arrayList1) {
+    public void setStartDayArrayWeekInOneMonth(int day, int month, int year, ArrayList<Integer> arrayList1) {
         if (arrayList1 != null) {
+            nValueInPuctInValueDay = 7;
             ArrayList<String> arrayListName = new ArrayList<String>();
             Calendar myCalendar = (Calendar) Calendar.getInstance();
             ArrayList<String> arrayListShortMonthName = initMonth();
-            myCalendar.set(2016, month, day);
+            myCalendar.set(year, month, day);
 
             int DAY_OF_WEEK = myCalendar.get(Calendar.DAY_OF_WEEK);
             if (DAY_OF_WEEK != 1) day = day + 2 - DAY_OF_WEEK;
@@ -367,8 +374,8 @@ setTwoArrayListNameStringValueInt(arrayListName,arrayList1);
             }
             int daySunday;
             int monthSunday;
-            arrayListTwoName=new ArrayList<String>();
-            typeView=NAMETWOVALUE;
+            arrayListTwoName = new ArrayList<String>();
+            typeView = NAMETWOVALUE;
             for (int i = 0; i < arrayList1.size(); i++)
 
 
@@ -384,8 +391,8 @@ setTwoArrayListNameStringValueInt(arrayListName,arrayList1);
                     monthSunday = month;
                     daySunday = day + 6;
                 }
-                arrayListName.add(day + arrayListShortMonthName.get(month) + ""  );
-            arrayListTwoName.add(daySunday + arrayListShortMonthName.get(monthSunday)+"");
+                arrayListName.add(day + arrayListShortMonthName.get(month) + "");
+                arrayListTwoName.add(daySunday + arrayListShortMonthName.get(monthSunday) + "");
                 if (day + 7 > myCalendar.getActualMaximum(Calendar.DATE)) {
                     day = day + 7 - myCalendar.getActualMaximum(Calendar.DATE);
                     if (month == 11) {
@@ -406,6 +413,73 @@ setTwoArrayListNameStringValueInt(arrayListName,arrayList1);
         }
 
 
+    }
+    public void setStartDayArrayWeekInPeriod (int day, int month, int year, ArrayList<Integer> arrayList1) {
+
+        if(arrayList1!=null)        {
+            typeView=VALUEWEEKINPeriof;
+            daysInPunctArrayList.clear();
+            ArrayList<String> arrayListName = new ArrayList<String>();
+            Calendar myCalendar = (Calendar) Calendar.getInstance();
+            ArrayList<String> arrayListShortMonthName = initMonth();
+            myCalendar.set(year, month, day);
+            int DAY_OF_WEEK = myCalendar.get(Calendar.DAY_OF_WEEK);
+              days=arrayList1.size()*7;
+
+            nValueInPuctInValueDay = 4;
+            punctBorder = 3;
+            punctRadius = 2;
+
+            if (DAY_OF_WEEK != 1) day = day + 2 - DAY_OF_WEEK;
+
+            else {
+                day = day - 6;
+            }
+            if (day <= 0) {
+                month--;
+
+                myCalendar.set(2016, month, 1);
+                day = myCalendar.getActualMaximum(Calendar.DATE) + day;
+
+
+            }
+            int bufMonth=month;
+            myCalendar.set(year, bufMonth, day);
+days=days-(myCalendar.getActualMaximum(Calendar.DATE)-day+1);
+            daysInPunctArrayList.add(myCalendar.getActualMaximum(Calendar.DATE) - day + 1);
+            arrayListName.add(arrayListShortMonthName.get(bufMonth)+"");
+            bufMonth++;
+
+            while (days>0)
+
+
+            {
+                myCalendar.set(year, bufMonth, day);
+                arrayListName.add(arrayListShortMonthName.get(bufMonth)+"");
+if(days<myCalendar.getActualMaximum(Calendar.DATE))
+{
+  daysInPunctArrayList.add(days);
+    days=0;
+}
+else
+{
+    daysInPunctArrayList.add( myCalendar.getActualMaximum(Calendar.DATE));
+    days=days-myCalendar.getActualMaximum(Calendar.DATE);
+
+}
+if(bufMonth==11) {
+ year++;
+    bufMonth = 0;
+}               else
+bufMonth++;
+
+            }
+            for(int i=0;i<daysInPunctArrayList.size();i++)Log.d("Mylog",daysInPunctArrayList.get(i)+"="+arrayListName.get(i));
+
+
+
+setTwoArrayListNameStringValueInt(arrayListName,arrayList1);
+        }
     }
 
     private ArrayList<String> initMonth() {
@@ -429,14 +503,24 @@ setTwoArrayListNameStringValueInt(arrayListName,arrayList1);
     public void setTwoArrayListNameStringValueInt(ArrayList<String> arrayListStolbNamesilka, ArrayList<Integer> arrayListStolbValuesilk) {
 
         {
+
             this.arrayListStolbValuesilka = arrayListStolbValuesilk;
             if (arrayListStolbNamesilka != null) {
+//                Log.d("Mylog","arrayListStolbNamesilka"+arrayListStolbNamesilka.size());
                 this.arrayListStolbName = (ArrayList<String>) arrayListStolbNamesilka.clone();
-                nArrayListSize = arrayListStolbValuesilka.size();
+                nArrayListSize =  arrayListStolbValuesilk.size();
                 offsetX = 0;
             }
+            if (typeView ==NAMEVALUE || typeView ==NAMETWOVALUE )
 
-            if (this.arrayListStolbName.size() == arrayListStolbValuesilk.size()) {
+            {
+                shiftPuctInValueDay = 0;
+                punctBorder = 13;
+                punctRadius = 10;
+                nValueInPuctInValueDay = 1;
+                nPuct = nArrayListSize;
+            }
+            if ((this.arrayListStolbName.size() == arrayListStolbValuesilk.size())||(typeView==VALUEWEEKINPeriof)) {
 
                 animator.cancel();
                 npointTouch = -1;
@@ -457,16 +541,22 @@ setTwoArrayListNameStringValueInt(arrayListName,arrayList1);
                 // границы скрола
                 if (nArrayListSize != 0) {
 
-                    maxX = (nArrayListSize - canvasWidht / minWidthBlock) * minWidthBlock + widthBorder * 2;
+                    maxX = (nArrayListSize - canvasWidht / (minWidthBlock / nValueInPuctInValueDay)) * (minWidthBlock / nValueInPuctInValueDay) + widthBorder * 2;
                     isScroll = !(minWidthBlock < canvasWidht / nArrayListSize);
-
-
+                    if (VALUEDAYININEMONTH == typeView) isScroll = false;
+if(typeView==VALUEWEEKINPeriof)isScroll= !(minWidthBlock < canvasWidht / arrayListStolbValuesilk.size()*4);;
                     if (isScroll) {
                         widthBlok = minWidthBlock;
+
+
                     } else {
 
-                        widthBlok = (canvasWidht - widthBorder * 2) / nArrayListSize;
+                        widthBlok = (canvasWidht - widthBorder * 2) * nValueInPuctInValueDay / nArrayListSize;
+if(typeView==VALUEWEEKINPeriof)
+{
+    widthBlok=(canvasWidht - widthBorder * 2)/arrayListStolbValuesilk.size()*4;
 
+}
                     }
                 }
 
@@ -500,7 +590,7 @@ setTwoArrayListNameStringValueInt(arrayListName,arrayList1);
     protected void onDraw(Canvas canvas) {
 
         if (nArrayListSize != 0) {
-
+//общее
             //border borderRight
             canvas.drawRect(borderRight, 0, canvasWidht, canvasHeight, mPaintBorder);
             //border borderBottom
@@ -511,35 +601,8 @@ setTwoArrayListNameStringValueInt(arrayListName,arrayList1);
             //border borderTop
             canvas.drawRect(0, 0, canvasWidht, borderTop, mPaintBorder);
             //border
-
-            //прямоугольники текс снизу
-            if (typeView!=VALUEDAY) {
-                for (int i = 0; i < nArrayListSize; i++) {
-                    {
-                        if (i % 2 == 0) mPaint.setColor(block0);
-                        else mPaint.setColor(block1);
-                        canvas.drawRect(borderLeft + offsetX + widthBlok * i, borderTop, widthBorder + offsetX + widthBlok * (i + 1), borderBottom, mPaint);
-                        canvas.drawText(arrayListStolbName.get(i), widthBorder + offsetX + widthBlok * (i + 1.0f / 2.0f), borderBottom + 12, textPaint);
-                        if(typeView==NAMETWOVALUE)         canvas.drawText(arrayListTwoName.get(i), widthBorder + offsetX + widthBlok * (i + 1.0f / 2.0f), borderBottom + 22, textPaint);
-                    }
-                }
-            }
-
-            //end прямоугольники текс снизу
-
-            //края выделеного прямоугольника
-            if (typeView!=VALUEDAY) {
-                leftRectSelected = widthBorder + offsetX + widthBlok * npointTouch;
-                rightRectSelected = widthBorder + offsetX + widthBlok * (npointTouch + 1);
-            }
-
-            //start border боковые
-            mPaint.setColor(border);
-            canvas.drawRect(borderRight, 0, canvasWidht, canvasHeight, mPaint);
-            canvas.drawRect(0, 0, borderLeft, canvasHeight, mPaint);
-//end border боковые
-
 //start line тени для border
+            //
             canvas.drawLine(0, borderTop, canvasWidht, borderTop, mPaintLineForBorder);
             canvas.drawLine(0, borderBottom, canvasWidht, borderBottom, mPaintLineForBorder);
 
@@ -551,50 +614,114 @@ setTwoArrayListNameStringValueInt(arrayListName,arrayList1);
 
 
             //end line тени для border
-
             //start стрелки для скрола
 
-                if (isScroll) {
+            if (isScroll) {
 
 
-                    canvas.drawBitmap(mBitmap, 0, borderBottom - 30, mPaint);
+                canvas.drawBitmap(mBitmap, 0, borderBottom - 30, mPaint);
 
 
-                    canvas.drawBitmap(mBitmap1, borderRight, borderBottom - 30, mPaint);
+                canvas.drawBitmap(mBitmap1, borderRight, borderBottom - 30, mPaint);
 
-                }
+            }
 
             //end стрелки для скрола
 
-            //        дорисовка лининий пунктира
-            for (int k = 1; k <= nStep; k++) {
-                if (Math.abs(step * k - averageValueData) > step / 2) {
-                    canvas.drawLine(0, borderBottom - 1 - workOblGrafikHeight * step * k
+            canvas.clipRect(borderLeft, 0, borderRight, canvasHeight);
+            //прямоугольники
 
-                            , canvasWidht, borderBottom - 1 - workOblGrafikHeight * step * k, mPaintLinePunctire);
-                    canvas.drawText(step * k + "", widthBorder / 2, borderBottom - 1 - workOblGrafikHeight * step * k - 2, textPaint);
-                }
-            }
-            //        дорисовка лининий пунктира
-
-
-            canvas.clipRect(borderLeft, borderTop, borderRight, borderBottom);
-            // дорисовка выделенной
-            if (typeView!=VALUEDAY) {
-                if (!(rightRectSelected < widthBorder && leftRectSelected > getWidth() - widthBorder)) {
-                    if (npointTouch != -1) {
-                        if (npointTouch % 2 == 0)
-                            mPaintSelectedColumn.setColor(getResources().getColor(R.color.vblocksvet));
-                        if (npointTouch % 2 == 1)
-                            mPaintSelectedColumn.setColor(getResources().getColor(R.color.vblocktem));
-                        canvas.drawRect(leftRectSelected, borderTop, rightRectSelected, borderBottom, mPaintSelectedColumn);
+            if (typeView!=VALUEWEEKINPeriof) {
+                for (int i = 0; i < nPuct; i++) {
+                    {
+                        if (i % 2 == 0) mPaint.setColor(block0);
+                        else mPaint.setColor(block1);
+                        canvas.drawRect(borderLeft + offsetX + widthBlok * (i - shiftPuctInValueDay), borderTop, widthBorder + offsetX + widthBlok * (i + 1 - shiftPuctInValueDay), borderBottom, mPaint);
                     }
                 }
             }
+
+            if (typeView==VALUEWEEKINPeriof) {
+                int k=0,k1=0;
+//                Log.d("Mylog","daysInPunctArrayList.size()"+daysInPunctArrayList.size());
+                for (int i = 0; i < daysInPunctArrayList.size(); i++) {
+
+//                        Log.d("Mylog","сработало");
+                        if (i % 2 == 0) mPaint.setColor(block0);
+                        else mPaint.setColor(block1);
+                        k1=k;
+
+                        k=k+daysInPunctArrayList.get(i);
+                        canvas.drawText(arrayListStolbName.get(i), widthBorder + offsetX +widthBlok/28*(k1+(k-k1)/2), borderBottom + 12, textPaint);
+
+                        canvas.drawRect(widthBorder + offsetX +widthBlok/28*k , borderTop, widthBorder + offsetX + widthBlok/28*k1, borderBottom, mPaint);
+
+                }
+            }
+
+
+            //end прямоугольники
+            //  текс снизу
+            canvas.clipRect(0, 0, canvasWidht, canvasHeight, regionREPLACE);
+
+            if (typeView!=VALUEWEEKINPeriof) {
+                for (int i = 0; i < nArrayListSize; i++) {
+                    {
+                        canvas.drawText(arrayListStolbName.get(i), widthBorder + offsetX + widthBlok / nValueInPuctInValueDay * (i + 1.0f / 2.0f - shiftPuctInValueDay), borderBottom + 12, textPaint);
+                        if (typeView == NAMETWOVALUE)
+                            canvas.drawText(arrayListTwoName.get(i), widthBorder + offsetX + widthBlok * (i + 1.0f / 2.0f), borderBottom + 22, textPaint);
+                    }
+                }
+            }
+
+
+            //end  текс снизу
+
+            //края выделеного прямоугольника
+
+            leftRectSelected = widthBorder + offsetX + widthBlok / nValueInPuctInValueDay * npointTouch;
+            rightRectSelected = widthBorder + offsetX + widthBlok / nValueInPuctInValueDay * (npointTouch + 1);
+
+
+
+                canvas.clipRect(0, 0, canvasWidht, canvasHeight, regionREPLACE);
+                //        дорисовка лининий пунктира
+                for (int k = 1; k <= nStep; k++) {
+                    if (Math.abs(step * k - averageValueData) > step / 2) {
+                        canvas.drawLine(0, borderBottom - 1 - workOblGrafikHeight * step * k
+
+                                , canvasWidht, borderBottom - 1 - workOblGrafikHeight * step * k, mPaintLinePunctire);
+                        canvas.drawText(step * k + "", widthBorder / 2, borderBottom - 1 - workOblGrafikHeight * step * k - 2, textPaint);
+
+                    }
+                }
+
+
+            //        дорисовка лининий пунктира
+
+
+            canvas.clipRect(borderLeft, borderTop, borderRight, borderBottom, regionREPLACE);
+            // дорисовка выделенной
+
+
+//            if (typeView!=VALUEWEEKINPeriof)
+            {
+                if (npointTouch != -1) {
+                    if (npointTouch % 2 == 0)
+                        mPaintSelectedColumn.setColor(getResources().getColor(R.color.vblocksvet));
+                    if (npointTouch % 2 == 1)
+                        mPaintSelectedColumn.setColor(getResources().getColor(R.color.vblocktem));
+                    canvas.drawRect(leftRectSelected, borderTop, rightRectSelected, borderBottom, mPaintSelectedColumn);
+                }
+            }
+
+
             // end дорисовка выделенной
 
 //пунктир для выделеной
-            if (typeView!=VALUEDAY) {
+//            общее
+//            if (typeView != VALUEDAYININEMONTH)
+            {
                 for (int k = 1; k <= nStep; k++) {
                     canvas.drawLine(leftRectSelected, borderBottom - 1 - workOblGrafikHeight * step * k
 
@@ -604,58 +731,39 @@ setTwoArrayListNameStringValueInt(arrayListName,arrayList1);
             //пунктир для выделеной
 
 //пункты графика
-            if (typeView!=VALUEDAY) {
+
+//            if (typeView!=VALUEWEEKINPeriof)
+            {
                 for (int i = 0; i < nArrayListSize; i++) {
 
 
-                    canvas.drawPath(getPathtopRoundRect(borderLeft + offsetX + widthBlok * i + widthBorder / 2,
-                            borderBottom - 1 - workOblGrafikHeight * arrayListStolbValue.get(i), borderLeft + offsetX + widthBlok * (i + 1) - widthBorder / 2, canvasHeight, 10), mPaintPunctGtafica);
+                    canvas.drawPath(getPathtopRoundRect(borderLeft + offsetX + widthBlok / nValueInPuctInValueDay * i + punctBorder,
+                            borderBottom - 1 - workOblGrafikHeight * arrayListStolbValue.get(i), borderLeft + offsetX + widthBlok / nValueInPuctInValueDay * (i + 1) - punctBorder, canvasHeight, punctRadius), mPaintPunctGtafica);
 
 
                 }
                 if (npointTouch != -1) {
 
-                    canvas.drawPath(getPathtopRoundRect(borderLeft + offsetX + widthBlok * npointTouch + widthBorder / 2,
+                    canvas.drawPath(getPathtopRoundRect(borderLeft + offsetX + widthBlok / nValueInPuctInValueDay * npointTouch + punctBorder,
                             borderBottom - 1 - workOblGrafikHeight * arrayListStolbValue.get(npointTouch),
-                            borderLeft + offsetX + widthBlok * (npointTouch + 1) - widthBorder / 2, canvasHeight, 10), mPaintPunctGtaficav);
+                            borderLeft + offsetX + widthBlok / nValueInPuctInValueDay * (npointTouch + 1) - punctBorder, canvasHeight, punctRadius), mPaintPunctGtaficav);
 
                 }
             }
 
 
-//            if (typeView==VALUEDAY) {
-//                for (int i = 0; i < nArrayListSize; i++) {
-//
-//
-//                    canvas.drawPath(getPathtopRoundRect(borderLeft + offsetX + widthBlok/8 * i +  2,
-//                            borderBottom - 1 - workOblGrafikHeight * arrayListStolbValue.get(i), borderLeft + offsetX + widthBlok/8 * (i + 1) -     2, canvasHeight, 1), mPaintPunctGtafica);
-//
-//
-//                }
-//                if (npointTouch != -1) {
-//
-//                    canvas.drawPath(getPathtopRoundRect(borderLeft + offsetX + widthBlok * npointTouch + widthBorder / 2,
-//                            borderBottom - 1 - workOblGrafikHeight * arrayListStolbValue.get(npointTouch),
-//                            borderLeft + offsetX + widthBlok * (npointTouch + 1) - widthBorder / 2, canvasHeight, 10), mPaintPunctGtaficav);
-//
-//                }
-//            }
 //пункты графика
-            canvas.restore();
-            //пунктир средней
 
-            canvas.drawLine(0, borderBottom - 1 - workOblGrafikHeight * averageValueData
-                    , getRight(), borderBottom - 1 - workOblGrafikHeight * averageValueData, mPaintLinePunctireaverageValueData);
-            canvas.drawText("ср", widthBorder / 2, borderBottom - 3 - workOblGrafikHeight * averageValueData - 2, textPaintaverageValueData);
-            //пунктир средней
 
+            canvas.clipRect(borderLeft, 0, borderRight, canvasHeight, regionREPLACE);
             // start треугольник снизу и сверху выделеного блока
-            canvas.clipRect(borderLeft, 0, borderRight, canvasHeight);
 
 
-            if (typeView!=VALUEDAY) {
+//            if (typeView!=VALUEWEEKINPeriof)
+            {
                 mPath.reset();
                 float lr = (rightRectSelected - leftRectSelected) / 3;
+                if ((typeView == VALUEDAYININEMONTH)||(typeView == VALUEWEEKINPeriof)) lr = 0;
                 if (typeView == NAMETWOVALUE) {
                     mPath.moveTo(leftRectSelected + lr, getHeight() - 3);
                     mPath.lineTo(rightRectSelected - lr, getHeight() - 3);
@@ -673,8 +781,17 @@ setTwoArrayListNameStringValueInt(arrayListName,arrayList1);
 
                 canvas.drawPath(mPath, mPaintTriangle);
             }
-//end  треугольник снизу и сверху выделеного блока
 
+
+//end  треугольник снизу и сверху выделеного блока
+            canvas.clipRect(0, 0, canvasWidht, canvasHeight, regionREPLACE);
+//общее
+            //пунктир средней j,ott
+
+            canvas.drawLine(0, borderBottom - 1 - workOblGrafikHeight * averageValueData
+                    , getRight(), borderBottom - 1 - workOblGrafikHeight * averageValueData, mPaintLinePunctireaverageValueData);
+            canvas.drawText("ср", widthBorder / 2, borderBottom - 3 - workOblGrafikHeight * averageValueData - 2, textPaintaverageValueData);
+            //пунктир средней
         }
     }
 
@@ -713,7 +830,7 @@ setTwoArrayListNameStringValueInt(arrayListName,arrayList1);
             case (MotionEvent.ACTION_UP):
                 if (Math.abs(bufX - offsetX) < 4) {
                     if (isScroll)
-                        npointTouch = (int) ((motionEvent.getX() - bufX - widthBorder) / minWidthBlock);
+                        npointTouch = (int) ((motionEvent.getX() - bufX - widthBorder) / (minWidthBlock/nValueInPuctInValueDay));
                     else
                         npointTouch = (int) ((motionEvent.getX() - widthBorder - bufX) * nArrayListSize / (getWidth() - widthBorder * 2));
                 }

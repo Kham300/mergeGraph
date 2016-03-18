@@ -2,12 +2,10 @@ package com.lardis.ivan.testcustomview;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
     Button button,button1,button2,button4,button5;
@@ -50,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                view.setStartMonthArayMonth(10, testdanStolbValue1());
+                view.setStartMonthArrayMonth(10, testdanStolbValue1());
                 view.invalidate();
             }
         });
@@ -60,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
 
-                view.setStartDayArrayWeek(28, 1, 2016, testdanStolbValue1());
+                view.setStartDayArrayWeekInOneMonth(28, 1, 2016, testdanStolbValue1());
                 view.invalidate();
             }
         });
@@ -80,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
 
-                view.setStartDayArrayWeek(28, 1, 2016, testdanStolbValue1());
+                view.setStartDayArrayWeekInPeriod(28, 1, 2016, testdanStolbValue5());
                 view.invalidate();
             }
         });
@@ -121,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
     }
     private ArrayList<Integer> testdanStolbValue() {
         ArrayList<Integer> arrayList=new ArrayList<>();
-        arrayList.add(1000);
+        arrayList.add(1410);
         arrayList.add(154);
         arrayList.add(864);
         arrayList.add(383);
@@ -166,6 +164,81 @@ public class MainActivity extends AppCompatActivity {
         arrayList.add(946);
         arrayList.add(683);
         arrayList.add(13);
+        return arrayList;
+    }
+    private ArrayList<Integer> testdanStolbValue5() {
+        ArrayList<Integer> arrayList=new ArrayList<>();
+        arrayList.add(1224);
+        arrayList.add( 514);
+        arrayList.add(364);
+        arrayList.add(583);
+        arrayList.add(183);
+        arrayList.add(557);
+
+        arrayList.add(888);
+        arrayList.add(444);
+        arrayList.add(777);
+        arrayList.add(946);
+        arrayList.add(683);
+        arrayList.add(13);
+
+        arrayList.add(1224);
+        arrayList.add( 514);
+        arrayList.add(364);
+        arrayList.add(583);
+        arrayList.add(183);
+        arrayList.add(557);
+//
+        arrayList.add(888);
+        arrayList.add(444);
+        arrayList.add(777);
+        arrayList.add(946);
+        arrayList.add(683);
+        arrayList.add(13);
+
+
+        arrayList.add(1224);
+        arrayList.add( 514);
+        arrayList.add(364);
+        arrayList.add(583);
+        arrayList.add(183);
+        arrayList.add(557);
+
+        arrayList.add(888);
+        arrayList.add(444);
+        arrayList.add(777);
+        arrayList.add(946);
+        arrayList.add(683);
+        arrayList.add(13);
+//
+//
+//        arrayList.add(1224);
+//        arrayList.add( 514);
+//        arrayList.add(364);
+//        arrayList.add(583);
+//        arrayList.add(183);
+//        arrayList.add(557);
+//
+//        arrayList.add(888);
+//        arrayList.add(444);
+//        arrayList.add(777);
+//        arrayList.add(946);
+//        arrayList.add(683);
+//        arrayList.add(13);
+//
+//        arrayList.add(1224);
+//        arrayList.add( 514);
+//        arrayList.add(364);
+//        arrayList.add(583);
+//        arrayList.add(183);
+//        arrayList.add(557);
+//
+//        arrayList.add(888);
+//        arrayList.add(444);
+//        arrayList.add(777);
+//        arrayList.add(946);
+//        arrayList.add(683);
+//        arrayList.add(13);
         return arrayList;
     }
     private ArrayList<Integer> testdanStolbValueDataInMonth() {
