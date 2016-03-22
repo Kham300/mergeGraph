@@ -6,7 +6,6 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.LinearGradient;
 import android.graphics.Matrix;
@@ -17,6 +16,7 @@ import android.graphics.Region;
 import android.graphics.Shader;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -32,9 +32,7 @@ public class MyView extends View {
     float nItemInOneMesh = 1;
     float nPuct = 0;
     int days;
-    int rBorderCollor;
-    int DAY_OF_WEEK;
-    String[] shortMonthName = {"Янв", "Фев", "Мар", "Апр", "Май", "Июн", "Июл", "Авг", "Сен", "Окт", "Ноя", "Дек"};
+       String[] shortMonthName = {"Янв", "Фев", "Мар", "Апр", "Май", "Июн", "Июл", "Авг", "Сен", "Окт", "Ноя", "Дек"};
     ArrayList<Integer> daysInPunctArrayList = new ArrayList<Integer>();
     //входящие данные из layout
     ArrayList<String> arrayListName = new ArrayList<String>();
@@ -43,7 +41,7 @@ public class MyView extends View {
     private TypeViewGraph typeView;
     private int dayMonday;
     private int nNepolWeek;
-    int max_date;
+
     //размеры экрана
     private final float MINHEIGHTBLOCK = 25;
 
@@ -75,17 +73,17 @@ public class MyView extends View {
     float leftRectSelected;
     float rightRectSelected;
     private Paint mPaintLinePunctire;
-    private Paint mPaintLineForBorder;
+    private Paint mPaintBorderLine;
     private Paint mPaintLinePunctireSelected;
     private Paint mPaintPunctirAverage;
-    private Paint mPaint;
+    private Paint mPaintMesh;
     private Paint mPaintTriangle;
     private Paint mPaintItem;
     private Paint mPaintItemSelected;
     private Paint mPaintBorder;
     private Paint mPaintSelectedColumn;
     private Paint mPaintFontAllColor;
-    private Paint mPaintFontAverage = new Paint();
+    private Paint mPaintFontAverage;
     //смещение по x в данный момент
     private float offsetX;
     //номер выделеной
@@ -105,13 +103,114 @@ public class MyView extends View {
     private int nArrayListSize;
 
     //ресурсы
-    private int border;
-    private int meshTwo;
-    private int meshOne;
-    private int itemBottomIntColor;
-    private int itemTopIntColor;
-    private int itemSelectedTopIntColor;
-    private int itemSelectedBottomIntColor;
+    private int colorBorder;
+
+    public void setColorBorder(int colorBorder) {
+        this.colorBorder = colorBorder;
+        invalidateColor();
+    }
+
+    public void setColorBorderLine(int colorBorderLine) {
+        this.colorBorderLine = colorBorderLine;
+        invalidateColor();
+    }
+
+    private int colorBorderLine;
+
+
+    public void setColorItemTop(int colorItemTop) {
+        this.colorItemTop = colorItemTop;
+        invalidateColor();
+    }
+
+    private int colorItemTop;
+
+    public void setColorItemBottom(int colorItemBottom) {
+        this.colorItemBottom = colorItemBottom;
+        invalidateColor();
+    }
+
+    private int colorItemBottom;
+
+    public void setColorItemSelectedTop(int colorItemSelectedTop) {
+        this.colorItemSelectedTop = colorItemSelectedTop;
+        invalidateColor();
+    }
+
+    private int colorItemSelectedTop;
+
+    public void setColorItemSelectedBottom(int colorItemSelectedBottom) {
+        this.colorItemSelectedBottom = colorItemSelectedBottom;
+        invalidateColor();
+    }
+
+    private int colorItemSelectedBottom;
+
+    public void setColorMeshOne(int colorMeshOne) {
+        this.colorMeshOne = colorMeshOne;
+        invalidateColor();
+    }
+
+    private int colorMeshOne;
+
+    public void setColorMeshTwo(int colorMeshTwo) {
+        this.colorMeshTwo = colorMeshTwo;
+        invalidateColor();
+    }
+
+    private int colorMeshTwo;
+
+    public void setColorPunctireLineAverage(int colorPunctireLineAverage) {
+        this.colorPunctireLineAverage = colorPunctireLineAverage;
+        invalidateColor();
+    }
+
+    private int colorPunctireLineAverage;
+
+    public void setColorPunctireLineSelectedColor(int colorPunctireLineSelectedColor) {
+        this.colorPunctireLineSelectedColor = colorPunctireLineSelectedColor;
+        invalidateColor();
+    }
+
+    private int colorPunctireLineSelectedColor;
+
+    public void setColorPunctirLine(int colorPunctirLine) {
+        this.colorPunctirLine = colorPunctirLine;
+        invalidateColor();
+    }
+
+    private int colorPunctirLine;
+
+    public void setColorFontAll(int colorFontAll) {
+        this.colorFontAll = colorFontAll;
+        invalidateColor();
+    }
+
+    private int colorFontAll;
+
+    public void setColorFontAverage(int colorFontAverage) {
+        this.colorFontAverage = colorFontAverage;
+        invalidateColor();
+    }
+
+    private int colorFontAverage;
+
+
+    public void setColorTriangle(int colorTriangle) {
+        this.colorTriangle = colorTriangle;
+        invalidateColor();
+    }
+
+    private int colorTriangle;
+
+    public void setColorSelectedItemShadowLayer(int colorSelectedItemShadowLayer) {
+        this.colorSelectedItemShadowLayer = colorSelectedItemShadowLayer;
+        invalidateColor();
+    }
+
+    private int colorSelectedItemShadowLayer;
+
+
     Bitmap mBitmap;
 
     Bitmap mBitmap1;
@@ -138,6 +237,59 @@ public class MyView extends View {
                 attrs, R.styleable.Myview, defStyle, 0);
 
 
+        colorBorder = a.getColor(
+                R.styleable.Myview_borderColor,
+                getResources().getColor(R.color.borderColorExample));
+        colorBorderLine = a.getColor(
+                R.styleable.Myview_borderLineColor,
+                getResources().getColor(R.color.borderLineColorExample));
+
+        colorItemTop = a.getColor(
+                R.styleable.Myview_itemTopColor,
+                getResources().getColor(R.color.itemTopColorExample));
+        colorItemBottom = a.getColor(
+                R.styleable.Myview_itemBottomColor,
+                getResources().getColor(R.color.itemBottomColorExample));
+        colorItemSelectedTop = a.getColor(
+                R.styleable.Myview_itemSelectedTopColor,
+                getResources().getColor(R.color.itemSelectedTopColorExample));
+        colorItemSelectedBottom = a.getColor(
+                R.styleable.Myview_itemSelectedBottomColor,
+                getResources().getColor(R.color.itemSelectedBottomColorExample));
+        colorMeshOne = a.getColor(
+                R.styleable.Myview_meshOneColor,
+                getResources().getColor(R.color.meshOneColorExample));
+        colorMeshTwo = a.getColor(
+                R.styleable.Myview_meshTwoColor,
+                getResources().getColor(R.color.meshTwoColorExample));
+//
+        colorPunctireLineAverage = a.getColor(
+                R.styleable.Myview_punctireLineAverageColor,
+                getResources().getColor(R.color.punctireLineAverageColorExample));
+        colorPunctireLineSelectedColor = a.getColor(
+                R.styleable.Myview_punctireLineSelectedColor,
+                getResources().getColor(R.color.punctireLineSelectedColorExample));
+        colorPunctirLine = a.getColor(
+                R.styleable.Myview_punctirLineColor,
+                getResources().getColor(R.color.punctirLineColorIntExample));
+
+        colorFontAll = a.getColor(
+                R.styleable.Myview_fontAllColor,
+                getResources().getColor(R.color.fontAllColorExample));
+        colorFontAverage = a.getColor(
+                R.styleable.Myview_fontAverageColor,
+                getResources().getColor(R.color.fontAverageColorExample));
+//
+//
+        colorTriangle = a.getColor(
+                R.styleable.Myview_triangleColor,
+                getResources().getColor(R.color.triangleColorExample));
+
+        colorSelectedItemShadowLayer = a.getColor(
+                R.styleable.Myview_selectedColumnShadowLayerColor,
+                getResources().getColor(R.color.selectedColumnShadowLayerColorExample));
+
+
         mPath = new Path();
 
         setLayerType(View.LAYER_TYPE_SOFTWARE, null);
@@ -157,61 +309,42 @@ public class MyView extends View {
             }
         });
 
-        mPaint = new Paint();
+        mPaintMesh = new Paint();
 
         matrixRotate = new Matrix();
         matrixRotate.postRotate(180);
 
-        mPaintLineForBorder = new Paint();
-        mPaintLineForBorder.setAntiAlias(true);
-        mPaintLineForBorder.setColor(getContext().getResources().getColor(R.color.LineForBorder));
-        mPaintLineForBorder.setStrokeWidth(1.0f);
-        mPaintLineForBorder.setStyle(Paint.Style.STROKE);
+        mPaintBorderLine = new Paint();
+        mPaintBorderLine.setAntiAlias(true);
+
+        mPaintBorderLine.setStrokeWidth(1.0f);
+        mPaintBorderLine.setStyle(Paint.Style.STROKE);
 
         mPaintLinePunctire = new Paint();
         mPaintLinePunctire.setAntiAlias(true);
-        mPaintLinePunctire.setColor(
-
-                a.getColor(
-                        R.styleable.Myview_punctirLine, getResources().getColor(R.color.linePunctire))
-
-
-        );
         mPaintLinePunctire.setStrokeWidth(4);
 
         mPaintLinePunctireSelected = new Paint();
         mPaintLinePunctireSelected.setAntiAlias(true);
-        mPaintLinePunctireSelected.setColor(getContext().getResources().getColor(R.color.linePunctireSelected));
         mPaintLinePunctireSelected.setStrokeWidth(4);
 
         mPaintPunctirAverage = new Paint();
         mPaintPunctirAverage.setPathEffect(new DashPathEffect(new float[]{3.0f, 8.0f}, 0));
         mPaintPunctirAverage.setAntiAlias(true);
         mPaintPunctirAverage.setTextSize(100);
-        mPaintPunctirAverage.setColor(a.getColor(
-                R.styleable.Myview_punctireLineAverage, getResources().getColor(R.color.linePunctireAverage)));
         mPaintPunctirAverage.setStrokeWidth(5);
 
 
         mPaintTriangle = new Paint();
 
-        mPaintTriangle.setColor(a.getColor(
-                R.styleable.Myview_triangleColor, getResources().getColor(R.color.triangleColor)));
 
         mPaintItem = new Paint();
 
         mPaintItem.setAntiAlias(true);
-        mPaintItem.setShader(new LinearGradient(0, 0, 0, getHeight(),
-                a.getColor(R.styleable.Myview_itemTop, getResources().getColor(R.color.itemTop))
-                , a.getColor(R.styleable.Myview_itemBottom, getResources().getColor(R.color.itemBottom)), Shader.TileMode.MIRROR));
 
         mPaintItemSelected = new Paint();
 
         mPaintItemSelected.setAntiAlias(true);
-
-        mPaintItemSelected.setShader(new LinearGradient(0, 0, 0, getHeight(),
-                a.getColor(R.styleable.Myview_itemTop, getResources().getColor(R.color.itemSelectedTop))
-                , a.getColor(R.styleable.Myview_itemBottom, getResources().getColor(R.color.itemSelectedBottom)), Shader.TileMode.MIRROR));
 
 
         mPaintSelectedColumn = new Paint();
@@ -219,61 +352,53 @@ public class MyView extends View {
         mPaintSelectedColumn.setTextSize(35.0f);
         mPaintSelectedColumn.setStrokeWidth(2.0f);
         mPaintSelectedColumn.setStyle(Paint.Style.FILL_AND_STROKE);
-        mPaintSelectedColumn.setShadowLayer(10.0f, 0.0f, 0.0f, getResources().getColor(R.color.mPaintSelectedColumnShadowLayer));
 
         mPaintBorder = new Paint();
         mPaintBorder.setStrokeWidth(10);
-        mPaintBorder.setColor(
-                a.getColor(
-                        R.styleable.Myview_borderCollor, getResources().getColor(R.color.border))
-        );
 
 
         mPaintFontAllColor = new Paint();
         mPaintFontAllColor.setAntiAlias(true);
-        mPaintFontAllColor.setColor(a.getColor(
-                R.styleable.Myview_fontAllColor, Color.BLACK));
-        mPaintFontAllColor.setTextAlign(Paint.Align.CENTER);
 
+        mPaintFontAllColor.setTextAlign(Paint.Align.CENTER);
+        mPaintFontAverage = new Paint();
         mPaintFontAverage.setAntiAlias(true);
         mPaintFontAverage.setTextSize(18);
-        mPaintFontAverage.setColor(a.getColor(
-                R.styleable.Myview_fontAverage, getResources().getColor(R.color.fontAverage)));
+
         mPaintFontAverage.setTextAlign(Paint.Align.CENTER);
 
-
-        meshOne = a.getColor(
-                R.styleable.Myview_meshOne,
-                getResources().getColor(R.color.meshOne));
-        meshTwo = a.getColor(
-                R.styleable.Myview_meshTwo,
-                getResources().getColor(R.color.meshTwo));
-
-
-        itemTopIntColor = a.getColor(
-                R.styleable.Myview_itemTop,
-                getResources().getColor(R.color.itemTop));
-        itemBottomIntColor = a.getColor(
-                R.styleable.Myview_itemBottom,
-                getResources().getColor(R.color.itemBottom));
-        itemSelectedTopIntColor = a.getColor(
-                R.styleable.Myview_itemSelectedTop,
-                getResources().getColor(R.color.itemSelectedTop));
-        itemSelectedBottomIntColor = a.getColor(
-                R.styleable.Myview_itemSelectedbottom,
-                getResources().getColor(R.color.itemSelectedBottom));
 
         mBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.strelka);
         mBitmap = Bitmap.createScaledBitmap(mBitmap, (int) widthBorder, (int) widthBorder, false);
         mBitmap1 = Bitmap.createBitmap(mBitmap, 0, 0, mBitmap.getWidth(), mBitmap.getHeight(), matrixRotate, true);
+        invalidateColor();
+    }
+
+    private void invalidateColor() {
+        mPaintFontAverage.setColor(colorFontAverage);
+        mPaintFontAllColor.setColor(colorFontAll);
+
+        mPaintBorder.setColor(colorBorder);
+        mPaintSelectedColumn.setShadowLayer(10.0f, 0.0f, 0.0f, colorSelectedItemShadowLayer);
+
+        mPaintItemSelected.setShader(new LinearGradient(0, 0, 0, getHeight(),
+                colorItemSelectedTop
+                , colorItemSelectedBottom, Shader.TileMode.MIRROR));
+
+        mPaintItem.setShader(new LinearGradient(0, 0, 0, getHeight(),
+                colorItemTop
+                , colorItemBottom, Shader.TileMode.MIRROR));
+
+        mPaintTriangle.setColor(colorTriangle);
+        mPaintPunctirAverage.setColor(colorPunctireLineAverage);
+        mPaintLinePunctireSelected.setColor(colorPunctireLineSelectedColor);
+        mPaintLinePunctire.setColor(colorPunctirLine);
+        mPaintBorderLine.setColor(colorBorderLine);
+
 
     }
 
-
-    public void setDrawGraph(int day, int month, int year, ArrayList<Integer> arrayListMetodDrawGraph, TypeViewGraph typeViewGraph)
-
-    {
-
+    public void setDrawGraph(int day, int month, int year, ArrayList<Integer> arrayListMetodDrawGraph, TypeViewGraph typeViewGraph) {
 
         typeView = typeViewGraph;
 
@@ -337,7 +462,20 @@ public class MyView extends View {
 
                     }
                     nPuct = daysInPunctArrayList.size();
+if(daysInPunctArrayList.get(0)<14)
+{
+    daysInPunctArrayList.set(0,daysInPunctArrayList.get(0)+14);
 
+    arrayListMetodDrawGraph.add(0,-10);
+    arrayListMetodDrawGraph.add(0,-10);
+}
+                    if(daysInPunctArrayList.get(daysInPunctArrayList.size()-1)<14)
+                    {
+                        daysInPunctArrayList.set(daysInPunctArrayList.size()-1,daysInPunctArrayList.get(daysInPunctArrayList.size()-1)+14);
+
+                        arrayListMetodDrawGraph.add(-10);
+                        arrayListMetodDrawGraph.add(-10);
+                    }
 
                     break;
 
@@ -357,7 +495,7 @@ public class MyView extends View {
 
 
                         for (int i = 0; i < arrayListMetodDrawGraph.size(); i++) {
-                            if ((i + 1) % monday == 0) arrayListName.add(i + 1 + "");
+                            if ((i + 1) % 7 == monday) arrayListName.add(i + 1 + "");
                             else arrayListName.add("");
 
                         }
@@ -374,15 +512,13 @@ public class MyView extends View {
 
 
                     }
+                    else return;
 
 
                     break;
 
                 case MESH_WEEK_ITEM_WEEK:
-
                     nItemInOneMesh = 1;
-
-
                     DAY_OF_WEEK = myCalendar.get(Calendar.DAY_OF_WEEK);
                     if (DAY_OF_WEEK != 1) day = day + 2 - DAY_OF_WEEK;
                     else {
@@ -390,28 +526,23 @@ public class MyView extends View {
                     }
                     if (day <= 0) {
                         month--;
-
                         myCalendar.set(2016, month, 1);
                         day = myCalendar.getActualMaximum(Calendar.DATE) + day;
-
-
                     }
+                    //day понедельник
                     int daySunday;
                     int monthSunday;
                     arrayListTwoName = new ArrayList<String>();
-                    typeView = TypeViewGraph.MESH_WEEK_ITEM_WEEK;
                     for (int i = 0; i < arrayListMetodDrawGraph.size(); i++)
-
-
                     {
                         myCalendar.set(year, month, day);
                         if (day + 6 > myCalendar.getActualMaximum(Calendar.DATE)) {
                             daySunday = day + 6 - myCalendar.getActualMaximum(Calendar.DATE);
-
                             if (month == 11) monthSunday = 0;
                             else
                                 monthSunday = month + 1;
-                        } else {
+                        }
+                        else {
                             monthSunday = month;
                             daySunday = day + 6;
                         }
@@ -419,16 +550,16 @@ public class MyView extends View {
                         arrayListTwoName.add(daySunday + shortMonthName[monthSunday] + "");
                         if (day + 7 > myCalendar.getActualMaximum(Calendar.DATE)) {
                             day = day + 7 - myCalendar.getActualMaximum(Calendar.DATE);
+
                             if (month == 11) {
                                 month = 0;
                                 year++;
                             } else
-                                month = month++;
-
+                                month++;
+                            Log.d("Mylog","day="+day+"month="+month);
                         } else {
                             day = day + 7;
                         }
-                        if (monthSunday - month == 1) month++;
 
                     }
 
@@ -479,7 +610,6 @@ public class MyView extends View {
             setTwoArrayListNameStringValueInt(arrayListName, arrayListMetodDrawGraph);
         }
     }
-
 
     /////
     private void setTwoArrayListNameStringValueInt(ArrayList<String> arrayListStolbNamesilka, ArrayList<Integer> arrayListStolbValuesilk) {
@@ -564,8 +694,8 @@ public class MyView extends View {
         borderBottom = getHeight() - widthBorder;
         borderLeft = widthBorder;
         borderRight = getWidth() - widthBorder;
-        mPaintItem.setShader(new LinearGradient(0, borderTop, 0, borderBottom, itemTopIntColor, itemBottomIntColor, Shader.TileMode.MIRROR));
-        mPaintItemSelected.setShader(new LinearGradient(0, borderTop, 0, borderBottom, itemSelectedTopIntColor, itemSelectedBottomIntColor, Shader.TileMode.MIRROR));
+        mPaintItem.setShader(new LinearGradient(0, borderTop, 0, borderBottom, colorItemTop, colorItemBottom, Shader.TileMode.MIRROR));
+        mPaintItemSelected.setShader(new LinearGradient(0, borderTop, 0, borderBottom, colorItemSelectedTop, colorItemSelectedBottom, Shader.TileMode.MIRROR));
 
     }
 
@@ -586,42 +716,35 @@ public class MyView extends View {
             //border
 //start line тени для border
             //
-            canvas.drawLine(0, borderTop, canvasWidht, borderTop, mPaintLineForBorder);
-            canvas.drawLine(0, borderBottom, canvasWidht, borderBottom, mPaintLineForBorder);
+            canvas.drawLine(0, borderTop, canvasWidht, borderTop, mPaintBorderLine);
+            canvas.drawLine(0, borderBottom, canvasWidht, borderBottom, mPaintBorderLine);
 
-            canvas.drawLine(0, 0, 0, canvasHeight, mPaintLineForBorder);
-            canvas.drawLine(canvasWidht, 0, canvasWidht, canvasHeight, mPaintLineForBorder);
+            canvas.drawLine(0, 0, 0, canvasHeight, mPaintBorderLine);
+            canvas.drawLine(canvasWidht, 0, canvasWidht, canvasHeight, mPaintBorderLine);
 
-            canvas.drawLine(borderLeft, borderTop, borderLeft, borderBottom, mPaintLineForBorder);
-            canvas.drawLine(borderRight, borderTop, borderRight, borderBottom, mPaintLineForBorder);
+            canvas.drawLine(borderLeft, borderTop, borderLeft, borderBottom, mPaintBorderLine);
+            canvas.drawLine(borderRight, borderTop, borderRight, borderBottom, mPaintBorderLine);
 
 
             //end line тени для border
             //start стрелки для скрола
 
             if (isScroll) {
-
-
-                canvas.drawBitmap(mBitmap, 0, borderBottom - 30, mPaint);
-
-
-                canvas.drawBitmap(mBitmap1, borderRight, borderBottom - 30, mPaint);
-
+                canvas.drawBitmap(mBitmap, 0, borderBottom - 30, mPaintMesh);
+                canvas.drawBitmap(mBitmap1, borderRight, borderBottom - 30, mPaintMesh);
             }
-
+            if (npointTouch!=-1) {
+                if(arrayListStolbValue.get(npointTouch)==-10)npointTouch=-1;
+            }
             //end стрелки для скрола
 
             canvas.clipRect(borderLeft, 0, borderRight, canvasHeight);
             //прямоугольники
-
-
             int k4 = 0, k5 = 0;
-
-
             for (int i = 0; i < nPuct; i++) {
                 {
-                    if (i % 2 == 0) mPaint.setColor(meshOne);
-                    else mPaint.setColor(meshTwo);
+                    if (i % 2 == 0) mPaintMesh.setColor(colorMeshOne);
+                    else mPaintMesh.setColor(colorMeshTwo);
 
                     if (typeView == TypeViewGraph.MESH_MONTH_ITEM_WEEK) {
 
@@ -630,10 +753,10 @@ public class MyView extends View {
                         k4 = k4 + daysInPunctArrayList.get(i);
                         canvas.drawText(arrayListStolbName.get(i), widthBorder + offsetX + widthBlok / 28 * (k5 + (k4 - k5) / 2), borderBottom + 12, mPaintFontAllColor);
 
-                        canvas.drawRect(widthBorder + offsetX + widthBlok / 28 * k5, borderTop, widthBorder + offsetX + widthBlok / 28 * k4, borderBottom, mPaint);
+                        canvas.drawRect(widthBorder + offsetX + widthBlok / 28 * k5, borderTop, widthBorder + offsetX + widthBlok / 28 * k4, borderBottom, mPaintMesh);
 
                     } else {
-                        canvas.drawRect(borderLeft + offsetX + widthBlok * (i - shiftPuctInValueDay), borderTop, widthBorder + offsetX + widthBlok * (i + 1 - shiftPuctInValueDay), borderBottom, mPaint);
+                        canvas.drawRect(borderLeft + offsetX + widthBlok * (i - shiftPuctInValueDay), borderTop, widthBorder + offsetX + widthBlok * (i + 1 - shiftPuctInValueDay), borderBottom, mPaintMesh);
 
                     }
                 }
@@ -687,9 +810,9 @@ public class MyView extends View {
 
             if (npointTouch != -1) {
                 if (npointTouch % 2 == 0)
-                    mPaintSelectedColumn.setColor(meshOne);
+                    mPaintSelectedColumn.setColor(colorMeshOne);
                 if (npointTouch % 2 == 1)
-                    mPaintSelectedColumn.setColor(meshTwo);
+                    mPaintSelectedColumn.setColor(colorMeshTwo);
                 canvas.drawRect(leftRectSelected, borderTop, rightRectSelected, borderBottom, mPaintSelectedColumn);
             }
 
@@ -716,15 +839,17 @@ public class MyView extends View {
 
 
                     canvas.drawPath(getPathtopRoundRect(borderLeft + offsetX + widthBlok / nItemInOneMesh * i + itemBorder,
-                            borderBottom - 1 - workOblGrafikHeight * arrayListStolbValue.get(i), borderLeft + offsetX + widthBlok / nItemInOneMesh * (i + 1) - itemBorder, canvasHeight, itemRadius), mPaintItem);
+                            borderBottom + 1 - workOblGrafikHeight * arrayListStolbValue.get(i), borderLeft + offsetX + widthBlok / nItemInOneMesh * (i + 1) - itemBorder, canvasHeight, itemRadius), mPaintItem);
 
 
                 }
-                if (npointTouch != -1) {
+                if (npointTouch != -1 ) {
 
-                    canvas.drawPath(getPathtopRoundRect(borderLeft + offsetX + widthBlok / nItemInOneMesh * npointTouch + itemBorder,
-                            borderBottom - 1 - workOblGrafikHeight * arrayListStolbValue.get(npointTouch),
-                            borderLeft + offsetX + widthBlok / nItemInOneMesh * (npointTouch + 1) - itemBorder, canvasHeight, itemRadius), mPaintItemSelected);
+
+                        canvas.drawPath(getPathtopRoundRect(borderLeft + offsetX + widthBlok / nItemInOneMesh * npointTouch + itemBorder,
+                                borderBottom - 1 - workOblGrafikHeight * arrayListStolbValue.get(npointTouch),
+                                borderLeft + offsetX + widthBlok / nItemInOneMesh * (npointTouch + 1) - itemBorder, canvasHeight, itemRadius), mPaintItemSelected);
+
 
                 }
             }

@@ -3,26 +3,36 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="vblocksvet">#F0F1F2</color>
-    <color name="vblocktem">#E7E9EB</color>
-    <color name="LineForBorder">#989b9698</color>
-    <color name="meshOne">#F0F1F2</color>
-    <color name="meshTwo">#E7E9EB</color>
-    <color name="border">#E7E9EB</color>
-    <color name="itemBottom">#009AA0</color>
-    <color name="itemTop">#006D71</color>
-    <color name="triangleColor">#009BA1</color>
-    <color name="mPaintPunctGtafica">#78ABAC</color>
-    <color name="mPaintSelectedColumnShadowLayer">#43000000</color>
+
+
+
+    <color name="borderColorExample">#E7E9EB</color>
+    <color name="borderLineColorExample">#989b9698</color>
+
+    <color name="itemTopColorExample">#006D71</color>
+    <color name="itemBottomColorExample">#009AA0</color>
+    <color name="itemSelectedTopColorExample">#019CA2</color>
+    <color name="itemSelectedBottomColorExample">#89D8DA</color>
+
+    <color name="meshOneColorExample">#F0F1F2</color>
+    <color name="meshTwoColorExample">#E7E9EB</color>
+
+    <color name="punctireLineAverageColorExample">#006F74</color>
+    <color name="punctireLineSelectedColorExample">#5cdfe1e4</color>
+    <color name="punctirLineColorIntExample">#DFE1E4</color>
+
+    <color name="fontAllColorExample">#000000</color>
+    <color name="fontAverageColorExample">#006F74</color>
+
+    <color name="triangleColorExample">#009BA1</color>
+
+
+    <color name="selectedColumnShadowLayerColorExample">#43000000</color>
+
+
+
+
+
     <color name="test">#66d3d922</color>
-    <color name="fontAverage">#006F74</color>
 
-
-
-
-    <color name="linePunctire">#DFE1E4</color>
-    <color name="linePunctireAverage">#006F74</color>
-    <color name="linePunctireSelected">#5cdfe1e4</color>
-    <color name="itemSelectedBottom">#89D8DA</color>
-    <color name="itemSelectedTop">#019CA2</color>
 </resources>
