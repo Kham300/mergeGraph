@@ -1,6 +1,16 @@
 <resources>
-    <declare-styleable name="CatView">
-        <attr name="typeView" format="string"/>
-
+    <declare-styleable name="Myview">
+        <attr name="borderCollor" format="color"/>
+        <attr name="itemTop" format="color"/>
+        <attr name="itemBottom" format="color"/>
+        <attr name="itemSelectedTop" format="color"/>
+        <attr name="itemSelectedbottom" format="color"/>
+        <attr name="meshOne" format="color"/>
+        <attr name="meshTwo" format="color"/>
+        <attr name="punctireLineAverage" format="color"/>
+        <attr name="punctirLine" format="color"/>
+        <attr name="fontAllColor" format="color"/>
+        <attr name="triangleColor" format="color"/>
+        <attr name="fontAverage" format="color"/>
     </declare-styleable>
 </resources>

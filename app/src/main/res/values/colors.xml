@@ -5,20 +5,24 @@
     <color name="colorAccent">#FF4081</color>
     <color name="vblocksvet">#F0F1F2</color>
     <color name="vblocktem">#E7E9EB</color>
-    <color name="vblockborde">#989b9698</color>
-    <color name="block0">#F0F1F2</color>
-    <color name="block1">#E7E9EB</color>
+    <color name="LineForBorder">#989b9698</color>
+    <color name="meshOne">#F0F1F2</color>
+    <color name="meshTwo">#E7E9EB</color>
     <color name="border">#E7E9EB</color>
-    <color name="nizstrel1">#009AA0</color>
-    <color name="verxstrel1">#006D71</color>
-    <color name="mPaintTriangle">#009BA1</color>
+    <color name="itemBottom">#009AA0</color>
+    <color name="itemTop">#006D71</color>
+    <color name="triangleColor">#009BA1</color>
     <color name="mPaintPunctGtafica">#78ABAC</color>
-    <color name="mPaintSelectedColumnShadowLayer">#66000303</color>
+    <color name="mPaintSelectedColumnShadowLayer">#43000000</color>
+    <color name="test">#66d3d922</color>
+    <color name="fontAverage">#006F74</color>
 
 
-    <color name="mPaintLinePunctire">#DFE1E4</color>
-    <color name="mPaintLinePunctireaverageValueData">#006F74</color>
-    <color name="mPaintLinePunctireop">#5cdfe1e4</color>
-    <color name="vnizstrel1">#89D8DA</color>
-    <color name="vverxstrel1">#019CA2</color>
+
+
+    <color name="linePunctire">#DFE1E4</color>
+    <color name="linePunctireAverage">#006F74</color>
+    <color name="linePunctireSelected">#5cdfe1e4</color>
+    <color name="itemSelectedBottom">#89D8DA</color>
+    <color name="itemSelectedTop">#019CA2</color>
 </resources>

@@ -37,8 +37,9 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                view.setDrawGraph(28, 1, 2016, testdanStolbValue(), TypeViewGraph.MESH_DAY_ITEM_DAY);
 
-                        view.setStartDayArayDay(28, 1, 2016, testdanStolbValue());
+//                        view.setStartDayArayDay(28, 1, 2016, testdanStolbValue());
                 view.invalidate();
 
             }
@@ -47,8 +48,9 @@ public class MainActivity extends AppCompatActivity {
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                view.setDrawGraph(28, 1, 2016, testdanStolbValue1(), TypeViewGraph.MESH_MONTH_ITEM_MONTH);
 
-                view.setStartMonthArrayMonth(10, testdanStolbValue1());
+//                view.setStartMonthArrayMonth(10, testdanStolbValue1());
                 view.invalidate();
             }
         });
@@ -58,7 +60,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
 
-                view.setStartDayArrayWeekInOneMonth(28, 1, 2016, testdanStolbValue1());
+//                view.setStartDayArrayWeekInOneMonth(28, 1, 2016, testdanStolbValue1());
+                view.setDrawGraph(28, 1, 2016, testdanStolbValue1(), TypeViewGraph.MESH_WEEK_ITEM_WEEK);
+
                 view.invalidate();
             }
         });
@@ -68,7 +72,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
 
-                view.setStarMonthArrayDay(  2, 2016, testdanStolbValueDataInMonth());
+//                view.setStarMonthArrayDay(  2, 2016, testdanStolbValueDataInMonth());
+                view.setDrawGraph(1,2,2016,testdanStolbValueDataInMonth(),TypeViewGraph.MESH_WEEK_ITEM_DAY);
                 view.invalidate();
             }
         });
@@ -78,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
 
-                view.setStartDayArrayWeekInPeriod(28, 1, 2016, testdanStolbValue5());
+                view.setDrawGraph(28, 1, 2016, testdanStolbValue5(), TypeViewGraph.MESH_MONTH_ITEM_WEEK);
                 view.invalidate();
             }
         });

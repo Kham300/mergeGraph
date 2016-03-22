@@ -17,33 +17,33 @@ import android.graphics.Region;
 import android.graphics.Shader;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 /**
  * TODO: document your custom view class.
  */
 public class MyView extends View {
-      float shiftPuctInValueDay = 0;
-    float nValueInPuctInValueDay = 1;
+    float shiftPuctInValueDay = 0;
+    float nItemInOneMesh = 1;
     float nPuct = 0;
     int days;
-    ArrayList<Integer> daysInPunctArrayList =new ArrayList<Integer>();
+    int rBorderCollor;
+    int DAY_OF_WEEK;
+    String[] shortMonthName = {"Янв", "Фев", "Мар", "Апр", "Май", "Июн", "Июл", "Авг", "Сен", "Окт", "Ноя", "Дек"};
+    ArrayList<Integer> daysInPunctArrayList = new ArrayList<Integer>();
     //входящие данные из layout
-    public static final String NAMEVALUE = "name-value";
-    public static final String VALUEDAYININEMONTH = "day-value";
-    public static final String VALUEWEEKINPeriof = "VALUEWEEKINPeriof";
-    public static final String NAMETWOVALUE = "name-two-value";
+    ArrayList<String> arrayListName = new ArrayList<String>();
     ArrayList<String> arrayListTwoName;
-    private String typeView = NAMEVALUE;
+    Calendar myCalendar = (Calendar) Calendar.getInstance();
+    private TypeViewGraph typeView;
     private int dayMonday;
     private int nNepolWeek;
+    int max_date;
     //размеры экрана
     private final float MINHEIGHTBLOCK = 25;
 
@@ -60,8 +60,8 @@ public class MyView extends View {
     //толщина блока минимуи
     private float minWidthBlock = 100;
     private float widthBorder = 35;
-    private float punctBorder = 13;
-    private float punctRadius = 10;
+    private float itemBorder = 13;
+    private float itemRadius = 10;
 
 
     private float minX = 0;
@@ -76,16 +76,16 @@ public class MyView extends View {
     float rightRectSelected;
     private Paint mPaintLinePunctire;
     private Paint mPaintLineForBorder;
-    private Paint mPaintLinePunctireop;
-    private Paint mPaintLinePunctireaverageValueData;
+    private Paint mPaintLinePunctireSelected;
+    private Paint mPaintPunctirAverage;
     private Paint mPaint;
     private Paint mPaintTriangle;
-    private Paint mPaintPunctGtafica;
-    private Paint mPaintPunctGtaficav;
+    private Paint mPaintItem;
+    private Paint mPaintItemSelected;
     private Paint mPaintBorder;
     private Paint mPaintSelectedColumn;
-    private Paint textPaint;
-    private Paint textPaintaverageValueData = new Paint();
+    private Paint mPaintFontAllColor;
+    private Paint mPaintFontAverage = new Paint();
     //смещение по x в данный момент
     private float offsetX;
     //номер выделеной
@@ -106,12 +106,12 @@ public class MyView extends View {
 
     //ресурсы
     private int border;
-    private int block1;
-    private int block0;
-    private int nizstrel1;
-    private int verxstrel1;
-    private int vverxstrel1;
-    private int vnizstrel1;
+    private int meshTwo;
+    private int meshOne;
+    private int itemBottomIntColor;
+    private int itemTopIntColor;
+    private int itemSelectedTopIntColor;
+    private int itemSelectedBottomIntColor;
     Bitmap mBitmap;
 
     Bitmap mBitmap1;
@@ -135,13 +135,9 @@ public class MyView extends View {
 
     public void init(AttributeSet attrs, int defStyle) {
         final TypedArray a = getContext().obtainStyledAttributes(
-                attrs, R.styleable.CatView, defStyle, 0);
+                attrs, R.styleable.Myview, defStyle, 0);
 
 
-        if (a.hasValue(R.styleable.CatView_typeView)) {
-            Log.d("Mylog", a.getString(
-                    R.styleable.CatView_typeView));
-        }
         mPath = new Path();
 
         setLayerType(View.LAYER_TYPE_SOFTWARE, null);
@@ -168,40 +164,55 @@ public class MyView extends View {
 
         mPaintLineForBorder = new Paint();
         mPaintLineForBorder.setAntiAlias(true);
-        mPaintLineForBorder.setColor(getContext().getResources().getColor(R.color.vblockborde));
+        mPaintLineForBorder.setColor(getContext().getResources().getColor(R.color.LineForBorder));
         mPaintLineForBorder.setStrokeWidth(1.0f);
         mPaintLineForBorder.setStyle(Paint.Style.STROKE);
 
         mPaintLinePunctire = new Paint();
         mPaintLinePunctire.setAntiAlias(true);
-        mPaintLinePunctire.setColor(getContext().getResources().getColor(R.color.mPaintLinePunctire));
+        mPaintLinePunctire.setColor(
+
+                a.getColor(
+                        R.styleable.Myview_punctirLine, getResources().getColor(R.color.linePunctire))
+
+
+        );
         mPaintLinePunctire.setStrokeWidth(4);
 
-        mPaintLinePunctireop = new Paint();
-        mPaintLinePunctireop.setAntiAlias(true);
-        mPaintLinePunctireop.setColor(getContext().getResources().getColor(R.color.mPaintLinePunctireop));
-        mPaintLinePunctireop.setStrokeWidth(4);
+        mPaintLinePunctireSelected = new Paint();
+        mPaintLinePunctireSelected.setAntiAlias(true);
+        mPaintLinePunctireSelected.setColor(getContext().getResources().getColor(R.color.linePunctireSelected));
+        mPaintLinePunctireSelected.setStrokeWidth(4);
 
-        mPaintLinePunctireaverageValueData = new Paint();
-        mPaintLinePunctireaverageValueData.setPathEffect(new DashPathEffect(new float[]{3.0f, 8.0f}, 0));
-        mPaintLinePunctireaverageValueData.setAntiAlias(true);
-        mPaintLinePunctireaverageValueData.setTextSize(100);
-        mPaintLinePunctireaverageValueData.setColor(getContext().getResources().getColor(R.color.mPaintLinePunctireaverageValueData));
-        mPaintLinePunctireaverageValueData.setStrokeWidth(5);
+        mPaintPunctirAverage = new Paint();
+        mPaintPunctirAverage.setPathEffect(new DashPathEffect(new float[]{3.0f, 8.0f}, 0));
+        mPaintPunctirAverage.setAntiAlias(true);
+        mPaintPunctirAverage.setTextSize(100);
+        mPaintPunctirAverage.setColor(a.getColor(
+                R.styleable.Myview_punctireLineAverage, getResources().getColor(R.color.linePunctireAverage)));
+        mPaintPunctirAverage.setStrokeWidth(5);
 
 
         mPaintTriangle = new Paint();
-        mPaintTriangle.setColor(getResources().getColor(R.color.mPaintTriangle));
 
-        mPaintPunctGtafica = new Paint();
-        mPaintPunctGtafica.setColor(getResources().getColor(R.color.mPaintPunctGtafica));
-        mPaintPunctGtafica.setAntiAlias(true);
-        mPaintPunctGtafica.setShader(new LinearGradient(0, 0, 0, getHeight(), getResources().getColor(R.color.verxstrel1), getResources().getColor(R.color.nizstrel1), Shader.TileMode.MIRROR));
+        mPaintTriangle.setColor(a.getColor(
+                R.styleable.Myview_triangleColor, getResources().getColor(R.color.triangleColor)));
 
-        mPaintPunctGtaficav = new Paint();
-        mPaintPunctGtaficav.setColor(getResources().getColor(R.color.mPaintPunctGtafica));
-        mPaintPunctGtaficav.setAntiAlias(true);
-        mPaintPunctGtaficav.setShader(new LinearGradient(0, 0, 0, getHeight(), getResources().getColor(R.color.vverxstrel1), getResources().getColor(R.color.vnizstrel1), Shader.TileMode.MIRROR));
+        mPaintItem = new Paint();
+
+        mPaintItem.setAntiAlias(true);
+        mPaintItem.setShader(new LinearGradient(0, 0, 0, getHeight(),
+                a.getColor(R.styleable.Myview_itemTop, getResources().getColor(R.color.itemTop))
+                , a.getColor(R.styleable.Myview_itemBottom, getResources().getColor(R.color.itemBottom)), Shader.TileMode.MIRROR));
+
+        mPaintItemSelected = new Paint();
+
+        mPaintItemSelected.setAntiAlias(true);
+
+        mPaintItemSelected.setShader(new LinearGradient(0, 0, 0, getHeight(),
+                a.getColor(R.styleable.Myview_itemTop, getResources().getColor(R.color.itemSelectedTop))
+                , a.getColor(R.styleable.Myview_itemBottom, getResources().getColor(R.color.itemSelectedBottom)), Shader.TileMode.MIRROR));
+
 
         mPaintSelectedColumn = new Paint();
         mPaintSelectedColumn.setAntiAlias(true);
@@ -212,26 +223,45 @@ public class MyView extends View {
 
         mPaintBorder = new Paint();
         mPaintBorder.setStrokeWidth(10);
-        mPaintBorder.setColor(getResources().getColor(R.color.border));
+        mPaintBorder.setColor(
+                a.getColor(
+                        R.styleable.Myview_borderCollor, getResources().getColor(R.color.border))
+        );
 
-        textPaint = new Paint();
-        textPaint.setAntiAlias(true);
-        textPaint.setColor(Color.BLACK);
-        textPaint.setTextAlign(Paint.Align.CENTER);
 
-        textPaintaverageValueData.setAntiAlias(true);
-        textPaintaverageValueData.setTextSize(18);
-        textPaintaverageValueData.setColor(getContext().getResources().getColor(R.color.mPaintLinePunctireaverageValueData));
-        textPaintaverageValueData.setTextAlign(Paint.Align.CENTER);
+        mPaintFontAllColor = new Paint();
+        mPaintFontAllColor.setAntiAlias(true);
+        mPaintFontAllColor.setColor(a.getColor(
+                R.styleable.Myview_fontAllColor, Color.BLACK));
+        mPaintFontAllColor.setTextAlign(Paint.Align.CENTER);
 
-        block1 = getResources().getColor(R.color.block1);
-        block0 = getResources().getColor(R.color.block0);
-        border = getResources().getColor(R.color.border);
-        verxstrel1 = getResources().getColor(R.color.verxstrel1);
-        nizstrel1 = getResources().getColor(R.color.nizstrel1);
-        vverxstrel1 = getResources().getColor(R.color.vverxstrel1);
-        vnizstrel1 = getResources().getColor(R.color.vnizstrel1);
+        mPaintFontAverage.setAntiAlias(true);
+        mPaintFontAverage.setTextSize(18);
+        mPaintFontAverage.setColor(a.getColor(
+                R.styleable.Myview_fontAverage, getResources().getColor(R.color.fontAverage)));
+        mPaintFontAverage.setTextAlign(Paint.Align.CENTER);
 
+
+        meshOne = a.getColor(
+                R.styleable.Myview_meshOne,
+                getResources().getColor(R.color.meshOne));
+        meshTwo = a.getColor(
+                R.styleable.Myview_meshTwo,
+                getResources().getColor(R.color.meshTwo));
+
+
+        itemTopIntColor = a.getColor(
+                R.styleable.Myview_itemTop,
+                getResources().getColor(R.color.itemTop));
+        itemBottomIntColor = a.getColor(
+                R.styleable.Myview_itemBottom,
+                getResources().getColor(R.color.itemBottom));
+        itemSelectedTopIntColor = a.getColor(
+                R.styleable.Myview_itemSelectedTop,
+                getResources().getColor(R.color.itemSelectedTop));
+        itemSelectedBottomIntColor = a.getColor(
+                R.styleable.Myview_itemSelectedbottom,
+                getResources().getColor(R.color.itemSelectedBottom));
 
         mBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.strelka);
         mBitmap = Bitmap.createScaledBitmap(mBitmap, (int) widthBorder, (int) widthBorder, false);
@@ -239,268 +269,220 @@ public class MyView extends View {
 
     }
 
-    public void setStartDayArayDay(int day, int month, int year, ArrayList<Integer> arrayList1) {
+
+    public void setDrawGraph(int day, int month, int year, ArrayList<Integer> arrayListMetodDrawGraph, TypeViewGraph typeViewGraph)
+
+    {
 
 
-        if (arrayList1 != null) {
+        typeView = typeViewGraph;
 
-            ArrayList<String> arrayListName = new ArrayList<String>();
-
-            Calendar myCalendar = (Calendar) Calendar.getInstance().clone();
-            myCalendar.set(year, month, 1);
-            int max_date = myCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-
-            Log.d("Mylog", "max_date" + max_date);
-            if (max_date >= day || day > 0) {
-                typeView = NAMEVALUE;
-                ArrayList<String> arrayListShortMonthName = initMonth();
-                for (int i = 0; i < arrayList1.size(); i++)
-
-                {
-                    arrayListName.add(day + " " + arrayListShortMonthName.get(month));
-                    if (day == max_date) {
-                        day = 1;
-
-                        if (month == 11) month = 0;
-                        else month++;
-                        max_date = myCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-                    } else day++;
-
-                }
-
-                setTwoArrayListNameStringValueInt(arrayListName, arrayList1);
-
-
-            }
-        }
-
-
-    }
-
-    public void setStartMonthArrayMonth(int month, List<Integer> arrayList1) {
-
-
-        if (arrayList1 != null) {
-            ArrayList<String> arrayListName = new ArrayList<String>();
-            typeView = NAMEVALUE;
-
-            if (month < 12) {
-                ArrayList<String> arrayListShortMonthName = initMonth();
-                for (int i = 0; i < arrayList1.size(); i++)
-
-                {
-                    arrayListName.add(arrayListShortMonthName.get(month));
-                    if (month == 11) {
-                        month = 0;
-
-
-                    } else month++;
-
-                }
-
-                setTwoArrayListNameStringValueInt(arrayListName, arrayList1);
-
-
-            }
-        }
-
-
-    }
-
-    public void setStarMonthArrayDay(int month, int year, ArrayList<Integer> arrayList1)    {
-        ArrayList<String> arrayListName = new ArrayList<>();
-        if (arrayList1 != null) {
-            Calendar myCalendar = (Calendar) Calendar.getInstance().clone();
-            myCalendar.set(year, month, 1);
-            int max_date = myCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-            if (max_date == arrayList1.size()) {
-                typeView = VALUEDAYININEMONTH;
-
-                int monday = (1 - myCalendar.get(Calendar.DAY_OF_WEEK) + 7 + 2) % 7;
-
-                if (monday == 0) monday = 7;
-
-
-
-                for (int i = 0; i < arrayList1.size(); i++) {
-                    if ((i + 1) % monday == 0) arrayListName.add(i + 1 + "");
-                    else arrayListName.add("");
-
-                }
-                dayMonday = monday;
-                nNepolWeek = myCalendar.getActualMaximum(Calendar.DAY_OF_MONTH) / 7;
-                if (monday != 1) nNepolWeek++;
-                if (myCalendar.getActualMaximum(Calendar.DAY_OF_MONTH) % 7 + 1 - monday > 0)
-                    nNepolWeek++;
-                dayMonday = 7;
-                if (dayMonday == 1) shiftPuctInValueDay = 0;
-                else shiftPuctInValueDay = (8f - dayMonday) / 7f;
-                nValueInPuctInValueDay = 7;
-                Log.d("Mylog", nNepolWeek + "");
-                punctBorder = 2;
-                punctRadius = 3;
-                nPuct = nNepolWeek;
-                setTwoArrayListNameStringValueInt(arrayListName, arrayList1);
-
-            }
-
-
-        }
-
-
-    }
-
-
-    public void setStartDayArrayWeekInOneMonth(int day, int month, int year, ArrayList<Integer> arrayList1) {
-        if (arrayList1 != null) {
-            nValueInPuctInValueDay = 7;
-            ArrayList<String> arrayListName = new ArrayList<String>();
-            Calendar myCalendar = (Calendar) Calendar.getInstance();
-            ArrayList<String> arrayListShortMonthName = initMonth();
+        if (arrayListMetodDrawGraph != null) {
+            arrayListName.clear();
             myCalendar.set(year, month, day);
 
-            int DAY_OF_WEEK = myCalendar.get(Calendar.DAY_OF_WEEK);
-            if (DAY_OF_WEEK != 1) day = day + 2 - DAY_OF_WEEK;
-            else {
-                day = day - 6;
+            switch (typeView) {
+
+                case MESH_MONTH_ITEM_WEEK:
+
+                    daysInPunctArrayList.clear();
+
+
+                    int DAY_OF_WEEK = myCalendar.get(Calendar.DAY_OF_WEEK);
+                    days = arrayListMetodDrawGraph.size() * 7;
+
+                    nItemInOneMesh = 4;
+                    itemBorder = 3;
+                    itemRadius = 4;
+
+                    if (DAY_OF_WEEK != 1) day = day + 2 - DAY_OF_WEEK;
+
+                    else {
+                        day = day - 6;
+                    }
+                    if (day <= 0) {
+                        month--;
+
+                        myCalendar.set(2016, month, 1);
+                        day = myCalendar.getActualMaximum(Calendar.DATE) + day;
+
+
+                    }
+                    int bufMonth = month;
+                    myCalendar.set(year, bufMonth, day);
+                    days = days - (myCalendar.getActualMaximum(Calendar.DATE) - day + 1);
+                    daysInPunctArrayList.add(myCalendar.getActualMaximum(Calendar.DATE) - day + 1);
+                    arrayListName.add(shortMonthName[bufMonth] + "");
+                    bufMonth++;
+
+                    while (days > 0)
+
+
+                    {
+                        myCalendar.set(year, bufMonth, day);
+                        arrayListName.add(shortMonthName[bufMonth] + "");
+                        if (days < myCalendar.getActualMaximum(Calendar.DATE)) {
+                            daysInPunctArrayList.add(days);
+                            days = 0;
+                        } else {
+                            daysInPunctArrayList.add(myCalendar.getActualMaximum(Calendar.DATE));
+                            days = days - myCalendar.getActualMaximum(Calendar.DATE);
+
+                        }
+                        if (bufMonth == 11) {
+                            year++;
+                            bufMonth = 0;
+                        } else
+                            bufMonth++;
+
+                    }
+                    nPuct = daysInPunctArrayList.size();
+
+
+                    break;
+
+                case MESH_WEEK_ITEM_DAY:
+
+                    nItemInOneMesh = 7;
+                    itemBorder = 2;
+                    itemRadius = 3;
+
+                    int max_date = myCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+                    if (max_date == arrayListMetodDrawGraph.size()) {
+                        typeView = TypeViewGraph.MESH_WEEK_ITEM_DAY;
+
+                        int monday = (1 - myCalendar.get(Calendar.DAY_OF_WEEK) + 7 + 2) % 7;
+
+                        if (monday == 0) monday = 7;
+
+
+                        for (int i = 0; i < arrayListMetodDrawGraph.size(); i++) {
+                            if ((i + 1) % monday == 0) arrayListName.add(i + 1 + "");
+                            else arrayListName.add("");
+
+                        }
+                        dayMonday = monday;
+                        nNepolWeek = myCalendar.getActualMaximum(Calendar.DAY_OF_MONTH) / 7;
+                        if (monday != 1) nNepolWeek++;
+                        if (myCalendar.getActualMaximum(Calendar.DAY_OF_MONTH) % 7 + 1 - monday > 0)
+                            nNepolWeek++;
+                        dayMonday = 7;
+                        if (dayMonday == 1) shiftPuctInValueDay = 0;
+                        else shiftPuctInValueDay = (8f - dayMonday) / 7f;
+
+                        nPuct = nNepolWeek;
+
+
+                    }
+
+
+                    break;
+
+                case MESH_WEEK_ITEM_WEEK:
+
+                    nItemInOneMesh = 1;
+
+
+                    DAY_OF_WEEK = myCalendar.get(Calendar.DAY_OF_WEEK);
+                    if (DAY_OF_WEEK != 1) day = day + 2 - DAY_OF_WEEK;
+                    else {
+                        day = day - 6;
+                    }
+                    if (day <= 0) {
+                        month--;
+
+                        myCalendar.set(2016, month, 1);
+                        day = myCalendar.getActualMaximum(Calendar.DATE) + day;
+
+
+                    }
+                    int daySunday;
+                    int monthSunday;
+                    arrayListTwoName = new ArrayList<String>();
+                    typeView = TypeViewGraph.MESH_WEEK_ITEM_WEEK;
+                    for (int i = 0; i < arrayListMetodDrawGraph.size(); i++)
+
+
+                    {
+                        myCalendar.set(year, month, day);
+                        if (day + 6 > myCalendar.getActualMaximum(Calendar.DATE)) {
+                            daySunday = day + 6 - myCalendar.getActualMaximum(Calendar.DATE);
+
+                            if (month == 11) monthSunday = 0;
+                            else
+                                monthSunday = month + 1;
+                        } else {
+                            monthSunday = month;
+                            daySunday = day + 6;
+                        }
+                        arrayListName.add(day + shortMonthName[month] + "");
+                        arrayListTwoName.add(daySunday + shortMonthName[monthSunday] + "");
+                        if (day + 7 > myCalendar.getActualMaximum(Calendar.DATE)) {
+                            day = day + 7 - myCalendar.getActualMaximum(Calendar.DATE);
+                            if (month == 11) {
+                                month = 0;
+                                year++;
+                            } else
+                                month = month++;
+
+                        } else {
+                            day = day + 7;
+                        }
+                        if (monthSunday - month == 1) month++;
+
+                    }
+
+
+                    break;
+
+                case MESH_DAY_ITEM_DAY:
+                case MESH_MONTH_ITEM_MONTH:
+                    nItemInOneMesh = 1;
+
+                    max_date = myCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+
+
+                    for (int i = 0; i < arrayListMetodDrawGraph.size(); i++)
+
+                    {
+
+
+                        if (typeView == TypeViewGraph.MESH_DAY_ITEM_DAY) {
+                            arrayListName.add(day + " " + shortMonthName[month]);
+
+                            if (day == max_date) {
+                                day = 1;
+
+                                if (month == 11) month = 0;
+                                else month++;
+                                myCalendar.set(year, month, day);
+                                max_date = myCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+                            } else day++;
+                        }
+
+                        if (typeView == TypeViewGraph.MESH_MONTH_ITEM_MONTH) {
+                            arrayListName.add(shortMonthName[month]);
+
+                            if (month == 11) {
+                                month = 0;
+
+
+                            } else month++;
+                        }
+
+
+                    }
+                    break;
+
+
             }
-            if (day <= 0) {
-                month--;
-
-                myCalendar.set(2016, month, 1);
-                day = myCalendar.getActualMaximum(Calendar.DATE) + day;
-
-
-            }
-            int daySunday;
-            int monthSunday;
-            arrayListTwoName = new ArrayList<String>();
-            typeView = NAMETWOVALUE;
-            for (int i = 0; i < arrayList1.size(); i++)
-
-
-            {
-                myCalendar.set(year, month, day);
-                if (day + 6 > myCalendar.getActualMaximum(Calendar.DATE)) {
-                    daySunday = day + 6 - myCalendar.getActualMaximum(Calendar.DATE);
-
-                    if (month == 11) monthSunday = 0;
-                    else
-                        monthSunday = month + 1;
-                } else {
-                    monthSunday = month;
-                    daySunday = day + 6;
-                }
-                arrayListName.add(day + arrayListShortMonthName.get(month) + "");
-                arrayListTwoName.add(daySunday + arrayListShortMonthName.get(monthSunday) + "");
-                if (day + 7 > myCalendar.getActualMaximum(Calendar.DATE)) {
-                    day = day + 7 - myCalendar.getActualMaximum(Calendar.DATE);
-                    if (month == 11) {
-                        month = 0;
-                        year++;
-                    } else
-                        month = month++;
-
-                } else {
-                    day = day + 7;
-                }
-                if (monthSunday - month == 1) month++;
-
-            }
-
-            setTwoArrayListNameStringValueInt(arrayListName, arrayList1);
-
+            setTwoArrayListNameStringValueInt(arrayListName, arrayListMetodDrawGraph);
         }
-
-
-    }
-    public void setStartDayArrayWeekInPeriod (int day, int month, int year, ArrayList<Integer> arrayList1) {
-
-        if(arrayList1!=null)        {
-            typeView=VALUEWEEKINPeriof;
-            daysInPunctArrayList.clear();
-            ArrayList<String> arrayListName = new ArrayList<String>();
-            Calendar myCalendar = (Calendar) Calendar.getInstance();
-            ArrayList<String> arrayListShortMonthName = initMonth();
-            myCalendar.set(year, month, day);
-            int DAY_OF_WEEK = myCalendar.get(Calendar.DAY_OF_WEEK);
-              days=arrayList1.size()*7;
-
-            nValueInPuctInValueDay = 4;
-            punctBorder = 3;
-            punctRadius = 2;
-
-            if (DAY_OF_WEEK != 1) day = day + 2 - DAY_OF_WEEK;
-
-            else {
-                day = day - 6;
-            }
-            if (day <= 0) {
-                month--;
-
-                myCalendar.set(2016, month, 1);
-                day = myCalendar.getActualMaximum(Calendar.DATE) + day;
-
-
-            }
-            int bufMonth=month;
-            myCalendar.set(year, bufMonth, day);
-days=days-(myCalendar.getActualMaximum(Calendar.DATE)-day+1);
-            daysInPunctArrayList.add(myCalendar.getActualMaximum(Calendar.DATE) - day + 1);
-            arrayListName.add(arrayListShortMonthName.get(bufMonth)+"");
-            bufMonth++;
-
-            while (days>0)
-
-
-            {
-                myCalendar.set(year, bufMonth, day);
-                arrayListName.add(arrayListShortMonthName.get(bufMonth)+"");
-if(days<myCalendar.getActualMaximum(Calendar.DATE))
-{
-  daysInPunctArrayList.add(days);
-    days=0;
-}
-else
-{
-    daysInPunctArrayList.add( myCalendar.getActualMaximum(Calendar.DATE));
-    days=days-myCalendar.getActualMaximum(Calendar.DATE);
-
-}
-if(bufMonth==11) {
- year++;
-    bufMonth = 0;
-}               else
-bufMonth++;
-
-            }
-            for(int i=0;i<daysInPunctArrayList.size();i++)Log.d("Mylog",daysInPunctArrayList.get(i)+"="+arrayListName.get(i));
-
-
-
-setTwoArrayListNameStringValueInt(arrayListName,arrayList1);
-        }
     }
 
-    private ArrayList<String> initMonth() {
-        ArrayList<String> myarrayList;
-        myarrayList = new ArrayList<String>();
-        myarrayList.add("Янв");
-        myarrayList.add("Фев");
-        myarrayList.add("Мар");
-        myarrayList.add("Апр");
-        myarrayList.add("Май");
-        myarrayList.add("Июн");
-        myarrayList.add("Июл");
-        myarrayList.add("Авг");
-        myarrayList.add("Сен");
-        myarrayList.add("Окт");
-        myarrayList.add("Ноя");
-        myarrayList.add("Дек");
-        return myarrayList;
-    }
 
-    public void setTwoArrayListNameStringValueInt(ArrayList<String> arrayListStolbNamesilka, ArrayList<Integer> arrayListStolbValuesilk) {
+    /////
+    private void setTwoArrayListNameStringValueInt(ArrayList<String> arrayListStolbNamesilka, ArrayList<Integer> arrayListStolbValuesilk) {
 
         {
 
@@ -508,19 +490,19 @@ setTwoArrayListNameStringValueInt(arrayListName,arrayList1);
             if (arrayListStolbNamesilka != null) {
 //                Log.d("Mylog","arrayListStolbNamesilka"+arrayListStolbNamesilka.size());
                 this.arrayListStolbName = (ArrayList<String>) arrayListStolbNamesilka.clone();
-                nArrayListSize =  arrayListStolbValuesilk.size();
+                nArrayListSize = arrayListStolbValuesilk.size();
                 offsetX = 0;
             }
-            if (typeView ==NAMEVALUE || typeView ==NAMETWOVALUE )
+            if ((typeView == TypeViewGraph.MESH_DAY_ITEM_DAY) || (typeView == TypeViewGraph.MESH_MONTH_ITEM_MONTH) || typeView == TypeViewGraph.MESH_WEEK_ITEM_WEEK)
 
             {
                 shiftPuctInValueDay = 0;
-                punctBorder = 13;
-                punctRadius = 10;
-                nValueInPuctInValueDay = 1;
+                itemBorder = 13;
+                itemRadius = 10;
+                nItemInOneMesh = 1;
                 nPuct = nArrayListSize;
             }
-            if ((this.arrayListStolbName.size() == arrayListStolbValuesilk.size())||(typeView==VALUEWEEKINPeriof)) {
+            if ((this.arrayListStolbName.size() == arrayListStolbValuesilk.size()) || (typeView == TypeViewGraph.MESH_MONTH_ITEM_WEEK)) {
 
                 animator.cancel();
                 npointTouch = -1;
@@ -541,22 +523,23 @@ setTwoArrayListNameStringValueInt(arrayListName,arrayList1);
                 // границы скрола
                 if (nArrayListSize != 0) {
 
-                    maxX = (nArrayListSize - canvasWidht / (minWidthBlock / nValueInPuctInValueDay)) * (minWidthBlock / nValueInPuctInValueDay) + widthBorder * 2;
+                    maxX = (nArrayListSize - canvasWidht / (minWidthBlock / nItemInOneMesh)) * (minWidthBlock / nItemInOneMesh) + widthBorder * 2;
                     isScroll = !(minWidthBlock < canvasWidht / nArrayListSize);
-                    if (VALUEDAYININEMONTH == typeView) isScroll = false;
-if(typeView==VALUEWEEKINPeriof)isScroll= !(minWidthBlock < canvasWidht / arrayListStolbValuesilk.size()*4);;
+                    if (TypeViewGraph.MESH_WEEK_ITEM_DAY == typeView) isScroll = false;
+                    if (typeView == TypeViewGraph.MESH_MONTH_ITEM_WEEK)
+                        isScroll = !(minWidthBlock < canvasWidht / arrayListStolbValuesilk.size() * 4);
+                    ;
                     if (isScroll) {
                         widthBlok = minWidthBlock;
 
 
                     } else {
 
-                        widthBlok = (canvasWidht - widthBorder * 2) * nValueInPuctInValueDay / nArrayListSize;
-if(typeView==VALUEWEEKINPeriof)
-{
-    widthBlok=(canvasWidht - widthBorder * 2)/arrayListStolbValuesilk.size()*4;
+                        widthBlok = (canvasWidht - widthBorder * 2) * nItemInOneMesh / nArrayListSize;
+                        if (typeView == TypeViewGraph.MESH_MONTH_ITEM_WEEK) {
+                            widthBlok = (canvasWidht - widthBorder * 2) / arrayListStolbValuesilk.size() * 4;
 
-}
+                        }
                     }
                 }
 
@@ -581,8 +564,8 @@ if(typeView==VALUEWEEKINPeriof)
         borderBottom = getHeight() - widthBorder;
         borderLeft = widthBorder;
         borderRight = getWidth() - widthBorder;
-        mPaintPunctGtafica.setShader(new LinearGradient(0, borderTop, 0, borderBottom, verxstrel1, nizstrel1, Shader.TileMode.MIRROR));
-        mPaintPunctGtaficav.setShader(new LinearGradient(0, borderTop, 0, borderBottom, vverxstrel1, vnizstrel1, Shader.TileMode.MIRROR));
+        mPaintItem.setShader(new LinearGradient(0, borderTop, 0, borderBottom, itemTopIntColor, itemBottomIntColor, Shader.TileMode.MIRROR));
+        mPaintItemSelected.setShader(new LinearGradient(0, borderTop, 0, borderBottom, itemSelectedTopIntColor, itemSelectedBottomIntColor, Shader.TileMode.MIRROR));
 
     }
 
@@ -631,45 +614,42 @@ if(typeView==VALUEWEEKINPeriof)
             canvas.clipRect(borderLeft, 0, borderRight, canvasHeight);
             //прямоугольники
 
-            if (typeView!=VALUEWEEKINPeriof) {
-                for (int i = 0; i < nPuct; i++) {
-                    {
-                        if (i % 2 == 0) mPaint.setColor(block0);
-                        else mPaint.setColor(block1);
+
+            int k4 = 0, k5 = 0;
+
+
+            for (int i = 0; i < nPuct; i++) {
+                {
+                    if (i % 2 == 0) mPaint.setColor(meshOne);
+                    else mPaint.setColor(meshTwo);
+
+                    if (typeView == TypeViewGraph.MESH_MONTH_ITEM_WEEK) {
+
+                        k5 = k4;
+
+                        k4 = k4 + daysInPunctArrayList.get(i);
+                        canvas.drawText(arrayListStolbName.get(i), widthBorder + offsetX + widthBlok / 28 * (k5 + (k4 - k5) / 2), borderBottom + 12, mPaintFontAllColor);
+
+                        canvas.drawRect(widthBorder + offsetX + widthBlok / 28 * k5, borderTop, widthBorder + offsetX + widthBlok / 28 * k4, borderBottom, mPaint);
+
+                    } else {
                         canvas.drawRect(borderLeft + offsetX + widthBlok * (i - shiftPuctInValueDay), borderTop, widthBorder + offsetX + widthBlok * (i + 1 - shiftPuctInValueDay), borderBottom, mPaint);
+
                     }
-                }
-            }
-
-            if (typeView==VALUEWEEKINPeriof) {
-                int k=0,k1=0;
-//                Log.d("Mylog","daysInPunctArrayList.size()"+daysInPunctArrayList.size());
-                for (int i = 0; i < daysInPunctArrayList.size(); i++) {
-
-//                        Log.d("Mylog","сработало");
-                        if (i % 2 == 0) mPaint.setColor(block0);
-                        else mPaint.setColor(block1);
-                        k1=k;
-
-                        k=k+daysInPunctArrayList.get(i);
-                        canvas.drawText(arrayListStolbName.get(i), widthBorder + offsetX +widthBlok/28*(k1+(k-k1)/2), borderBottom + 12, textPaint);
-
-                        canvas.drawRect(widthBorder + offsetX +widthBlok/28*k , borderTop, widthBorder + offsetX + widthBlok/28*k1, borderBottom, mPaint);
-
                 }
             }
 
 
             //end прямоугольники
             //  текс снизу
-            canvas.clipRect(0, 0, canvasWidht, canvasHeight, regionREPLACE);
 
-            if (typeView!=VALUEWEEKINPeriof) {
+
+            if (typeView != TypeViewGraph.MESH_MONTH_ITEM_WEEK) {
                 for (int i = 0; i < nArrayListSize; i++) {
                     {
-                        canvas.drawText(arrayListStolbName.get(i), widthBorder + offsetX + widthBlok / nValueInPuctInValueDay * (i + 1.0f / 2.0f - shiftPuctInValueDay), borderBottom + 12, textPaint);
-                        if (typeView == NAMETWOVALUE)
-                            canvas.drawText(arrayListTwoName.get(i), widthBorder + offsetX + widthBlok * (i + 1.0f / 2.0f), borderBottom + 22, textPaint);
+                        canvas.drawText(arrayListStolbName.get(i), widthBorder + offsetX + widthBlok / nItemInOneMesh * (i + 1.0f / 2.0f - shiftPuctInValueDay), borderBottom + 12, mPaintFontAllColor);
+                        if (typeView == TypeViewGraph.MESH_WEEK_ITEM_WEEK)
+                            canvas.drawText(arrayListTwoName.get(i), widthBorder + offsetX + widthBlok * (i + 1.0f / 2.0f), borderBottom + 22, mPaintFontAllColor);
                     }
                 }
             }
@@ -679,22 +659,21 @@ if(typeView==VALUEWEEKINPeriof)
 
             //края выделеного прямоугольника
 
-            leftRectSelected = widthBorder + offsetX + widthBlok / nValueInPuctInValueDay * npointTouch;
-            rightRectSelected = widthBorder + offsetX + widthBlok / nValueInPuctInValueDay * (npointTouch + 1);
+            leftRectSelected = widthBorder + offsetX + widthBlok / nItemInOneMesh * npointTouch;
+            rightRectSelected = widthBorder + offsetX + widthBlok / nItemInOneMesh * (npointTouch + 1);
 
 
+            canvas.clipRect(0, 0, canvasWidht, canvasHeight, regionREPLACE);
+            //        дорисовка лининий пунктира
+            for (int k = 1; k <= nStep; k++) {
+                if (Math.abs(step * k - averageValueData) > step / 2) {
+                    canvas.drawLine(0, borderBottom - 1 - workOblGrafikHeight * step * k
 
-                canvas.clipRect(0, 0, canvasWidht, canvasHeight, regionREPLACE);
-                //        дорисовка лининий пунктира
-                for (int k = 1; k <= nStep; k++) {
-                    if (Math.abs(step * k - averageValueData) > step / 2) {
-                        canvas.drawLine(0, borderBottom - 1 - workOblGrafikHeight * step * k
+                            , canvasWidht, borderBottom - 1 - workOblGrafikHeight * step * k, mPaintLinePunctire);
+                    canvas.drawText(step * k + "", widthBorder / 2, borderBottom - 1 - workOblGrafikHeight * step * k - 2, mPaintFontAllColor);
 
-                                , canvasWidht, borderBottom - 1 - workOblGrafikHeight * step * k, mPaintLinePunctire);
-                        canvas.drawText(step * k + "", widthBorder / 2, borderBottom - 1 - workOblGrafikHeight * step * k - 2, textPaint);
-
-                    }
                 }
+            }
 
 
             //        дорисовка лининий пунктира
@@ -704,15 +683,14 @@ if(typeView==VALUEWEEKINPeriof)
             // дорисовка выделенной
 
 
-//            if (typeView!=VALUEWEEKINPeriof)
-            {
-                if (npointTouch != -1) {
-                    if (npointTouch % 2 == 0)
-                        mPaintSelectedColumn.setColor(getResources().getColor(R.color.vblocksvet));
-                    if (npointTouch % 2 == 1)
-                        mPaintSelectedColumn.setColor(getResources().getColor(R.color.vblocktem));
-                    canvas.drawRect(leftRectSelected, borderTop, rightRectSelected, borderBottom, mPaintSelectedColumn);
-                }
+//
+
+            if (npointTouch != -1) {
+                if (npointTouch % 2 == 0)
+                    mPaintSelectedColumn.setColor(meshOne);
+                if (npointTouch % 2 == 1)
+                    mPaintSelectedColumn.setColor(meshTwo);
+                canvas.drawRect(leftRectSelected, borderTop, rightRectSelected, borderBottom, mPaintSelectedColumn);
             }
 
 
@@ -720,33 +698,33 @@ if(typeView==VALUEWEEKINPeriof)
 
 //пунктир для выделеной
 //            общее
-//            if (typeView != VALUEDAYININEMONTH)
+//
             {
                 for (int k = 1; k <= nStep; k++) {
                     canvas.drawLine(leftRectSelected, borderBottom - 1 - workOblGrafikHeight * step * k
 
-                            , rightRectSelected, borderBottom - 1 - workOblGrafikHeight * step * k, mPaintLinePunctireop);
+                            , rightRectSelected, borderBottom - 1 - workOblGrafikHeight * step * k, mPaintLinePunctireSelected);
                 }
             }
             //пунктир для выделеной
 
 //пункты графика
 
-//            if (typeView!=VALUEWEEKINPeriof)
+//
             {
                 for (int i = 0; i < nArrayListSize; i++) {
 
 
-                    canvas.drawPath(getPathtopRoundRect(borderLeft + offsetX + widthBlok / nValueInPuctInValueDay * i + punctBorder,
-                            borderBottom - 1 - workOblGrafikHeight * arrayListStolbValue.get(i), borderLeft + offsetX + widthBlok / nValueInPuctInValueDay * (i + 1) - punctBorder, canvasHeight, punctRadius), mPaintPunctGtafica);
+                    canvas.drawPath(getPathtopRoundRect(borderLeft + offsetX + widthBlok / nItemInOneMesh * i + itemBorder,
+                            borderBottom - 1 - workOblGrafikHeight * arrayListStolbValue.get(i), borderLeft + offsetX + widthBlok / nItemInOneMesh * (i + 1) - itemBorder, canvasHeight, itemRadius), mPaintItem);
 
 
                 }
                 if (npointTouch != -1) {
 
-                    canvas.drawPath(getPathtopRoundRect(borderLeft + offsetX + widthBlok / nValueInPuctInValueDay * npointTouch + punctBorder,
+                    canvas.drawPath(getPathtopRoundRect(borderLeft + offsetX + widthBlok / nItemInOneMesh * npointTouch + itemBorder,
                             borderBottom - 1 - workOblGrafikHeight * arrayListStolbValue.get(npointTouch),
-                            borderLeft + offsetX + widthBlok / nValueInPuctInValueDay * (npointTouch + 1) - punctBorder, canvasHeight, punctRadius), mPaintPunctGtaficav);
+                            borderLeft + offsetX + widthBlok / nItemInOneMesh * (npointTouch + 1) - itemBorder, canvasHeight, itemRadius), mPaintItemSelected);
 
                 }
             }
@@ -759,28 +737,28 @@ if(typeView==VALUEWEEKINPeriof)
             // start треугольник снизу и сверху выделеного блока
 
 
-//            if (typeView!=VALUEWEEKINPeriof)
-            {
-                mPath.reset();
-                float lr = (rightRectSelected - leftRectSelected) / 3;
-                if ((typeView == VALUEDAYININEMONTH)||(typeView == VALUEWEEKINPeriof)) lr = 0;
-                if (typeView == NAMETWOVALUE) {
-                    mPath.moveTo(leftRectSelected + lr, getHeight() - 3);
-                    mPath.lineTo(rightRectSelected - lr, getHeight() - 3);
-                    mPath.lineTo((leftRectSelected + rightRectSelected) / 2, getHeight() - widthBorder / 3);
-                } else {
-                    mPath.moveTo(leftRectSelected + lr, getHeight() - widthBorder / 3 + 5);
-                    mPath.lineTo(rightRectSelected - lr, getHeight() - widthBorder / 3 + 5);
-                    mPath.lineTo((leftRectSelected + rightRectSelected) / 2, getHeight() - widthBorder * 2 / 3 + 5);
-                }
-                canvas.drawPath(mPath, mPaintTriangle);
-                mPath.reset();
-                mPath.moveTo(leftRectSelected + lr, widthBorder / 3 + 3);
-                mPath.lineTo(rightRectSelected - lr, widthBorder / 3 + 3);
-                mPath.lineTo((leftRectSelected + rightRectSelected) / 2, widthBorder * 2 / 3 + 3);
+//
 
-                canvas.drawPath(mPath, mPaintTriangle);
+            mPath.reset();
+            float lr = (rightRectSelected - leftRectSelected) / 3;
+            if ((typeView == TypeViewGraph.MESH_WEEK_ITEM_DAY) || (typeView == TypeViewGraph.MESH_MONTH_ITEM_WEEK))
+                lr = 0;
+            if (typeView == TypeViewGraph.MESH_WEEK_ITEM_WEEK) {
+                mPath.moveTo(leftRectSelected + lr, getHeight() - 3);
+                mPath.lineTo(rightRectSelected - lr, getHeight() - 3);
+                mPath.lineTo((leftRectSelected + rightRectSelected) / 2, getHeight() - widthBorder / 3);
+            } else {
+                mPath.moveTo(leftRectSelected + lr, getHeight() - widthBorder / 3 + 5);
+                mPath.lineTo(rightRectSelected - lr, getHeight() - widthBorder / 3 + 5);
+                mPath.lineTo((leftRectSelected + rightRectSelected) / 2, getHeight() - widthBorder * 2 / 3 + 5);
             }
+            canvas.drawPath(mPath, mPaintTriangle);
+            mPath.reset();
+            mPath.moveTo(leftRectSelected + lr, widthBorder / 3 + 3);
+            mPath.lineTo(rightRectSelected - lr, widthBorder / 3 + 3);
+            mPath.lineTo((leftRectSelected + rightRectSelected) / 2, widthBorder * 2 / 3 + 3);
+
+            canvas.drawPath(mPath, mPaintTriangle);
 
 
 //end  треугольник снизу и сверху выделеного блока
@@ -789,8 +767,8 @@ if(typeView==VALUEWEEKINPeriof)
             //пунктир средней j,ott
 
             canvas.drawLine(0, borderBottom - 1 - workOblGrafikHeight * averageValueData
-                    , getRight(), borderBottom - 1 - workOblGrafikHeight * averageValueData, mPaintLinePunctireaverageValueData);
-            canvas.drawText("ср", widthBorder / 2, borderBottom - 3 - workOblGrafikHeight * averageValueData - 2, textPaintaverageValueData);
+                    , getRight(), borderBottom - 1 - workOblGrafikHeight * averageValueData, mPaintPunctirAverage);
+            canvas.drawText("ср", widthBorder / 2, borderBottom - 3 - workOblGrafikHeight * averageValueData - 2, mPaintFontAverage);
             //пунктир средней
         }
     }
@@ -830,7 +808,7 @@ if(typeView==VALUEWEEKINPeriof)
             case (MotionEvent.ACTION_UP):
                 if (Math.abs(bufX - offsetX) < 4) {
                     if (isScroll)
-                        npointTouch = (int) ((motionEvent.getX() - bufX - widthBorder) / (minWidthBlock/nValueInPuctInValueDay));
+                        npointTouch = (int) ((motionEvent.getX() - bufX - widthBorder) / (minWidthBlock / nItemInOneMesh));
                     else
                         npointTouch = (int) ((motionEvent.getX() - widthBorder - bufX) * nArrayListSize / (getWidth() - widthBorder * 2));
                 }
