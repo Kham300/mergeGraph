@@ -3,9 +3,8 @@ package com.lardis.ivan.testcustomview;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.LinearGradient;
 import android.graphics.Matrix;
@@ -39,7 +38,7 @@ public class MyView extends View {
     ArrayList<String> arrayListTwoName;
     Calendar myCalendar = (Calendar) Calendar.getInstance();
     private TypeViewGraph typeView;
-    private int dayMonday;
+
     private int nNepolWeek;
 
     //размеры экрана
@@ -70,9 +69,12 @@ public class MyView extends View {
     private float workOblGrafikHeight;
     private float nStep;
     Path mPath;
+    Path mPathStrelkaRight;
+    Path mPathStrelkaLeft;
     float leftRectSelected;
     float rightRectSelected;
     private Paint mPaintLinePunctire;
+    private Paint mPaintStrelka;
     private Paint mPaintBorderLine;
     private Paint mPaintLinePunctireSelected;
     private Paint mPaintPunctirAverage;
@@ -91,6 +93,7 @@ public class MyView extends View {
 
     //скролим или влазеет
     private boolean isScroll;
+
     private ArrayList<String> arrayListStolbName = new ArrayList<String>();
     private ArrayList<Integer> arrayListStolbValue = new ArrayList<Integer>();
     private ArrayList<Integer> arrayListStolbValuesilka = new ArrayList<Integer>();
@@ -211,9 +214,9 @@ public class MyView extends View {
     private int colorSelectedItemShadowLayer;
 
 
-    Bitmap mBitmap;
-
-    Bitmap mBitmap1;
+//    Bitmap mBitmap;
+//
+//    Bitmap mBitmap1;
 
 
     public MyView(Context context) {
@@ -291,6 +294,9 @@ public class MyView extends View {
 
 
         mPath = new Path();
+        mPathStrelkaRight =new Path();
+        mPathStrelkaLeft =new Path();
+        mPaintStrelka=new Paint();
 
         setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         animator = ValueAnimator.ofFloat(0, 1);
@@ -359,7 +365,7 @@ public class MyView extends View {
 
         mPaintFontAllColor = new Paint();
         mPaintFontAllColor.setAntiAlias(true);
-
+//mPaintFontAllColor.setTextSize(12);
         mPaintFontAllColor.setTextAlign(Paint.Align.CENTER);
         mPaintFontAverage = new Paint();
         mPaintFontAverage.setAntiAlias(true);
@@ -368,9 +374,9 @@ public class MyView extends View {
         mPaintFontAverage.setTextAlign(Paint.Align.CENTER);
 
 
-        mBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.strelka);
-        mBitmap = Bitmap.createScaledBitmap(mBitmap, (int) widthBorder, (int) widthBorder, false);
-        mBitmap1 = Bitmap.createBitmap(mBitmap, 0, 0, mBitmap.getWidth(), mBitmap.getHeight(), matrixRotate, true);
+//        mBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.strelka);
+//        mBitmap = Bitmap.createScaledBitmap(mBitmap, (int) widthBorder, (int) widthBorder, false);
+//        mBitmap1 = Bitmap.createBitmap(mBitmap, 0, 0, mBitmap.getWidth(), mBitmap.getHeight(), matrixRotate, true);
         invalidateColor();
     }
 
@@ -487,30 +493,22 @@ if(daysInPunctArrayList.get(0)<14)
 
                     int max_date = myCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
                     if (max_date == arrayListMetodDrawGraph.size()) {
-                        typeView = TypeViewGraph.MESH_WEEK_ITEM_DAY;
 
-                        int monday = (1 - myCalendar.get(Calendar.DAY_OF_WEEK) + 7 + 2) % 7;
+myCalendar.set(year, month, 1);
 
+                        int monday = ( 1 - myCalendar.get(Calendar.DAY_OF_WEEK) + 7 +2) % 7;
                         if (monday == 0) monday = 7;
-
-
                         for (int i = 0; i < arrayListMetodDrawGraph.size(); i++) {
                             if ((i + 1) % 7 == monday) arrayListName.add(i + 1 + "");
                             else arrayListName.add("");
-
                         }
-                        dayMonday = monday;
-                        nNepolWeek = myCalendar.getActualMaximum(Calendar.DAY_OF_MONTH) / 7;
+                                            nNepolWeek = myCalendar.getActualMaximum(Calendar.DAY_OF_MONTH) / 7;
                         if (monday != 1) nNepolWeek++;
                         if (myCalendar.getActualMaximum(Calendar.DAY_OF_MONTH) % 7 + 1 - monday > 0)
                             nNepolWeek++;
-                        dayMonday = 7;
-                        if (dayMonday == 1) shiftPuctInValueDay = 0;
-                        else shiftPuctInValueDay = (8f - dayMonday) / 7f;
-
+                                                 if (monday == 1) shiftPuctInValueDay = 0;
+                        else shiftPuctInValueDay = (8f - monday) / 7f;
                         nPuct = nNepolWeek;
-
-
                     }
                     else return;
 
@@ -697,6 +695,18 @@ if(daysInPunctArrayList.get(0)<14)
         mPaintItem.setShader(new LinearGradient(0, borderTop, 0, borderBottom, colorItemTop, colorItemBottom, Shader.TileMode.MIRROR));
         mPaintItemSelected.setShader(new LinearGradient(0, borderTop, 0, borderBottom, colorItemSelectedTop, colorItemSelectedBottom, Shader.TileMode.MIRROR));
 
+        mPaintStrelka.setStyle(Paint.Style.STROKE);
+        mPaintStrelka.setAntiAlias(true);
+        mPaintStrelka.setStrokeWidth(4);
+        mPaintStrelka.setColor(Color.BLACK);
+        mPathStrelkaRight.moveTo(borderLeft * 2 / 3, borderBottom - 5);
+        mPathStrelkaRight.lineTo(borderLeft / 3, borderBottom - 13);
+        mPathStrelkaRight.lineTo(borderLeft * 2 / 3, borderBottom - 21);
+
+        mPathStrelkaLeft.moveTo(canvasWidht - borderLeft * 2 / 3, borderBottom - 5);
+        mPathStrelkaLeft.lineTo(canvasWidht - borderLeft / 3, borderBottom - 13);
+        mPathStrelkaLeft.lineTo(canvasWidht - borderLeft * 2 / 3, borderBottom - 21);
+
     }
 
     @Override
@@ -730,13 +740,18 @@ if(daysInPunctArrayList.get(0)<14)
             //start стрелки для скрола
 
             if (isScroll) {
-                canvas.drawBitmap(mBitmap, 0, borderBottom - 30, mPaintMesh);
-                canvas.drawBitmap(mBitmap1, borderRight, borderBottom - 30, mPaintMesh);
+//                canvas.drawBitmap(mBitmap, 0, borderBottom - 30, mPaintMesh);
+//                canvas.drawBitmap(mBitmap1, borderRight, borderBottom - 30, mPaintMesh);
+               if(offsetX!=minX) canvas.drawPath(mPathStrelkaRight , mPaintStrelka);
+               if(offsetX!=-maxX) canvas.drawPath(mPathStrelkaLeft, mPaintStrelka);
+
             }
             if (npointTouch!=-1) {
                 if(arrayListStolbValue.get(npointTouch)==-10)npointTouch=-1;
             }
             //end стрелки для скрола
+
+
 
             canvas.clipRect(borderLeft, 0, borderRight, canvasHeight);
             //прямоугольники
@@ -896,6 +911,14 @@ if(daysInPunctArrayList.get(0)<14)
             canvas.drawText("ср", widthBorder / 2, borderBottom - 3 - workOblGrafikHeight * averageValueData - 2, mPaintFontAverage);
             //пунктир средней
         }
+
+
+
+
+
+
+
+
     }
 
     //end onDraw

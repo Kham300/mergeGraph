@@ -481,28 +481,28 @@ public class MainActivity extends AppCompatActivity {
         arrayList.add(946);
         arrayList.add(683);
         arrayList.add(1300);
-//
-//
-//        arrayList.add(1224);
-//        arrayList.add( 514);
-//        arrayList.add(364);
-//        arrayList.add(583);
-//        arrayList.add(183);
-//        arrayList.add(557);
-//
-//        arrayList.add(888);
-//        arrayList.add(444);
-//        arrayList.add(777);
-//        arrayList.add(946);
-//        arrayList.add(683);
-//        arrayList.add(13);
-//
-//        arrayList.add(1224);
-//        arrayList.add( 514);
-//        arrayList.add(364);
-//        arrayList.add(583);
-//        arrayList.add(183);
-//        arrayList.add(557);
+
+
+        arrayList.add(1224);
+        arrayList.add( 514);
+        arrayList.add(364);
+        arrayList.add(583);
+        arrayList.add(183);
+        arrayList.add(557);
+
+        arrayList.add(888);
+        arrayList.add(444);
+        arrayList.add(777);
+        arrayList.add(946);
+        arrayList.add(683);
+        arrayList.add(13);
+
+        arrayList.add(1224);
+        arrayList.add( 514);
+        arrayList.add(364);
+        arrayList.add(583);
+        arrayList.add(183);
+        arrayList.add(557);
 //
 //        arrayList.add(888);
 //        arrayList.add(444);
