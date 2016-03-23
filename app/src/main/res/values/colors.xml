@@ -14,6 +14,13 @@
     <color name="itemSelectedTopColorExample">#019CA2</color>
     <color name="itemSelectedBottomColorExample">#89D8DA</color>
 
+    <color name="itemTopColor2Example">#044b7b</color>
+    <color name="itemBottomColor2Example">#0048a0</color>
+    <color name="itemSelectedTopColor2Example">#729ebc</color>
+    <color name="itemSelectedBottomColor2Example">#a7b9ce</color>
+
+
+
     <color name="meshOneColorExample">#F0F1F2</color>
     <color name="meshTwoColorExample">#E7E9EB</color>
 
@@ -29,6 +36,7 @@
 
     <color name="selectedColumnShadowLayerColorExample">#43000000</color>
 
+    <color name="colorCenterDelimeterExample">#b7b9bc</color>
 
 
 

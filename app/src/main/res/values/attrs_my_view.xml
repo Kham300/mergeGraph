@@ -8,6 +8,11 @@
         <attr name="itemSelectedTopColor" format="color"/>
         <attr name="itemSelectedBottomColor" format="color"/>
 
+        <attr name="itemTopColor2" format="color"/>
+        <attr name="itemBottomColor2" format="color"/>
+        <attr name="itemSelectedTopColor2" format="color"/>
+        <attr name="itemSelectedBottomColor2" format="color"/>
+
         <attr name="meshOneColor" format="color"/>
         <attr name="meshTwoColor" format="color"/>
 
@@ -23,6 +28,7 @@
         <attr name="triangleColor" format="color"/>
 
         <attr name="selectedColumnShadowLayerColor" format="color"/>
+        <attr name="centerDelimeterColor" format="color"/>
 
 
     </declare-styleable>
