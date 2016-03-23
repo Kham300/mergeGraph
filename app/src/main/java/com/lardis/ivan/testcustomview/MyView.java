@@ -884,13 +884,13 @@ myCalendar.set(year, month, 1);
             if ((typeView == TypeViewGraph.MESH_WEEK_ITEM_DAY) || (typeView == TypeViewGraph.MESH_MONTH_ITEM_WEEK))
                 lr = 0;
             if (typeView == TypeViewGraph.MESH_WEEK_ITEM_WEEK) {
-                mPath.moveTo(leftRectSelected + lr, getHeight() - 3);
-                mPath.lineTo(rightRectSelected - lr, getHeight() - 3);
-                mPath.lineTo((leftRectSelected + rightRectSelected) / 2, getHeight() - widthBorder / 3);
+                mPath.moveTo(leftRectSelected + lr, canvasHeight - 3);
+                mPath.lineTo(rightRectSelected - lr, canvasHeight - 3);
+                mPath.lineTo((leftRectSelected + rightRectSelected) / 2, canvasHeight - widthBorder / 3);
             } else {
-                mPath.moveTo(leftRectSelected + lr, getHeight() - widthBorder / 3 + 5);
-                mPath.lineTo(rightRectSelected - lr, getHeight() - widthBorder / 3 + 5);
-                mPath.lineTo((leftRectSelected + rightRectSelected) / 2, getHeight() - widthBorder * 2 / 3 + 5);
+                mPath.moveTo(leftRectSelected + lr, canvasHeight - widthBorder / 3 + 5);
+                mPath.lineTo(rightRectSelected - lr, canvasHeight - widthBorder / 3 + 5);
+                mPath.lineTo((leftRectSelected + rightRectSelected) / 2, canvasHeight - widthBorder * 2 / 3 + 5);
             }
             canvas.drawPath(mPath, mPaintTriangle);
             mPath.reset();
@@ -959,10 +959,12 @@ myCalendar.set(year, month, 1);
                         npointTouch = (int) ((motionEvent.getX() - bufX - widthBorder) / (minWidthBlock / nItemInOneMesh));
                     else
                         npointTouch = (int) ((motionEvent.getX() - widthBorder - bufX) * nArrayListSize / (getWidth() - widthBorder * 2));
+
                 }
                 offsetX = bufX - (bufmy - motionEvent.getX());
 
                 break;
+
 
         }
         if (offsetX < -maxX) offsetX = -maxX;
