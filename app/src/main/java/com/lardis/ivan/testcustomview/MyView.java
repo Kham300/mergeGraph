@@ -27,44 +27,70 @@ import java.util.Collections;
  * TODO: document your custom view class.
  */
 public class MyView extends View {
-    float shiftPuctInValueDay = 0;
-    float nItemInOneMesh = 1;
-    float nPuct = 0;
-    float startGorizontalGraph = 0;
+
+    
     //холст
     private float canvasWidht;
     private float canvasHeight;
+
+    //обработка жестов
+    private float offsetX;
+    private float minX = 0;
+    private float maxX;
+    private float bufX;
+    private float bufX2 = 0;
+    //номер выделеного пункта графика
+    private int nSelectedTouch = -1;
+
     //botder
+    private float WIDTH_BORDER = 35;
     private float borderLeft;
     private float borderTop;
     private float borderBottom;
     private float borderRight;
-    //толщина блока минимуи
-    private float minWidthBlock = 100;
-    private float widthBorder = 35;
+
+    //толщина блока
+    private final float MIN_WIDTH_BLOCK = 100;
+    private final float MIN_HEIGHT_BLOCK = 25;
+    private float widthBlok;
+
+    float shiftPuctInValueDay = 0;
+    float nItemInOneMesh = 1;
+    float nPuct = 0;
+    float startGorizontalGraph = 0;
+
+
+    // пункты графика
     private float itemBorder = 13;
     private float itemRadius = 10;
-    private final float MINHEIGHTBLOCK = 25;
-    private float minX = 0;
-    private float maxX;
+    private int nItem;
+
+    private float leftRectSelectedMesh;
+    private float rightRectSelectedMesh;
+
+        //два графика
+    boolean twoGraph = false;
+
+    //скролим или влазеет
+    private boolean isScroll;
+
+
+
+    private int nNepolWeek;
     private int step;
-    //максимальное и среднее  значение столбцов
+
+    //максимальное и среднее  значение пунктов
     private float maxValueData1 = 0;
     private float averageValueData1 = 0;
     private float maxValueData2 = 0;
     private float averageValueData2 = 0;
-    private float widthBlok;
-    //смещение по x в данный момент
-    private float offsetX;
-    //
-    private float bufX;
-    private float bufmy = 0;
-    //
-    private float workOblGrafikHeight;
+
+
+
+    private float workRegionGrafikHeight;
     private float nStep1;
     private float nStep2;
-    private float leftRectSelected;
-    private float rightRectSelected;
+
     //
     private Path mPath;
     private Path mPathStrelkaRight;
@@ -86,12 +112,7 @@ public class MyView extends View {
     private Paint mPaintFontAllColor;
     private Paint mPaintFontAverage;
     private Paint mPaintCenterDelimeter;
-    //номер выделеной
-    private int npointTouch = -1;
-    //колво столбцов
-    private int nItem;
-    //скролим или влазеет
-    private boolean isScroll;
+
 
     private ArrayList<Integer> daysInPunctArrayList = new ArrayList<Integer>();
     private ArrayList<String> arrayListName = new ArrayList<String>();
@@ -102,9 +123,7 @@ public class MyView extends View {
     private ArrayList<Integer> arrayListStolbValue2 = new ArrayList<Integer>();
     private ArrayList<Integer> arrayListStolbValueBuf2 = new ArrayList<Integer>();
 
-    boolean twoGraph = false;
-    private int nNepolWeek;
-    //размеры экрана
+
     Region.Op regionREPLACE = Region.Op.REPLACE;
 
     private ValueAnimator animator;
@@ -299,7 +318,7 @@ public class MyView extends View {
         mPaintCenterDelimeter.setColor(colorCenterDelimeter);
 
 //        mBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.strelka);
-//        mBitmap = Bitmap.createScaledBitmap(mBitmap, (int) widthBorder, (int) widthBorder, false);
+//        mBitmap = Bitmap.createScaledBitmap(mBitmap, (int) WIDTH_BORDER, (int) WIDTH_BORDER, false);
 //        mBitmap1 = Bitmap.createBitmap(mBitmap, 0, 0, mBitmap.getWidth(), mBitmap.getHeight(), matrixRotate, true);
         invalidateColor();
     }
@@ -551,31 +570,31 @@ public class MyView extends View {
 
 
             animator.cancel();
-            npointTouch = -1;
+            nSelectedTouch = -1;
             // границы скрола
             if (nItem != 0) {
-                maxX = (nItem - canvasWidht / (minWidthBlock / nItemInOneMesh)) * (minWidthBlock / nItemInOneMesh) + widthBorder * 2;
-                isScroll = !(minWidthBlock < canvasWidht / nItem);
+                maxX = (nItem - canvasWidht / (MIN_WIDTH_BLOCK / nItemInOneMesh)) * (MIN_WIDTH_BLOCK / nItemInOneMesh) + WIDTH_BORDER * 2;
+                isScroll = !(MIN_WIDTH_BLOCK < canvasWidht / nItem);
                 if (TypeViewGraph.MESH_WEEK_ITEM_DAY == typeView) isScroll = false;
                 if (typeView == TypeViewGraph.MESH_MONTH_ITEM_WEEK)
-                    isScroll = !(minWidthBlock < canvasWidht / arrayListStolbValueBuf1.size() * 4);
+                    isScroll = !(MIN_WIDTH_BLOCK < canvasWidht / arrayListStolbValueBuf1.size() * 4);
                 if (isScroll) {
-                    widthBlok = minWidthBlock;
+                    widthBlok = MIN_WIDTH_BLOCK;
 
                 } else {
 
-                    widthBlok = (canvasWidht - widthBorder * 2) * nItemInOneMesh / nItem;
+                    widthBlok = (canvasWidht - WIDTH_BORDER * 2) * nItemInOneMesh / nItem;
                     if (typeView == TypeViewGraph.MESH_MONTH_ITEM_WEEK) {
-                        widthBlok = (canvasWidht - widthBorder * 2) / arrayListStolbValueBuf1.size() * 4;
+                        widthBlok = (canvasWidht - WIDTH_BORDER * 2) / arrayListStolbValueBuf1.size() * 4;
 
                     }
                 }
             }
             //            шаг пунктирных линий
-            step = getStep(((startGorizontalGraph - widthBorder * 1.5f) / MINHEIGHTBLOCK), maxValueData1, 1);
+            step = getStep(((startGorizontalGraph - WIDTH_BORDER * 1.5f) / MIN_HEIGHT_BLOCK), maxValueData1, 1);
             nStep1 = maxValueData1 / step;
             nStep2 = maxValueData2 / step;
-            workOblGrafikHeight = (canvasHeight - widthBorder * 1.33f - 40) / (maxValueData1 + maxValueData2);
+            workRegionGrafikHeight = (canvasHeight - WIDTH_BORDER * 1.33f - 40) / (maxValueData1 + maxValueData2);
 
             animator.start();
         }
@@ -586,10 +605,10 @@ public class MyView extends View {
         super.onSizeChanged(w, h, oldw, oldh);
         canvasWidht = getWidth();
         canvasHeight = getHeight();
-        borderTop = widthBorder / 3;
-        borderBottom = getHeight() - widthBorder;
-        borderLeft = widthBorder;
-        borderRight = getWidth() - widthBorder;
+        borderTop = WIDTH_BORDER / 3;
+        borderBottom = getHeight() - WIDTH_BORDER;
+        borderLeft = WIDTH_BORDER;
+        borderRight = getWidth() - WIDTH_BORDER;
 
         mPaintStrelka.setStyle(Paint.Style.STROKE);
         mPaintStrelka.setAntiAlias(true);
@@ -607,22 +626,22 @@ public class MyView extends View {
             case (MotionEvent.ACTION_DOWN):
                 bufX = offsetX;
 
-                bufmy = motionEvent.getX();
+                bufX2 = motionEvent.getX();
                 break;
             case (MotionEvent.ACTION_MOVE):
-                offsetX = bufX - (bufmy - motionEvent.getX());
+                offsetX = bufX - (bufX2 - motionEvent.getX());
 
 
                 break;
             case (MotionEvent.ACTION_UP):
                 if (Math.abs(bufX - offsetX) < 4) {
                     if (isScroll)
-                        npointTouch = (int) ((motionEvent.getX() - bufX - widthBorder) / (minWidthBlock / nItemInOneMesh));
+                        nSelectedTouch = (int) ((motionEvent.getX() - bufX - WIDTH_BORDER) / (MIN_WIDTH_BLOCK / nItemInOneMesh));
                     else
-                        npointTouch = (int) ((motionEvent.getX() - widthBorder - bufX) * nItem / (getWidth() - widthBorder * 2));
+                        nSelectedTouch = (int) ((motionEvent.getX() - WIDTH_BORDER - bufX) * nItem / (getWidth() - WIDTH_BORDER * 2));
 
                 }
-                offsetX = bufX - (bufmy - motionEvent.getX());
+                offsetX = bufX - (bufX2 - motionEvent.getX());
 
                 break;
 
@@ -639,21 +658,21 @@ public class MyView extends View {
     protected void onDraw(Canvas canvas) {
 
         if (nItem != 0) {
-            leftRectSelected = widthBorder + offsetX + widthBlok / nItemInOneMesh * npointTouch;
-            rightRectSelected = widthBorder + offsetX + widthBlok / nItemInOneMesh * (npointTouch + 1);
+            leftRectSelectedMesh = WIDTH_BORDER + offsetX + widthBlok / nItemInOneMesh * nSelectedTouch;
+            rightRectSelectedMesh = WIDTH_BORDER + offsetX + widthBlok / nItemInOneMesh * (nSelectedTouch + 1);
 
             myDrawBorder(canvas);
             drawMeshAndText(canvas);
             myDrawPunctireLine(canvas, step, nStep1, averageValueData1, 0, canvasWidht, mPaintLinePunctire, true, mPaintFontAllColor);
             canvas.clipRect(borderLeft, borderTop, borderRight, borderBottom, regionREPLACE);
             myDrawSelectedMesh(canvas);
-            myDrawPunctireLine(canvas, step, nStep1, averageValueData1, leftRectSelected, rightRectSelected, mPaintLinePunctireSelected, false, null);
+            myDrawPunctireLine(canvas, step, nStep1, averageValueData1, leftRectSelectedMesh, rightRectSelectedMesh, mPaintLinePunctireSelected, false, null);
             canvas.clipRect(borderLeft, 0, borderRight, startGorizontalGraph, regionREPLACE);
             for (int i = 0; i < nItem; i++) {
                 myDrawItem(canvas, i, false, mPaintItem);
             }
             if (hasSelected()) {
-                myDrawItem(canvas, npointTouch, false, mPaintItemSelected);
+                myDrawItem(canvas, nSelectedTouch, false, mPaintItemSelected);
             }
             myDrawTriangle(canvas);
             myDrawAverage(canvas, averageValueData1);
@@ -665,7 +684,7 @@ public class MyView extends View {
                 myDrawItem(canvas, i, true, mPaintItem2);
             }
             if (hasSelected()) {
-                myDrawItem(canvas, npointTouch, true, mPaintItemSelected2);
+                myDrawItem(canvas, nSelectedTouch, true, mPaintItemSelected2);
             }
             myDrawAverage(canvas, -averageValueData2);
             myDrawDelimeter(canvas);
@@ -693,11 +712,11 @@ public class MyView extends View {
 
     private void myDrawSelectedMesh(Canvas canvas) {
         if (hasSelected()) {
-            if (npointTouch % 2 == 0)
+            if (nSelectedTouch % 2 == 0)
                 mPaintSelectedColumn.setColor(colorMeshOne);
-            if (npointTouch % 2 == 1)
+            if (nSelectedTouch % 2 == 1)
                 mPaintSelectedColumn.setColor(colorMeshTwo);
-            canvas.drawRect(leftRectSelected, borderTop, rightRectSelected, borderBottom, mPaintSelectedColumn);
+            canvas.drawRect(leftRectSelectedMesh, borderTop, rightRectSelectedMesh, borderBottom, mPaintSelectedColumn);
         }
     }
 
@@ -707,7 +726,7 @@ public class MyView extends View {
     }
 
     private void myDrawStrelki(Canvas canvas) {
-        canvas.clipRect(0,0,canvasWidht,canvasHeight,regionREPLACE);
+        canvas.clipRect(0, 0, canvasWidht, canvasHeight, regionREPLACE);
         if (offsetX != minX) canvas.drawPath(mPathStrelkaRight, mPaintStrelka);
         if (offsetX != -maxX) canvas.drawPath(mPathStrelkaLeft, mPaintStrelka);
     }
@@ -716,23 +735,23 @@ public class MyView extends View {
         if (!hasSelected()) return;
         canvas.clipRect(borderLeft, 0, borderRight, canvasHeight, regionREPLACE);
         mPath.reset();
-        float lr = (rightRectSelected - leftRectSelected) / 3;
+        float lr = (rightRectSelectedMesh - leftRectSelectedMesh) / 3;
         if ((typeView == TypeViewGraph.MESH_WEEK_ITEM_DAY) || (typeView == TypeViewGraph.MESH_MONTH_ITEM_WEEK))
             lr = 0;
         if (typeView == TypeViewGraph.MESH_WEEK_ITEM_WEEK) {
-            mPath.moveTo(leftRectSelected + lr, canvasHeight - 3);
-            mPath.lineTo(rightRectSelected - lr, canvasHeight - 3);
-            mPath.lineTo((leftRectSelected + rightRectSelected) / 2, canvasHeight - widthBorder / 3);
+            mPath.moveTo(leftRectSelectedMesh + lr, canvasHeight - 3);
+            mPath.lineTo(rightRectSelectedMesh - lr, canvasHeight - 3);
+            mPath.lineTo((leftRectSelectedMesh + rightRectSelectedMesh) / 2, canvasHeight - WIDTH_BORDER / 3);
         } else {
-            mPath.moveTo(leftRectSelected + lr, canvasHeight - widthBorder / 3 + 5);
-            mPath.lineTo(rightRectSelected - lr, canvasHeight - widthBorder / 3 + 5);
-            mPath.lineTo((leftRectSelected + rightRectSelected) / 2, canvasHeight - widthBorder * 2 / 3 + 5);
+            mPath.moveTo(leftRectSelectedMesh + lr, canvasHeight - WIDTH_BORDER / 3 + 5);
+            mPath.lineTo(rightRectSelectedMesh - lr, canvasHeight - WIDTH_BORDER / 3 + 5);
+            mPath.lineTo((leftRectSelectedMesh + rightRectSelectedMesh) / 2, canvasHeight - WIDTH_BORDER * 2 / 3 + 5);
         }
         canvas.drawPath(mPath, mPaintTriangle);
         mPath.reset();
-        mPath.moveTo(leftRectSelected + lr, widthBorder / 3 + 3);
-        mPath.lineTo(rightRectSelected - lr, widthBorder / 3 + 3);
-        mPath.lineTo((leftRectSelected + rightRectSelected) / 2, widthBorder * 2 / 3 + 3);
+        mPath.moveTo(leftRectSelectedMesh + lr, WIDTH_BORDER / 3 + 3);
+        mPath.lineTo(rightRectSelectedMesh - lr, WIDTH_BORDER / 3 + 3);
+        mPath.lineTo((leftRectSelectedMesh + rightRectSelectedMesh) / 2, WIDTH_BORDER * 2 / 3 + 3);
 
         canvas.drawPath(mPath, mPaintTriangle);
 
@@ -755,12 +774,12 @@ public class MyView extends View {
                     k5 = k4;
 
                     k4 = k4 + daysInPunctArrayList.get(i);
-                    canvas.drawText(arrayListStolbName.get(i), widthBorder + offsetX + widthBlok / 28 * (k5 + (k4 - k5) / 2), borderBottom + 12, mPaintFontAllColor);
+                    canvas.drawText(arrayListStolbName.get(i), WIDTH_BORDER + offsetX + widthBlok / 28 * (k5 + (k4 - k5) / 2), borderBottom + 12, mPaintFontAllColor);
 
-                    canvas.drawRect(widthBorder + offsetX + widthBlok / 28 * k5, borderTop, widthBorder + offsetX + widthBlok / 28 * k4, borderBottom, mPaintMesh);
+                    canvas.drawRect(WIDTH_BORDER + offsetX + widthBlok / 28 * k5, borderTop, WIDTH_BORDER + offsetX + widthBlok / 28 * k4, borderBottom, mPaintMesh);
 
                 } else {
-                    canvas.drawRect(borderLeft + offsetX + widthBlok * (i - shiftPuctInValueDay), borderTop, widthBorder + offsetX + widthBlok * (i + 1 - shiftPuctInValueDay), borderBottom, mPaintMesh);
+                    canvas.drawRect(borderLeft + offsetX + widthBlok * (i - shiftPuctInValueDay), borderTop, WIDTH_BORDER + offsetX + widthBlok * (i + 1 - shiftPuctInValueDay), borderBottom, mPaintMesh);
 
                 }
             }
@@ -774,9 +793,9 @@ public class MyView extends View {
         if (typeView != TypeViewGraph.MESH_MONTH_ITEM_WEEK) {
             for (int i = 0; i < nItem; i++) {
                 {
-                    canvas.drawText(arrayListStolbName.get(i), widthBorder + offsetX + widthBlok / nItemInOneMesh * (i + 1.0f / 2.0f - shiftPuctInValueDay), borderBottom + 12, mPaintFontAllColor);
+                    canvas.drawText(arrayListStolbName.get(i), WIDTH_BORDER + offsetX + widthBlok / nItemInOneMesh * (i + 1.0f / 2.0f - shiftPuctInValueDay), borderBottom + 12, mPaintFontAllColor);
                     if (typeView == TypeViewGraph.MESH_WEEK_ITEM_WEEK)
-                        canvas.drawText(arrayListTwoName.get(i), widthBorder + offsetX + widthBlok * (i + 1.0f / 2.0f), borderBottom + 22, mPaintFontAllColor);
+                        canvas.drawText(arrayListTwoName.get(i), WIDTH_BORDER + offsetX + widthBlok * (i + 1.0f / 2.0f), borderBottom + 22, mPaintFontAllColor);
                 }
             }
         }
@@ -864,11 +883,11 @@ public class MyView extends View {
 
         for (int k = 1; k <= nStep; k++) {
             if (Math.abs(Math.abs(step * k) - Math.abs(average)) > Math.abs(step) / 2) {
-                canvas.drawLine(left, startGorizontalGraph - workOblGrafikHeight * step * k
+                canvas.drawLine(left, startGorizontalGraph - workRegionGrafikHeight * step * k
 
-                        , right, startGorizontalGraph - workOblGrafikHeight * step * k, mPaintLine);
+                        , right, startGorizontalGraph - workRegionGrafikHeight * step * k, mPaintLine);
                 if (showText)
-                    canvas.drawText(step * k + "", widthBorder / 2, startGorizontalGraph - workOblGrafikHeight * step * k - 2, mPaintText);
+                    canvas.drawText(step * k + "", WIDTH_BORDER / 2, startGorizontalGraph - workRegionGrafikHeight * step * k - 2, mPaintText);
 
             }
         }
@@ -877,7 +896,7 @@ public class MyView extends View {
     }
 
     private float getYforValue(float value) {
-        return startGorizontalGraph - workOblGrafikHeight * value;
+        return startGorizontalGraph - workRegionGrafikHeight * value;
     }
 
     private void myDrawAverage(Canvas canvas, float average) {
@@ -885,7 +904,7 @@ public class MyView extends View {
 
         myDrawHorizontalLine(canvas, getYforValue(average), mPaintPunctirAverage);
 
-        canvas.drawText("ср", widthBorder / 2, getYforValue(average) - 5, mPaintFontAverage);
+        canvas.drawText("ср", WIDTH_BORDER / 2, getYforValue(average) - 5, mPaintFontAverage);
     }
 
     private void myDrawItem(Canvas canvas, int i, boolean bottom, Paint paint) {
@@ -921,7 +940,7 @@ public class MyView extends View {
 
     public boolean hasSelected() {
 
-        return (npointTouch != -1) && (arrayListStolbValue1.get(npointTouch) != 0) && (arrayListStolbValue2.get(npointTouch) != 0);
+        return (nSelectedTouch != -1) && (arrayListStolbValue1.get(nSelectedTouch) != 0) && (arrayListStolbValue2.get(nSelectedTouch) != 0);
     }
 
 
