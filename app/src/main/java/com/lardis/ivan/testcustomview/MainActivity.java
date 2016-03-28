@@ -1,9 +1,15 @@
 package com.lardis.ivan.testcustomview;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 
@@ -11,16 +17,31 @@ public class MainActivity extends AppCompatActivity {
     Button button1, button2, button3,button4,button5;
     Button button6,button7,button8,button9,button10;
     MyView view;
-
-
+LinearLayout linearLayout;
+MyZoomView myZoomView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+linearLayout=(LinearLayout)findViewById(R.id.lineaLayout);
 
 
 
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        view = (MyView) findViewById(R.id.myview);
+        myZoomView=(MyZoomView)findViewById(R.id.myzoomview);
+
+
+        view.setSelectedZoom(new MyView.SelectedZoom() {
+            @Override
+            public void doWork(float x, float y, boolean work) {
+                myZoomView.setData(x,y,work,getBitmapFromView(view));
+
+
+            }
+        });
+
+
         button1 = (Button) findViewById(R.id.button);
         button6 = (Button) findViewById(R.id.button6);
         button7 = (Button) findViewById(R.id.button7);
@@ -35,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        view = (MyView) findViewById(R.id.myview);
 
 
 
@@ -47,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
 //                view.setColorBorder(Color.GREEN);
 //                        view.setStartDayArayDay(28, 1, 2016, testdanStolbValue());
                 view.invalidate();
+                LinearLayout.LayoutParams linLayoutParam = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+                linearLayout.addView(button1,linLayoutParam);
 
             }
         });
@@ -292,5 +314,22 @@ public class MainActivity extends AppCompatActivity {
 
         return arrayList;
     }
-
+    public static Bitmap getBitmapFromView(View view) {
+        //Define a bitmap with the same size as the view
+        Bitmap returnedBitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(),Bitmap.Config.ARGB_8888);
+        //Bind a canvas to it
+        Canvas canvas = new Canvas(returnedBitmap);
+        //Get the view's background
+        Drawable bgDrawable =view.getBackground();
+        if (bgDrawable!=null)
+            //has background drawable, then draw it on the canvas
+            bgDrawable.draw(canvas);
+        else
+            //does not have background drawable, then draw white background on the canvas
+            canvas.drawColor(Color.WHITE);
+        // draw the view on the canvas
+        view.draw(canvas);
+        //return the bitmap
+        return returnedBitmap;
+    }
 }

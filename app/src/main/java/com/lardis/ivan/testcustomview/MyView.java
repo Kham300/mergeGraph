@@ -19,16 +19,18 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Timer;
 
 /**
  * TODO: document your custom view class.
  */
 public class MyView extends View {
 
-    
+
     //холст
     private float canvasWidht;
     private float canvasHeight;
@@ -122,6 +124,20 @@ public class MyView extends View {
     private ArrayList<Integer> arrayListStolbValueBuf1 = new ArrayList<Integer>();
     private ArrayList<Integer> arrayListStolbValue2 = new ArrayList<Integer>();
     private ArrayList<Integer> arrayListStolbValueBuf2 = new ArrayList<Integer>();
+ public interface SelectedZoom
+    {
+
+        void doWork(float x,float y,boolean work);
+
+
+
+    }
+
+    public void setSelectedZoom(SelectedZoom selectedZoom) {
+        this.selectedZoom = selectedZoom;
+    }
+
+    SelectedZoom selectedZoom;
 
 
     Region.Op regionREPLACE = Region.Op.REPLACE;
@@ -151,7 +167,7 @@ public class MyView extends View {
         init(attrs, defStyleAttr);
     }
 
-    public void init(AttributeSet attrs, int defStyle) {
+    private void init(AttributeSet attrs, int defStyle) {
         final TypedArray a = getContext().obtainStyledAttributes(
                 attrs, R.styleable.Myview, defStyle, 0);
 
@@ -618,22 +634,31 @@ public class MyView extends View {
 
     }
 
+    private long startTime=0;
+    private long endTime=0;
+     
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
         // TODO Auto-generated method stub
 
         switch (motionEvent.getAction()) {
             case (MotionEvent.ACTION_DOWN):
+                startTime =  motionEvent.getEventTime();
                 bufX = offsetX;
 
                 bufX2 = motionEvent.getX();
                 break;
             case (MotionEvent.ACTION_MOVE):
-                offsetX = bufX - (bufX2 - motionEvent.getX());
-
-
+                endTime=motionEvent.getEventTime();
+                Log.d("Mylog","startTime="+startTime+"endTime="+endTime);
+                if ((Math.abs(bufX - offsetX) < 4)&&((endTime - startTime) > 1000 )&&(selectedZoom!=null)) selectedZoom.doWork(motionEvent.getX(),motionEvent.getY(),true);
+else {
+                        offsetX = bufX - (bufX2 - motionEvent.getX());
+                    }
                 break;
+
             case (MotionEvent.ACTION_UP):
+
                 if (Math.abs(bufX - offsetX) < 4) {
                     if (isScroll)
                         nSelectedTouch = (int) ((motionEvent.getX() - bufX - WIDTH_BORDER) / (MIN_WIDTH_BLOCK / nItemInOneMesh));
@@ -641,14 +666,17 @@ public class MyView extends View {
                         nSelectedTouch = (int) ((motionEvent.getX() - WIDTH_BORDER - bufX) * nItem / (getWidth() - WIDTH_BORDER * 2));
 
                 }
+                startTime=0;
+                endTime=0;
                 offsetX = bufX - (bufX2 - motionEvent.getX());
-
+                if(selectedZoom!=null)selectedZoom.doWork(motionEvent.getX(),motionEvent.getY(),false);
                 break;
 
 
         }
         if (offsetX < -maxX) offsetX = -maxX;
         if (offsetX > minX) offsetX = minX;
+        Log.d("Mylog","startTime="+startTime+"endTime="+endTime);
         invalidate();
         return true;
     }
@@ -692,9 +720,14 @@ public class MyView extends View {
         if (isScroll) {
             myDrawStrelki(canvas);
         }
+
+
+
+
+
     }
 
-    public void invalidatePathStrelka() {
+    private void invalidatePathStrelka() {
         float buf;
         if (twoGraph) buf = startGorizontalGraph;
         else buf = borderBottom - 13;
@@ -870,7 +903,7 @@ public class MyView extends View {
     }
 
 
-    public void myDrawHorizontalLine(Canvas canvas, float y, Paint paint) {
+    private void myDrawHorizontalLine(Canvas canvas, float y, Paint paint) {
 
         canvas.drawLine(0, y
                 , canvasWidht, y, paint);
@@ -938,7 +971,7 @@ public class MyView extends View {
         return average;
     }
 
-    public boolean hasSelected() {
+    private boolean hasSelected() {
 
         return (nSelectedTouch != -1) && (arrayListStolbValue1.get(nSelectedTouch) != 0) && (arrayListStolbValue2.get(nSelectedTouch) != 0);
     }
