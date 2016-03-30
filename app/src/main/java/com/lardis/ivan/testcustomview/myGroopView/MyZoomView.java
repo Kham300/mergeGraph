@@ -1,23 +1,16 @@
-package com.lardis.ivan.testcustomview;
+package com.lardis.ivan.testcustomview.myGroopView;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Region;
-import android.graphics.drawable.Drawable;
-import android.text.TextPaint;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
+
+import com.lardis.ivan.testcustomview.myAbsoluteLayout;
 
 /**
  * TODO: document your custom view class.
@@ -99,7 +92,7 @@ private Path circle;
 //canvas.drawRect(getWidth()/3,getHeight()/3,getWidth()*2/3,getHeight()*2/3,new Paint());
         if(show) {
             circle.reset();
-            circle.addCircle(x, y, getWidth() / 12, Path.Direction.CW);
+            circle.addCircle(x, y, myAbsoluteLayout.MY_ZOOM_VIEW_RADIUS/2, Path.Direction.CW);
 
             canvas.scale(2, 2, x, y);
             canvas.clipPath(circle, Region.Op.REPLACE);

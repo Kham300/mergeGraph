@@ -43,5 +43,6 @@
 
 
     <color name="test">#66d3d922</color>
+    <color name="myViewBackgroundInfo">#FAFAFA</color>
 
 </resources>

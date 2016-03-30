@@ -8,48 +8,59 @@ import android.view.ViewGroup;
 import android.widget.AbsoluteLayout;
 import android.widget.Button;
 
+import com.lardis.ivan.testcustomview.helper.ViewHelper;
+import com.lardis.ivan.testcustomview.myEnum.enumTypeViewGraph;
+import com.lardis.ivan.testcustomview.myGroopView.MyGraphView;
+import com.lardis.ivan.testcustomview.myGroopView.MyZoomView;
+import com.lardis.ivan.testcustomview.myGroopView.ViewInfo.MyViewGroopBackgroundInfo;
+
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     Button button1, button2, button3,button4,button5;
     Button button6,button7,button8,button9,button10;
-    MyGraphView view;
-AbsoluteLayout linearLayout;
-AbsoluteLayout linearLayout1;
-MyZoomView myZoomView;
+    MyGraphView myGraphView;
 
+    myAbsoluteLayout absoluteLayout;
+    MyZoomView myZoomView;
+    MyViewGroopBackgroundInfo myViewGroopBackgroundInfo;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        myZoomView=new MyZoomView(this);
+
 
 
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        linearLayout=(AbsoluteLayout)findViewById(R.id.mygroop);
-        linearLayout1=(AbsoluteLayout)findViewById(R.id.mygroop1);
-        view = (MyGraphView) findViewById(R.id.myview);
 
-        ViewGroup.LayoutParams lpView = new ViewGroup.LayoutParams(  ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-LayoutInflater layoutInflater= LayoutInflater.from(this);
-View view1=layoutInflater.inflate(R.layout.layout_inf,null);
-        linearLayout.addView(myZoomView,lpView);
-//        linearLayout1.addView(view1);
-        linearLayout1.addView(new MyViewGroop(this),lpView);
-//linearLayout.addView(view,lpView);
-        view.setSelectedZoom(new MyGraphView.SelectedZoom() {
+        absoluteLayout=(myAbsoluteLayout)findViewById(R.id.mygroop);
+        myGraphView=absoluteLayout.getMyGraphView();
+        myZoomView=absoluteLayout.getMyZoomView();
+        myViewGroopBackgroundInfo=absoluteLayout.getMyViewGroopBackgroundInfo();
+        myGraphView.setSelectedZoom(new MyGraphView.SelectedZoom() {
 
 
             @Override
             public void doShow(boolean work) {
-                if(work)myZoomView.show();
-                else myZoomView.hide();
+                if (work) {
+                    myZoomView.show();
+
+                    absoluteLayout.showmyViewGroopBackgroundInfo();
+
+
+                }
+                    else {
+                    myZoomView.hide();
+                    absoluteLayout.hidemyViewGroopBackgroundInfo();
+                }
 
             }
 
             @Override
             public void setCoordinate(float x, float y) {
-                myZoomView.setData(x,y,ViewHelper.getBitmapFromView(view));
+                myZoomView.setData(x, y, ViewHelper.getBitmapFromView(myGraphView));
+                absoluteLayout.setmyXandY(x,y);
+
             }
 
 
@@ -77,10 +88,10 @@ View view1=layoutInflater.inflate(R.layout.layout_inf,null);
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                view.setDrawGraph(28, 1, 2016, testdanStolbValue(), null, enumTypeViewGraph.MESH_DAY_ITEM_DAY);
-//                view.setColorBorder(Color.GREEN);
-//                        view.setStartDayArayDay(28, 1, 2016, testdanStolbValue());
-                view.invalidate();
+                myGraphView.setDrawGraph(28, 1, 2016, testdanStolbValue(), null, enumTypeViewGraph.MESH_DAY_ITEM_DAY);
+//                myGraphView.setColorBorder(Color.GREEN);
+//                        myGraphView.setStartDayArayDay(28, 1, 2016, testdanStolbValue());
+                myGraphView.invalidate();
 
 
             }
@@ -89,10 +100,10 @@ View view1=layoutInflater.inflate(R.layout.layout_inf,null);
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                view.setDrawGraph(28, 1, 2016, testdanStolbValue1(), null, enumTypeViewGraph.MESH_MONTH_ITEM_MONTH);
-//view.setColorBorder(Color.GRAY);
-//                view.setStartMonthArrayMonth(10, testdanStolbValue1());
-                view.invalidate();
+                myGraphView.setDrawGraph(28, 1, 2016, testdanStolbValue1(), null, enumTypeViewGraph.MESH_MONTH_ITEM_MONTH);
+//myGraphView.setColorBorder(Color.GRAY);
+//                myGraphView.setStartMonthArrayMonth(10, testdanStolbValue1());
+                myGraphView.invalidate();
             }
         });
         button3.setOnClickListener(new View.OnClickListener() {
@@ -101,10 +112,10 @@ View view1=layoutInflater.inflate(R.layout.layout_inf,null);
             public void onClick(View v) {
 
 
-//                view.setStartDayArrayWeekInOneMonth(28, 1, 2016, testdanStolbValue1());
-                view.setDrawGraph(28, 1, 2016, testdanStolbValue1(), null, enumTypeViewGraph.MESH_WEEK_ITEM_WEEK);
-//                view.setColorBorder(Color.RED);
-                view.invalidate();
+//                myGraphView.setStartDayArrayWeekInOneMonth(28, 1, 2016, testdanStolbValue1());
+                myGraphView.setDrawGraph(28, 1, 2016, testdanStolbValue1(), null, enumTypeViewGraph.MESH_WEEK_ITEM_WEEK);
+//                myGraphView.setColorBorder(Color.RED);
+                myGraphView.invalidate();
             }
         });
         button4.setOnClickListener(new View.OnClickListener() {
@@ -113,9 +124,9 @@ View view1=layoutInflater.inflate(R.layout.layout_inf,null);
             public void onClick(View v) {
 
 
-//                view.setStarMonthArrayDay(  2, 2016, testdanStolbValueDataInMonth());
-                view.setDrawGraph(1,1,2016,testdanStolbValueDataInMonth(),null, enumTypeViewGraph.MESH_WEEK_ITEM_DAY);
-                view.invalidate();
+//                myGraphView.setStarMonthArrayDay(  2, 2016, testdanStolbValueDataInMonth());
+                myGraphView.setDrawGraph(1, 1, 2016, testdanStolbValueDataInMonth(), null, enumTypeViewGraph.MESH_WEEK_ITEM_DAY);
+                myGraphView.invalidate();
             }
         });
         button5.setOnClickListener(new View.OnClickListener() {
@@ -124,8 +135,8 @@ View view1=layoutInflater.inflate(R.layout.layout_inf,null);
             public void onClick(View v) {
 
 
-                view.setDrawGraph(27, 1, 2016, testdanStolbValue5(),null, enumTypeViewGraph.MESH_MONTH_ITEM_WEEK);
-                view.invalidate();
+                myGraphView.setDrawGraph(27, 1, 2016, testdanStolbValue5(), null, enumTypeViewGraph.MESH_MONTH_ITEM_WEEK);
+                myGraphView.invalidate();
             }
         });
         button6.setOnClickListener(new View.OnClickListener() {
@@ -133,20 +144,20 @@ View view1=layoutInflater.inflate(R.layout.layout_inf,null);
 
             public void onClick(View v) {
 
-                view.setDrawGraph(28, 1, 2016, testdanStolbValue(), testdanStolbValue6(), enumTypeViewGraph.MESH_DAY_ITEM_DAY);
-//                view.setColorBorder(Color.GREEN);
-//                        view.setStartDayArayDay(28, 1, 2016, testdanStolbValue());
-                view.invalidate();
+                myGraphView.setDrawGraph(28, 1, 2016, testdanStolbValue(), testdanStolbValue6(), enumTypeViewGraph.MESH_DAY_ITEM_DAY);
+//                myGraphView.setColorBorder(Color.GREEN);
+//                        myGraphView.setStartDayArayDay(28, 1, 2016, testdanStolbValue());
+                myGraphView.invalidate();
             }
         });
         button7.setOnClickListener(new View.OnClickListener() {
             @Override
 
             public void onClick(View v) {
-                view.setDrawGraph(28, 1, 2016, testdanStolbValue1(),testdanStolbValue1(), enumTypeViewGraph.MESH_MONTH_ITEM_MONTH);
-//view.setColorBorder(Color.GRAY);
-//                view.setStartMonthArrayMonth(10, testdanStolbValue1());
-           view.invalidate();
+                myGraphView.setDrawGraph(28, 1, 2016, testdanStolbValue1(), testdanStolbValue1(), enumTypeViewGraph.MESH_MONTH_ITEM_MONTH);
+//myGraphView.setColorBorder(Color.GRAY);
+//                myGraphView.setStartMonthArrayMonth(10, testdanStolbValue1());
+           myGraphView.invalidate();
             }
         });
         button8.setOnClickListener(new View.OnClickListener() {
@@ -154,8 +165,8 @@ View view1=layoutInflater.inflate(R.layout.layout_inf,null);
 
             public void onClick(View v) {
 
-                view.setDrawGraph(28, 1, 2016, testdanStolbValue1(), testdanStolbValue1(), enumTypeViewGraph.MESH_WEEK_ITEM_WEEK);
-                view.invalidate();
+                myGraphView.setDrawGraph(28, 1, 2016, testdanStolbValue1(), testdanStolbValue1(), enumTypeViewGraph.MESH_WEEK_ITEM_WEEK);
+                myGraphView.invalidate();
             }
         });
         button9.setOnClickListener(new View.OnClickListener() {
@@ -164,8 +175,8 @@ View view1=layoutInflater.inflate(R.layout.layout_inf,null);
             public void onClick(View v) {
 
 
-                view.setDrawGraph(1,1,2016,testdanStolbValueDataInMonth(),testdanStolbValueDataInMonth(), enumTypeViewGraph.MESH_WEEK_ITEM_DAY);
-                view.invalidate();
+                myGraphView.setDrawGraph(1, 1, 2016, testdanStolbValueDataInMonth(), testdanStolbValueDataInMonth(), enumTypeViewGraph.MESH_WEEK_ITEM_DAY);
+                myGraphView.invalidate();
             }
         });
         button10.setOnClickListener(new View.OnClickListener() {
@@ -174,8 +185,8 @@ View view1=layoutInflater.inflate(R.layout.layout_inf,null);
             public void onClick(View v) {
 
 
-                view.setDrawGraph(1, 1, 2016, testdanStolbValue5(),testdanStolbValue5(), enumTypeViewGraph.MESH_MONTH_ITEM_WEEK);
-                view.invalidate();
+                myGraphView.setDrawGraph(1, 1, 2016, testdanStolbValue5(), testdanStolbValue5(), enumTypeViewGraph.MESH_MONTH_ITEM_WEEK);
+                myGraphView.invalidate();
             }
         });
 

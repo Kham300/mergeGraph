@@ -1,4 +1,4 @@
-package com.lardis.ivan.testcustomview;
+package com.lardis.ivan.testcustomview.myGroopView;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -18,6 +18,9 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
+
+import com.lardis.ivan.testcustomview.R;
+import com.lardis.ivan.testcustomview.myEnum.enumTypeViewGraph;
 
 import java.util.ArrayList;
 import java.util.Calendar;

@@ -1,4 +1,4 @@
-package com.lardis.ivan.testcustomview;
+package com.lardis.ivan.testcustomview.myEnum;
 
 /**
  * Created by i.larin on 22.03.2016.

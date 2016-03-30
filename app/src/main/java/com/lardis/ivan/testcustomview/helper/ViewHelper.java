@@ -1,9 +1,12 @@
-package com.lardis.ivan.testcustomview;
+package com.lardis.ivan.testcustomview.helper;
 
+import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.util.DisplayMetrics;
 import android.view.View;
 
 /**
@@ -27,5 +30,11 @@ public class ViewHelper {
         view.draw(canvas);
         //return the bitmap
         return returnedBitmap;
+    }
+    public static int convertDpToPixel(float dp, Context context){
+        Resources resources = context.getResources();
+        DisplayMetrics metrics = resources.getDisplayMetrics();
+        int px = (int)(dp * ((float)metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT));
+        return px;
     }
 }
