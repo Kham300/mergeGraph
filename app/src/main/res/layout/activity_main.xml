@@ -89,23 +89,26 @@
             android:layout_weight="1" />
     </LinearLayout>
     <AbsoluteLayout
+        android:id="@+id/mygroop"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    <com.lardis.ivan.testcustomview.MyView
+        android:layout_height="226dp">
+    <com.lardis.ivan.testcustomview.MyGraphView
         android:id="@+id/myview"
       android:layout_height="match_parent"
         android:layout_width="match_parent"
 
         />
-        <com.lardis.ivan.testcustomview.MyZoomView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/myzoomview"
-            />
+
 
     </AbsoluteLayout>
+    <AbsoluteLayout
+        android:id="@+id/mygroop1"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
 
 
+
+    </AbsoluteLayout>
 
 
 </LinearLayout>

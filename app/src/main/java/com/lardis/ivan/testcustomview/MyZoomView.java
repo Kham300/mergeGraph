@@ -14,15 +14,28 @@ import android.graphics.drawable.Drawable;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 
 /**
  * TODO: document your custom view class.
  */
-public class MyZoomView extends View {
+public class MyZoomView extends View  {
    private float x=0;
     private float y=0;
+
+
+
+    public void  show() {
+        this.show = true;
+        invalidate();
+    }
+    public void  hide( ) {
+        this.show = false;
+        invalidate();
+    }
     private boolean show=false;
 private Bitmap bitmap;
 private Path circle;
@@ -30,11 +43,12 @@ private Path circle;
 
 
     Paint mPaintCircle;
+    Paint mPaintMarker;
 
-    public void setData(float x,float y,boolean show,Bitmap bitmap) {
+    public void setData(float x,float y,Bitmap bitmap) {
         this.x = x;
         this.y = y;
-        this.show = show;
+
         this.bitmap=bitmap;
          invalidate();
     }
@@ -56,38 +70,44 @@ private Path circle;
         init(attrs, defStyle);
     }
 
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+
+    }
+
     private void init(AttributeSet attrs, int defStyle) {
         // Load attributes
+
+
+
         circle=new Path();
         setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         mPaintCircle =new Paint();
         mPaintCircle.setStyle(Paint.Style.STROKE);
         mPaintCircle.setAntiAlias(true);
+        mPaintCircle.setColor(Color.WHITE);
         mPaintCircle.setStrokeWidth(10);
-
+        mPaintMarker =new Paint();
+        mPaintMarker.setColor(Color.WHITE);
+        mPaintMarker.setStyle(Paint.Style.STROKE);
+        mPaintMarker.setAntiAlias(true);
+        mPaintMarker.setStrokeWidth(5);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-//        Bitmap bitmap=Bitmap.createBitmap(21.21);
-//    canvas.setBitmap(bitmap);
-//  canvas.drawBitmap(bitmap,getWidth()/2,getHeight()/2,mPaintCircle);
-
+//canvas.drawRect(getWidth()/3,getHeight()/3,getWidth()*2/3,getHeight()*2/3,new Paint());
         if(show) {
             circle.reset();
             circle.addCircle(x, y, getWidth() / 12, Path.Direction.CW);
-//            canvas.drawCircle(x, y, getWidth() / 6, mPaintCircle);
-//            canvas.drawRect(x-getWidth()/3,y-getHeight()/3,x+getWidth()/3,y+getHeight()/3,new Paint());
 
-            Log.d("Mylog","x="+x+"y="+y);
-//            matrix.
-//            bitmap=B
             canvas.scale(2, 2, x, y);
             canvas.clipPath(circle, Region.Op.REPLACE);
-            canvas.drawBitmap(bitmap,0,0,mPaintCircle);
+            canvas.drawBitmap(bitmap, 0, 0, mPaintCircle);
             canvas.drawPath(circle, mPaintCircle);
 
-
+canvas.drawLine(x, y - 10, x, y + 10, mPaintMarker);
+canvas.drawLine(x-10,y,x+10,y,mPaintMarker);
         }
 
     }

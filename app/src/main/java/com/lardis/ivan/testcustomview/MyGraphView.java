@@ -19,16 +19,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Timer;
 
 /**
  * TODO: document your custom view class.
  */
-public class MyView extends View {
+public class MyGraphView extends View {
 
 
     //холст
@@ -36,6 +34,9 @@ public class MyView extends View {
     private float canvasHeight;
 
     //обработка жестов
+
+    private boolean showZoom = false;
+
     private float offsetX;
     private float minX = 0;
     private float maxX;
@@ -70,12 +71,11 @@ public class MyView extends View {
     private float leftRectSelectedMesh;
     private float rightRectSelectedMesh;
 
-        //два графика
+    //два графика
     boolean twoGraph = false;
 
     //скролим или влазеет
     private boolean isScroll;
-
 
 
     private int nNepolWeek;
@@ -86,7 +86,6 @@ public class MyView extends View {
     private float averageValueData1 = 0;
     private float maxValueData2 = 0;
     private float averageValueData2 = 0;
-
 
 
     private float workRegionGrafikHeight;
@@ -124,11 +123,12 @@ public class MyView extends View {
     private ArrayList<Integer> arrayListStolbValueBuf1 = new ArrayList<Integer>();
     private ArrayList<Integer> arrayListStolbValue2 = new ArrayList<Integer>();
     private ArrayList<Integer> arrayListStolbValueBuf2 = new ArrayList<Integer>();
- public interface SelectedZoom
-    {
 
-        void doWork(float x,float y,boolean work);
+    public interface SelectedZoom {
 
+        void doShow(boolean work);
+
+        void setCoordinate(float x, float y);
 
 
     }
@@ -148,21 +148,21 @@ public class MyView extends View {
 
     Calendar myCalendar = (Calendar) Calendar.getInstance();
 
-    private TypeViewGraph typeView;
+    private enumTypeViewGraph typeView;
 
 
-    public MyView(Context context) {
+    public MyGraphView(Context context) {
         super(context);
         init(null, 1);
     }
 
 
-    public MyView(Context context, AttributeSet attrs) {
+    public MyGraphView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(attrs, 1);
     }
 
-    public MyView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public MyGraphView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(attrs, defStyleAttr);
     }
@@ -171,6 +171,7 @@ public class MyView extends View {
         final TypedArray a = getContext().obtainStyledAttributes(
                 attrs, R.styleable.Myview, defStyle, 0);
 
+        setOnLongClickListener(onLongClickListener);
 
         colorBorder = a.getColor(
                 R.styleable.Myview_borderColor,
@@ -370,7 +371,7 @@ public class MyView extends View {
 
     }
 
-    public void setDrawGraph(int day, int month, int year, ArrayList<Integer> arrayListMetodDrawGraph1, ArrayList<Integer> arrayListMetodDrawGraph2, TypeViewGraph typeViewGraph) {
+    public void setDrawGraph(int day, int month, int year, ArrayList<Integer> arrayListMetodDrawGraph1, ArrayList<Integer> arrayListMetodDrawGraph2, enumTypeViewGraph typeViewGraph) {
 
         if (arrayListMetodDrawGraph1 != null) {
             typeView = typeViewGraph;
@@ -541,7 +542,7 @@ public class MyView extends View {
                     max_date = myCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
 
                     for (int i = 0; i < arrayListMetodDrawGraph1.size(); i++) {
-                        if (typeView == TypeViewGraph.MESH_DAY_ITEM_DAY) {
+                        if (typeView == enumTypeViewGraph.MESH_DAY_ITEM_DAY) {
                             arrayListName.add(day + " " + shortMonthName[month]);
 
                             if (day == max_date) {
@@ -553,7 +554,7 @@ public class MyView extends View {
                                 max_date = myCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
                             } else day++;
                         }
-                        if (typeView == TypeViewGraph.MESH_MONTH_ITEM_MONTH) {
+                        if (typeView == enumTypeViewGraph.MESH_MONTH_ITEM_MONTH) {
                             arrayListName.add(shortMonthName[month]);
 
                             if (month == 11) {
@@ -574,7 +575,7 @@ public class MyView extends View {
 
             offsetX = 0;
 
-            if ((typeView == TypeViewGraph.MESH_DAY_ITEM_DAY) || (typeView == TypeViewGraph.MESH_MONTH_ITEM_MONTH) || typeView == TypeViewGraph.MESH_WEEK_ITEM_WEEK)
+            if ((typeView == enumTypeViewGraph.MESH_DAY_ITEM_DAY) || (typeView == enumTypeViewGraph.MESH_MONTH_ITEM_MONTH) || typeView == enumTypeViewGraph.MESH_WEEK_ITEM_WEEK)
 
             {
                 shiftPuctInValueDay = 0;
@@ -591,8 +592,8 @@ public class MyView extends View {
             if (nItem != 0) {
                 maxX = (nItem - canvasWidht / (MIN_WIDTH_BLOCK / nItemInOneMesh)) * (MIN_WIDTH_BLOCK / nItemInOneMesh) + WIDTH_BORDER * 2;
                 isScroll = !(MIN_WIDTH_BLOCK < canvasWidht / nItem);
-                if (TypeViewGraph.MESH_WEEK_ITEM_DAY == typeView) isScroll = false;
-                if (typeView == TypeViewGraph.MESH_MONTH_ITEM_WEEK)
+                if (enumTypeViewGraph.MESH_WEEK_ITEM_DAY == typeView) isScroll = false;
+                if (typeView == enumTypeViewGraph.MESH_MONTH_ITEM_WEEK)
                     isScroll = !(MIN_WIDTH_BLOCK < canvasWidht / arrayListStolbValueBuf1.size() * 4);
                 if (isScroll) {
                     widthBlok = MIN_WIDTH_BLOCK;
@@ -600,7 +601,7 @@ public class MyView extends View {
                 } else {
 
                     widthBlok = (canvasWidht - WIDTH_BORDER * 2) * nItemInOneMesh / nItem;
-                    if (typeView == TypeViewGraph.MESH_MONTH_ITEM_WEEK) {
+                    if (typeView == enumTypeViewGraph.MESH_MONTH_ITEM_WEEK) {
                         widthBlok = (canvasWidht - WIDTH_BORDER * 2) / arrayListStolbValueBuf1.size() * 4;
 
                     }
@@ -634,31 +635,47 @@ public class MyView extends View {
 
     }
 
-    private long startTime=0;
-    private long endTime=0;
-     
+    private long startTime = 0;
+    private long endTime = 0;
+
+    OnLongClickListener onLongClickListener = new OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View v) {
+            if(showZoom)selectedZoom.doShow(true);
+            return false;
+        }
+    };
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
         // TODO Auto-generated method stub
 
+
         switch (motionEvent.getAction()) {
             case (MotionEvent.ACTION_DOWN):
-                startTime =  motionEvent.getEventTime();
+                selectedZoom.setCoordinate(motionEvent.getX(), motionEvent.getY());
+                Log.d("Mylog", "startTime=" + motionEvent.getX() + "endTime=" + motionEvent.getY());
+                startTime = motionEvent.getEventTime();
+                showZoom = true;
+
                 bufX = offsetX;
 
                 bufX2 = motionEvent.getX();
                 break;
             case (MotionEvent.ACTION_MOVE):
-                endTime=motionEvent.getEventTime();
-                Log.d("Mylog","startTime="+startTime+"endTime="+endTime);
-                if ((Math.abs(bufX - offsetX) < 4)&&((endTime - startTime) > 1000 )&&(selectedZoom!=null)) selectedZoom.doWork(motionEvent.getX(),motionEvent.getY(),true);
-else {
-                        offsetX = bufX - (bufX2 - motionEvent.getX());
-                    }
+                selectedZoom.setCoordinate(motionEvent.getX(), motionEvent.getY());
+                endTime = motionEvent.getEventTime();
+//
+                if ((Math.abs(bufX - offsetX) > 4) )showZoom=false;
+
+
+
+                offsetX = bufX - (bufX2 - motionEvent.getX());
+
                 break;
 
             case (MotionEvent.ACTION_UP):
-
+                showZoom = false;
+                selectedZoom.doShow(false);
                 if (Math.abs(bufX - offsetX) < 4) {
                     if (isScroll)
                         nSelectedTouch = (int) ((motionEvent.getX() - bufX - WIDTH_BORDER) / (MIN_WIDTH_BLOCK / nItemInOneMesh));
@@ -666,19 +683,21 @@ else {
                         nSelectedTouch = (int) ((motionEvent.getX() - WIDTH_BORDER - bufX) * nItem / (getWidth() - WIDTH_BORDER * 2));
 
                 }
-                startTime=0;
-                endTime=0;
+                startTime = 0;
+                endTime = 0;
                 offsetX = bufX - (bufX2 - motionEvent.getX());
-                if(selectedZoom!=null)selectedZoom.doWork(motionEvent.getX(),motionEvent.getY(),false);
+
+//                if(selectedZoom!=null)selectedZoom.doShow(motionEvent.getX(), motionEvent.getY(), false);
                 break;
 
 
         }
         if (offsetX < -maxX) offsetX = -maxX;
         if (offsetX > minX) offsetX = minX;
-        Log.d("Mylog","startTime="+startTime+"endTime="+endTime);
+//        Log.d("Mylog","startTime="+startTime+"endTime="+endTime);
         invalidate();
-        return true;
+
+        return  super.onTouchEvent(motionEvent);
     }
 
 
@@ -720,9 +739,6 @@ else {
         if (isScroll) {
             myDrawStrelki(canvas);
         }
-
-
-
 
 
     }
@@ -769,9 +785,9 @@ else {
         canvas.clipRect(borderLeft, 0, borderRight, canvasHeight, regionREPLACE);
         mPath.reset();
         float lr = (rightRectSelectedMesh - leftRectSelectedMesh) / 3;
-        if ((typeView == TypeViewGraph.MESH_WEEK_ITEM_DAY) || (typeView == TypeViewGraph.MESH_MONTH_ITEM_WEEK))
+        if ((typeView == enumTypeViewGraph.MESH_WEEK_ITEM_DAY) || (typeView == enumTypeViewGraph.MESH_MONTH_ITEM_WEEK))
             lr = 0;
-        if (typeView == TypeViewGraph.MESH_WEEK_ITEM_WEEK) {
+        if (typeView == enumTypeViewGraph.MESH_WEEK_ITEM_WEEK) {
             mPath.moveTo(leftRectSelectedMesh + lr, canvasHeight - 3);
             mPath.lineTo(rightRectSelectedMesh - lr, canvasHeight - 3);
             mPath.lineTo((leftRectSelectedMesh + rightRectSelectedMesh) / 2, canvasHeight - WIDTH_BORDER / 3);
@@ -802,7 +818,7 @@ else {
                 if (i % 2 == 0) mPaintMesh.setColor(colorMeshOne);
                 else mPaintMesh.setColor(colorMeshTwo);
 
-                if (typeView == TypeViewGraph.MESH_MONTH_ITEM_WEEK) {
+                if (typeView == enumTypeViewGraph.MESH_MONTH_ITEM_WEEK) {
 
                     k5 = k4;
 
@@ -823,11 +839,11 @@ else {
         //  текс снизу
 
 
-        if (typeView != TypeViewGraph.MESH_MONTH_ITEM_WEEK) {
+        if (typeView != enumTypeViewGraph.MESH_MONTH_ITEM_WEEK) {
             for (int i = 0; i < nItem; i++) {
                 {
                     canvas.drawText(arrayListStolbName.get(i), WIDTH_BORDER + offsetX + widthBlok / nItemInOneMesh * (i + 1.0f / 2.0f - shiftPuctInValueDay), borderBottom + 12, mPaintFontAllColor);
-                    if (typeView == TypeViewGraph.MESH_WEEK_ITEM_WEEK)
+                    if (typeView == enumTypeViewGraph.MESH_WEEK_ITEM_WEEK)
                         canvas.drawText(arrayListTwoName.get(i), WIDTH_BORDER + offsetX + widthBlok * (i + 1.0f / 2.0f), borderBottom + 22, mPaintFontAllColor);
                 }
             }

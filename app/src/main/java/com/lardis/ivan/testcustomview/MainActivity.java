@@ -1,44 +1,58 @@
 package com.lardis.ivan.testcustomview;
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AbsoluteLayout;
 import android.widget.Button;
-import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     Button button1, button2, button3,button4,button5;
     Button button6,button7,button8,button9,button10;
-    MyView view;
-LinearLayout linearLayout;
+    MyGraphView view;
+AbsoluteLayout linearLayout;
+AbsoluteLayout linearLayout1;
 MyZoomView myZoomView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-linearLayout=(LinearLayout)findViewById(R.id.lineaLayout);
-
+        myZoomView=new MyZoomView(this);
 
 
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        view = (MyView) findViewById(R.id.myview);
-        myZoomView=(MyZoomView)findViewById(R.id.myzoomview);
+        linearLayout=(AbsoluteLayout)findViewById(R.id.mygroop);
+        linearLayout1=(AbsoluteLayout)findViewById(R.id.mygroop1);
+        view = (MyGraphView) findViewById(R.id.myview);
+
+        ViewGroup.LayoutParams lpView = new ViewGroup.LayoutParams(  ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+LayoutInflater layoutInflater= LayoutInflater.from(this);
+View view1=layoutInflater.inflate(R.layout.layout_inf,null);
+        linearLayout.addView(myZoomView,lpView);
+//        linearLayout1.addView(view1);
+        linearLayout1.addView(new MyViewGroop(this),lpView);
+//linearLayout.addView(view,lpView);
+        view.setSelectedZoom(new MyGraphView.SelectedZoom() {
 
 
-        view.setSelectedZoom(new MyView.SelectedZoom() {
             @Override
-            public void doWork(float x, float y, boolean work) {
-                myZoomView.setData(x,y,work,getBitmapFromView(view));
-
+            public void doShow(boolean work) {
+                if(work)myZoomView.show();
+                else myZoomView.hide();
 
             }
+
+            @Override
+            public void setCoordinate(float x, float y) {
+                myZoomView.setData(x,y,ViewHelper.getBitmapFromView(view));
+            }
+
+
         });
 
 
@@ -63,12 +77,11 @@ linearLayout=(LinearLayout)findViewById(R.id.lineaLayout);
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                view.setDrawGraph(28, 1, 2016, testdanStolbValue(), null, TypeViewGraph.MESH_DAY_ITEM_DAY);
+                view.setDrawGraph(28, 1, 2016, testdanStolbValue(), null, enumTypeViewGraph.MESH_DAY_ITEM_DAY);
 //                view.setColorBorder(Color.GREEN);
 //                        view.setStartDayArayDay(28, 1, 2016, testdanStolbValue());
                 view.invalidate();
-                LinearLayout.LayoutParams linLayoutParam = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-                linearLayout.addView(button1,linLayoutParam);
+
 
             }
         });
@@ -76,7 +89,7 @@ linearLayout=(LinearLayout)findViewById(R.id.lineaLayout);
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                view.setDrawGraph(28, 1, 2016, testdanStolbValue1(), null, TypeViewGraph.MESH_MONTH_ITEM_MONTH);
+                view.setDrawGraph(28, 1, 2016, testdanStolbValue1(), null, enumTypeViewGraph.MESH_MONTH_ITEM_MONTH);
 //view.setColorBorder(Color.GRAY);
 //                view.setStartMonthArrayMonth(10, testdanStolbValue1());
                 view.invalidate();
@@ -89,7 +102,7 @@ linearLayout=(LinearLayout)findViewById(R.id.lineaLayout);
 
 
 //                view.setStartDayArrayWeekInOneMonth(28, 1, 2016, testdanStolbValue1());
-                view.setDrawGraph(28, 1, 2016, testdanStolbValue1(), null, TypeViewGraph.MESH_WEEK_ITEM_WEEK);
+                view.setDrawGraph(28, 1, 2016, testdanStolbValue1(), null, enumTypeViewGraph.MESH_WEEK_ITEM_WEEK);
 //                view.setColorBorder(Color.RED);
                 view.invalidate();
             }
@@ -101,7 +114,7 @@ linearLayout=(LinearLayout)findViewById(R.id.lineaLayout);
 
 
 //                view.setStarMonthArrayDay(  2, 2016, testdanStolbValueDataInMonth());
-                view.setDrawGraph(1,1,2016,testdanStolbValueDataInMonth(),null,TypeViewGraph.MESH_WEEK_ITEM_DAY);
+                view.setDrawGraph(1,1,2016,testdanStolbValueDataInMonth(),null, enumTypeViewGraph.MESH_WEEK_ITEM_DAY);
                 view.invalidate();
             }
         });
@@ -111,7 +124,7 @@ linearLayout=(LinearLayout)findViewById(R.id.lineaLayout);
             public void onClick(View v) {
 
 
-                view.setDrawGraph(27, 1, 2016, testdanStolbValue5(),null, TypeViewGraph.MESH_MONTH_ITEM_WEEK);
+                view.setDrawGraph(27, 1, 2016, testdanStolbValue5(),null, enumTypeViewGraph.MESH_MONTH_ITEM_WEEK);
                 view.invalidate();
             }
         });
@@ -120,7 +133,7 @@ linearLayout=(LinearLayout)findViewById(R.id.lineaLayout);
 
             public void onClick(View v) {
 
-                view.setDrawGraph(28, 1, 2016, testdanStolbValue(), testdanStolbValue6(), TypeViewGraph.MESH_DAY_ITEM_DAY);
+                view.setDrawGraph(28, 1, 2016, testdanStolbValue(), testdanStolbValue6(), enumTypeViewGraph.MESH_DAY_ITEM_DAY);
 //                view.setColorBorder(Color.GREEN);
 //                        view.setStartDayArayDay(28, 1, 2016, testdanStolbValue());
                 view.invalidate();
@@ -130,7 +143,7 @@ linearLayout=(LinearLayout)findViewById(R.id.lineaLayout);
             @Override
 
             public void onClick(View v) {
-                view.setDrawGraph(28, 1, 2016, testdanStolbValue1(),testdanStolbValue1(), TypeViewGraph.MESH_MONTH_ITEM_MONTH);
+                view.setDrawGraph(28, 1, 2016, testdanStolbValue1(),testdanStolbValue1(), enumTypeViewGraph.MESH_MONTH_ITEM_MONTH);
 //view.setColorBorder(Color.GRAY);
 //                view.setStartMonthArrayMonth(10, testdanStolbValue1());
            view.invalidate();
@@ -141,7 +154,7 @@ linearLayout=(LinearLayout)findViewById(R.id.lineaLayout);
 
             public void onClick(View v) {
 
-                view.setDrawGraph(28, 1, 2016, testdanStolbValue1(), testdanStolbValue1(), TypeViewGraph.MESH_WEEK_ITEM_WEEK);
+                view.setDrawGraph(28, 1, 2016, testdanStolbValue1(), testdanStolbValue1(), enumTypeViewGraph.MESH_WEEK_ITEM_WEEK);
                 view.invalidate();
             }
         });
@@ -151,7 +164,7 @@ linearLayout=(LinearLayout)findViewById(R.id.lineaLayout);
             public void onClick(View v) {
 
 
-                view.setDrawGraph(1,1,2016,testdanStolbValueDataInMonth(),testdanStolbValueDataInMonth(),TypeViewGraph.MESH_WEEK_ITEM_DAY);
+                view.setDrawGraph(1,1,2016,testdanStolbValueDataInMonth(),testdanStolbValueDataInMonth(), enumTypeViewGraph.MESH_WEEK_ITEM_DAY);
                 view.invalidate();
             }
         });
@@ -161,7 +174,7 @@ linearLayout=(LinearLayout)findViewById(R.id.lineaLayout);
             public void onClick(View v) {
 
 
-                view.setDrawGraph(1, 1, 2016, testdanStolbValue5(),testdanStolbValue5(), TypeViewGraph.MESH_MONTH_ITEM_WEEK);
+                view.setDrawGraph(1, 1, 2016, testdanStolbValue5(),testdanStolbValue5(), enumTypeViewGraph.MESH_MONTH_ITEM_WEEK);
                 view.invalidate();
             }
         });
@@ -314,22 +327,5 @@ linearLayout=(LinearLayout)findViewById(R.id.lineaLayout);
 
         return arrayList;
     }
-    public static Bitmap getBitmapFromView(View view) {
-        //Define a bitmap with the same size as the view
-        Bitmap returnedBitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(),Bitmap.Config.ARGB_8888);
-        //Bind a canvas to it
-        Canvas canvas = new Canvas(returnedBitmap);
-        //Get the view's background
-        Drawable bgDrawable =view.getBackground();
-        if (bgDrawable!=null)
-            //has background drawable, then draw it on the canvas
-            bgDrawable.draw(canvas);
-        else
-            //does not have background drawable, then draw white background on the canvas
-            canvas.drawColor(Color.WHITE);
-        // draw the view on the canvas
-        view.draw(canvas);
-        //return the bitmap
-        return returnedBitmap;
-    }
+
 }
