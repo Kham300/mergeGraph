@@ -13,6 +13,11 @@ import android.view.View;
  * Created by i.larin on 30.03.2016.
  */
 public class ViewHelper {
+    /**
+     * возврашает принтскрин view
+     * @param view
+     * @return
+     */
     public static Bitmap getBitmapFromView(View view) {
         //Define a bitmap with the same size as the view
         Bitmap returnedBitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(),Bitmap.Config.ARGB_8888);
@@ -31,6 +36,13 @@ public class ViewHelper {
         //return the bitmap
         return returnedBitmap;
     }
+
+    /**
+     * переводит dp в px
+     * @param dp
+     * @param context
+     * @return
+     */
     public static int convertDpToPixel(float dp, Context context){
         Resources resources = context.getResources();
         DisplayMetrics metrics = resources.getDisplayMetrics();

@@ -11,7 +11,6 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.lardis.ivan.testcustomview.helper.ViewHelper;
-import com.lardis.ivan.testcustomview.myGroopAbsoluteLayout;
 
 /**
  * Класс для лупы
@@ -28,7 +27,7 @@ public class MyZoomView extends View {
     /**
      * скрин view графика
      */
-    private Bitmap bitmap;
+    private Bitmap bitmapPrtScn;
 
     /**
      * путь для отрисовки лупы
@@ -97,12 +96,19 @@ public class MyZoomView extends View {
      * @param y Координата распошложения
      * @param bitmap Картинка view которую увеличиваем
      */
-    public void setData(float x, float y, Bitmap bitmap) {
+    public void setData(float x, float y) {
         this.x = x;
         this.y = y;
-        this.bitmap = bitmap;
+        this.bitmapPrtScn = bitmapPrtScn;
         invalidate();
     }
+
+    /**
+     * обновление принскрина
+     * @param bitmapPrtScn
+     */
+    public void updateBitmapPrtScn( Bitmap bitmapPrtScn)
+    { this.bitmapPrtScn = bitmapPrtScn;}
 
 
     private void init(AttributeSet attrs, int defStyle) {
@@ -128,7 +134,7 @@ public class MyZoomView extends View {
             circle.addCircle(x, y,  radius / 2, Path.Direction.CW);
             canvas.scale(2, 2, x, y);
             canvas.clipPath(circle, Region.Op.REPLACE);
-            canvas.drawBitmap(bitmap, 0, 0, mPaintCircle);
+           if(bitmapPrtScn!=null) canvas.drawBitmap(bitmapPrtScn, 0, 0, mPaintCircle);
             canvas.clipRect(0, 0, canvasWight, canvasHeight, Region.Op.REPLACE);
             canvas.drawPath(circle, mPaintCircle);
             canvas.drawLine(x, y - 10, x, y + 10, mPaintMarker);

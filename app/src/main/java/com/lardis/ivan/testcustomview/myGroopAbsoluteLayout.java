@@ -18,35 +18,52 @@ import java.util.ArrayList;
  */
 public class myGroopAbsoluteLayout extends AbsoluteLayout {
     /**
-     * высота ширина info
+     *   ширина блока info (view)
      */
-    public static int MY_VIEW_GROOP_BACK_GROUND_INFO_WIGHT ;
+    public static int INFO_WIGHT;
     /**
-     * высота блока info
+     * высота блока info (view)
      */
-    public static int MY_VIEW_GROOP_BACK_GROUND_INFO_HEIGHT;
+    public static int INFO_HEIGHT;
     /**
      * радиус лупы
      */
-    public   int ZOOM_RADIUS;
+    public int ZOOM_RADIUS;
 
     public void setArrayListForInfo(ArrayList<String[]> arrayListForInfo) {
         this.arrayListForInfo = arrayListForInfo;
     }
 
+    public myGroopAbsoluteLayout(Context context) {
+        super(context);
+        init();
+    }
+
+    public myGroopAbsoluteLayout(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init();
+    }
+
+    public myGroopAbsoluteLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init();
+    }
+
     /**
+     * /**
      * лист с даными для информаций
-     *  массив  <br> 0 элемент - длитетельсть <br> 1 элемент -количество подходов <br> 2 элемент- количество раз <br>3 элемент- сожжено <br> 4 элемент пульс
+     * массив  <br> 0 элемент - длитетельсть <br> 1 элемент -количество подходов <br> 2 элемент- количество раз <br>3 элемент- сожжено <br> 4 элемент пульс
      */
-ArrayList<String[]> arrayListForInfo ;
+    ArrayList<String[]> arrayListForInfo;
     /**
      * view блок с информацией
      */
     MyViewGroopInfo myViewGroopInfo;
     /**
-     * view графика
+     * view рисующее график
      */
     MyGraphView myGraphView;
+
     /**
      * view лупы
      */
@@ -57,116 +74,147 @@ ArrayList<String[]> arrayListForInfo ;
      */
     ViewGroup.LayoutParams lpView;
 
-
     /**
-     *
-     * @param x Ко
+     * @param x            Ко
      * @param y
-     * @param nTouch
+     * @param nSelectTouch
      */
-    public void setmyXandYandNTouch(float x,float y,int nTouch) {
-//       if((x+ZOOM_RADIUS)>MY_VIEW_GROOP_BACK_GROUND_INFO_WIGHT)
-        if(arrayListForInfo!=null)
-        if(nTouch>=0 && nTouch< arrayListForInfo.size())myViewGroopInfo.setInfo(arrayListForInfo.get(nTouch));
+
+    public void setmyXandYandNTouch(float x, float y, int nSelectTouch) {
+//       if((x+ZOOM_RADIUS)>INFO_WIGHT)
+        if (arrayListForInfo != null)
+            if (nSelectTouch >= 0 && nSelectTouch < arrayListForInfo.size())
+                myViewGroopInfo.setInfo(arrayListForInfo.get(nSelectTouch));
 
 
-        finfLocatinInfoView(x, y);
-//        bottomInfo(x,y);
+        findLocatinInfoView(x, y);
+
     }
 
     /**
-     * поиск места для расположения блока с информацией
+     * поиск и изменение  места для расположения блока с информацией
+     *
      * @param x
      * @param y
      */
-    private void finfLocatinInfoView(float x, float y) {
-        if(x>(30+MY_VIEW_GROOP_BACK_GROUND_INFO_WIGHT+ ZOOM_RADIUS))leftInfo(x,y);
-        else if(y>(30+MY_VIEW_GROOP_BACK_GROUND_INFO_HEIGHT+ ZOOM_RADIUS))topInfo(x,y);
-          else  if((getWidth()-x)>(30+MY_VIEW_GROOP_BACK_GROUND_INFO_WIGHT+ ZOOM_RADIUS))rightInfo(x,y);
-        else if((getHeight()-y)>(30+MY_VIEW_GROOP_BACK_GROUND_INFO_HEIGHT+ ZOOM_RADIUS))bottomInfo(x,y);
+    private void findLocatinInfoView(float x, float y) {
+        if (x > (30 + INFO_WIGHT + ZOOM_RADIUS)) leftInfo(x, y);
+        else if (y > (30 + INFO_HEIGHT + ZOOM_RADIUS)) topInfo(x, y);
+        else if ((getWidth() - x) > (30 + INFO_WIGHT + ZOOM_RADIUS))
+            rightInfo(x, y);
+        else if ((getHeight() - y) > (30 + INFO_HEIGHT + ZOOM_RADIUS))
+            bottomInfo(x, y);
     }
 
-    void leftInfo(float x,float y)
-    {
+    /**
+     * перемещение фона слева относительно Лупы
+     *
+     * @param x
+     * @param y
+     */
+    void leftInfo(float x, float y) {
         myViewGroopInfo.locationTriangleRight();
         myViewGroopInfo.invalidate();
-        myViewGroopInfo.setX(x - ZOOM_RADIUS -20 - MY_VIEW_GROOP_BACK_GROUND_INFO_WIGHT);
-float k=y-MY_VIEW_GROOP_BACK_GROUND_INFO_HEIGHT/2;
+        myViewGroopInfo.setX(x - ZOOM_RADIUS - 20 - INFO_WIGHT);
+        float k = y - INFO_HEIGHT / 2;
 
-        if(k>(getHeight()-MY_VIEW_GROOP_BACK_GROUND_INFO_HEIGHT))k=getHeight()-MY_VIEW_GROOP_BACK_GROUND_INFO_HEIGHT;
-        if(k<(0))k=0;
+        if (k > (getHeight() - INFO_HEIGHT))
+            k = getHeight() - INFO_HEIGHT;
+        if (k < (0)) k = 0;
         myViewGroopInfo.setY(k);
 
     }
-    void rightInfo(float x,float y)
-    {
+
+    /**
+     * перемещение фона справа относительно Лупы
+     *
+     * @param x
+     * @param y
+     */
+    void rightInfo(float x, float y) {
         myViewGroopInfo.locationTriangleLeft();
         myViewGroopInfo.invalidate();
-        myViewGroopInfo.setX(x +20+ ZOOM_RADIUS);
+        myViewGroopInfo.setX(x + 20 + ZOOM_RADIUS);
 
-        float k=y-MY_VIEW_GROOP_BACK_GROUND_INFO_HEIGHT/2;
-        if(k>(getHeight()-MY_VIEW_GROOP_BACK_GROUND_INFO_HEIGHT))k=getHeight()-MY_VIEW_GROOP_BACK_GROUND_INFO_HEIGHT;
-        if(k<(0))k=0;
+        float k = y - INFO_HEIGHT / 2;
+        if (k > (getHeight() - INFO_HEIGHT))
+            k = getHeight() - INFO_HEIGHT;
+        if (k < (0)) k = 0;
         myViewGroopInfo.setY(k);
 
     }
-    void topInfo(float x,float y)
-    { myViewGroopInfo.locationTriangleBottom();
+
+    /**
+     * перемещение фона сверху относительно Лупы
+     *
+     * @param x
+     * @param y
+     */
+    void topInfo(float x, float y) {
+        myViewGroopInfo.locationTriangleBottom();
         myViewGroopInfo.invalidate();
-        float k=x-MY_VIEW_GROOP_BACK_GROUND_INFO_WIGHT/2;
-        if(k<0)k=0;
-        if(k>(getWidth()-MY_VIEW_GROOP_BACK_GROUND_INFO_WIGHT))k=(getWidth()-MY_VIEW_GROOP_BACK_GROUND_INFO_WIGHT);
+        float k = x - INFO_WIGHT / 2;
+        if (k < 0) k = 0;
+        if (k > (getWidth() - INFO_WIGHT))
+            k = (getWidth() - INFO_WIGHT);
         myViewGroopInfo.setX(k);
 
-        myViewGroopInfo.setY(y - 20 - ZOOM_RADIUS - MY_VIEW_GROOP_BACK_GROUND_INFO_HEIGHT);
+        myViewGroopInfo.setY(y - 20 - ZOOM_RADIUS - INFO_HEIGHT);
 
 
     }
-    void bottomInfo(float x,float y)
-    {
+
+    /**
+     * перемещение фона снизу относительно Лупы
+     *
+     * @param x
+     * @param y
+     */
+    void bottomInfo(float x, float y) {
         myViewGroopInfo.locationTriangleTop();
         myViewGroopInfo.invalidate();
-        float k=x-MY_VIEW_GROOP_BACK_GROUND_INFO_WIGHT/2;
-        if(k<0)k=0;
-        if(k>(getWidth()-MY_VIEW_GROOP_BACK_GROUND_INFO_WIGHT))k=(getWidth()-MY_VIEW_GROOP_BACK_GROUND_INFO_WIGHT);
+        float k = x - INFO_WIGHT / 2;
+        if (k < 0) k = 0;
+        if (k > (getWidth() - INFO_WIGHT))
+            k = (getWidth() - INFO_WIGHT);
         myViewGroopInfo.setX(k);
 
-        myViewGroopInfo.setY(y + 20+ ZOOM_RADIUS);
-    }
-    void showmyViewGroopBackgroundInfo()
-    {this.addView(myViewGroopInfo, lpView);}
-
-    void hidemyViewGroopBackgroundInfo()
-    {this.removeView(myViewGroopInfo);}
-
-   void setDrawGraph(int day, int month, int year, ArrayList<Integer> arrayListMetodDrawGraph1, ArrayList<Integer> arrayListMetodDrawGraph2, enumTypeViewGraph typeViewGraph)
-   {myGraphView.setDrawGraph(day, month, year,  arrayListMetodDrawGraph1,  arrayListMetodDrawGraph2,  typeViewGraph);
-       myGraphView.invalidate();
-
-   }
-
-    public MyGraphView getMyGraphView() {
-        return myGraphView;
+        myViewGroopInfo.setY(y + 20 + ZOOM_RADIUS);
     }
 
-
-    public myGroopAbsoluteLayout(Context context) {
-        super(context); init();
+    /**
+     * показать блок с информацией
+     */
+    void showBlockInfo() {
+        this.addView(myViewGroopInfo, lpView);
     }
 
-    public myGroopAbsoluteLayout(Context context, AttributeSet attrs) {
-        super(context, attrs); init();
-    }
-
-    public myGroopAbsoluteLayout(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init();
+    /**
+     * скрыть блок с информацией
+     */
+    void hideBlockInfo() {
+        this.removeView(myViewGroopInfo);
     }
 
 
-    public MyViewGroopInfo getMyViewGroopInfo() {
-        return myViewGroopInfo;
+    /**
+     * пересыл даных view рисуюшему графики
+     *
+     * @param day
+     * @param month
+     * @param year
+     * @param arrayListMetodDrawGraph1 масив  значений для столбиков
+     * @param arrayListMetodDrawGraph2 2 массив значиний если два графика
+     * @param typeViewGraph            тип вывода данных графика
+     */
+    void setDrawGraph(int day, int month, int year, ArrayList<Integer> arrayListMetodDrawGraph1, ArrayList<Integer> arrayListMetodDrawGraph2, enumTypeViewGraph typeViewGraph) {
+        myGraphView.setDrawGraph(day, month, year, arrayListMetodDrawGraph1, arrayListMetodDrawGraph2, typeViewGraph);
+        myGraphView.invalidate();
+
     }
+
+
+
 
 
     void init()
@@ -174,42 +222,46 @@ float k=y-MY_VIEW_GROOP_BACK_GROUND_INFO_HEIGHT/2;
     {
 
 
-
-        MY_VIEW_GROOP_BACK_GROUND_INFO_WIGHT= ViewHelper.convertDpToPixel(210, getContext());
-   MY_VIEW_GROOP_BACK_GROUND_INFO_HEIGHT= ViewHelper.convertDpToPixel(170, getContext());
-        ZOOM_RADIUS =ViewHelper.convertDpToPixel(100, getContext());
+        INFO_WIGHT = ViewHelper.convertDpToPixel(210, getContext());
+        INFO_HEIGHT = ViewHelper.convertDpToPixel(170, getContext());
+        ZOOM_RADIUS = ViewHelper.convertDpToPixel(100, getContext());
         myGraphView = new MyGraphView(getContext());
-        myViewGroopInfo =new MyViewGroopInfo(getContext());
-        myZoomView=new MyZoomView(getContext());
-myZoomView.setRadius(ZOOM_RADIUS);
-        lpView = new ViewGroup.LayoutParams(MY_VIEW_GROOP_BACK_GROUND_INFO_WIGHT, MY_VIEW_GROOP_BACK_GROUND_INFO_HEIGHT);
+        myViewGroopInfo = new MyViewGroopInfo(getContext());
+        myZoomView = new MyZoomView(getContext());
+        myZoomView.setRadius(ZOOM_RADIUS);
+        lpView = new ViewGroup.LayoutParams(INFO_WIGHT, INFO_HEIGHT);
 
         this.addView(myGraphView);
         this.addView(myZoomView);
-
-        myGraphView.setSelectedZoom(new MyGraphView.SelectedZoom() {
+/**
+ * связь графика с Лупой и Блоком информации
+ */
+        myGraphView.setWorkFromZoomAndBlockInfo(new MyGraphView.WorkFromZoomAndBlockInfo() {
 
 
             @Override
-            public void doShow(boolean work) {
-                if (work) {
-                    myZoomView.show();
+            public void showZoomAndBlockInfo() {
+                myZoomView.show();
 
-                    showmyViewGroopBackgroundInfo();
+                showBlockInfo();
+            }
 
-
-                } else {
-                    myZoomView.hide();
-                    hidemyViewGroopBackgroundInfo();
-                }
-
+            @Override
+            public void hideZoomAndBlockInfo() {
+                myZoomView.hide();
+                hideBlockInfo();
             }
 
             @Override
             public void setCoordinate(float x, float y, int nTouch) {
-                myZoomView.setData(x, y, ViewHelper.getBitmapFromView(myGraphView));
-                 setmyXandYandNTouch(x, y, nTouch);
+                myZoomView.setData(x, y);
+                setmyXandYandNTouch(x, y, nTouch);
 
+            }
+
+            @Override
+            public void updatePrtScn() {
+                myZoomView.updateBitmapPrtScn(ViewHelper.getBitmapFromView(myGraphView));
             }
 
 

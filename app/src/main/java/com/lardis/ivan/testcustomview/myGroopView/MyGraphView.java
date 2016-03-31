@@ -12,7 +12,6 @@ import android.graphics.Path;
 import android.graphics.RectF;
 import android.graphics.Region;
 import android.graphics.Shader;
-import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -31,55 +30,139 @@ import java.util.Collections;
  */
 public class MyGraphView extends View {
 
-
-    //холст
+    /**
+     *  ширина холста
+     */
     private float canvasWidht;
+    /**
+     * высота холста
+     */
     private float canvasHeight;
 
-    //обработка жестов
-
-    private boolean showZoom = false;
-
+    /**
+     * показываем view блока текста и  view лупы
+     */
+    private boolean showZoomAndBlockInfo = false;
+    /**
+     * координаты Х
+     */
+    float X;
+    /**
+     * координата У
+     */
+    float Y;
+    /**
+     * сдвиг по X
+     */
     private float offsetX;
+
+    /**
+     * левая граница скрола для расчета скролинга
+     */
     private float minX = 0;
+    /**
+     * правая граница скрола для расчета скролинга
+     */
     private float maxX;
+    /**
+     * временая переменя для расчета касании
+     */
     private float bufX;
+    /**
+     * временая переменя для расчета касании
+     */
     private float bufX2 = 0;
-    //номер выделеного пункта графика
+
+    /**
+     * номер выделеного пункта графика
+     */
     private int nSelectedTouch = -1;
 
-    //botder
+    /**
+     * толщины бордера (границы)
+     */
     private float WIDTH_BORDER = 35;
+    /**
+     * коорднаты по X границы слева
+     */
     private float borderLeft;
+    /**
+     * коорднаты по Y границы сверху
+     */
     private float borderTop;
+    /**
+     * коорднаты по Y границы сверху
+     */
     private float borderBottom;
+    /**
+     * коорднаты по X границы справа
+     */
     private float borderRight;
 
-    //толщина блока
-    private final float MIN_WIDTH_BLOCK = 100;
-    private final float MIN_HEIGHT_BLOCK = 25;
-    private float widthBlok;
 
+    /**
+     * МИНИМАЛЬНАЯ ШИРИНА БЛОКА
+     */
+    private final float MIN_WIDTH_BLOCK = 100;
+    /**
+     * минимальное растояние между линиями
+     */
+    private final float MIN_HEIGHT_BETWEEN_BLOCK = 25;
+    /**
+     * ширина блока
+     */
+    private float widthBlok;
+    /**
+     * дополнительный сдвиг по оси для расчета графика недели в месяце
+     */
     float shiftPuctInValueDay = 0;
+
+    /**
+     * число пунктов графика в блоке
+     */
     float nItemInOneMesh = 1;
-    float nPuct = 0;
+    /**
+     * количество блоков
+     */
+    float nBlock = 0;
+    /**
+     * координаты по Y разделительной линий если два графика
+     */
     float startGorizontalGraph = 0;
 
 
-    // пункты графика
+    /**
+     * отступ пункта графика от блока
+     */
     private float itemBorder = 13;
+    /**
+     * радиус скруглений пунктов графика
+     */
     private float itemRadius = 10;
+    /**
+     * колочество пунктов графика
+     */
     private int nItem;
-
+    /**
+     * левая сторона выделеного блока
+     */
     private float leftRectSelectedMesh;
+    /**
+     * правая сторона выделеного блока
+     */
     private float rightRectSelectedMesh;
 
-    //два графика
+    /**
+     * ноличество графиков если если true то два false один
+     */
     boolean twoGraph = false;
 
-    //скролим или влазеет
+    /**
+     * нужно скролить или график влазиет в экран
+     */
     private boolean isScroll;
 
+    private boolean viewZoomAndBlockInfo = false;
 
     private int nNepolWeek;
     private int step;
@@ -126,31 +209,50 @@ public class MyGraphView extends View {
     private ArrayList<Integer> arrayListStolbValueBuf1 = new ArrayList<Integer>();
     private ArrayList<Integer> arrayListStolbValue2 = new ArrayList<Integer>();
     private ArrayList<Integer> arrayListStolbValueBuf2 = new ArrayList<Integer>();
+    /**
+     * интерефейс для работы с Zoom view и Блоком текста из графика
+     */
+    public interface WorkFromZoomAndBlockInfo {
 
-    public interface SelectedZoom {
+        void showZoomAndBlockInfo();
+        void hideZoomAndBlockInfo();
 
-        void doShow(boolean work);
+        void setCoordinate(float x, float y, int nTouch);
 
-        void setCoordinate(float x, float y,int nTouch);
+        void updatePrtScn();
 
 
     }
 
-    public void setSelectedZoom(SelectedZoom selectedZoom) {
-        this.selectedZoom = selectedZoom;
+    public void setWorkFromZoomAndBlockInfo(WorkFromZoomAndBlockInfo workFromZoomAndBlockInfo) {
+        this.workFromZoomAndBlockInfo = workFromZoomAndBlockInfo;
     }
 
-    SelectedZoom selectedZoom;
+    /**
+     * интерефейс для работы с Zoom view и Блоком текста из графика
+     */
+    WorkFromZoomAndBlockInfo workFromZoomAndBlockInfo;
 
-
+    /**
+     * для замены clip в графике
+     */
     Region.Op regionREPLACE = Region.Op.REPLACE;
 
     private ValueAnimator animator;
-
+    /**
+     * массив первоночальных данных
+     */
     String[] shortMonthName = {"Янв", "Фев", "Мар", "Апр", "Май", "Июн", "Июл", "Авг", "Сен", "Окт", "Ноя", "Дек"};
 
+    /**
+     * календарь для вычислений
+     */
     Calendar myCalendar = (Calendar) Calendar.getInstance();
 
+
+    /**
+     * тип графика
+     */
     private enumTypeViewGraph typeView;
 
 
@@ -340,6 +442,9 @@ public class MyGraphView extends View {
         invalidateColor();
     }
 
+    /**
+     * обновления маркеров (вызаваеться при изменение цвета)
+     */
     private void invalidateColor() {
         mPaintFontAverage.setColor(colorFontAverage);
         mPaintFontAllColor.setColor(colorFontAll);
@@ -350,7 +455,7 @@ public class MyGraphView extends View {
         mPaintItemSelected.setShader(new LinearGradient(0, 0, 0, canvasHeight,
                 colorItemSelectedTop
                 , colorItemSelectedBottom, Shader.TileMode.MIRROR));
-Log.d("Mylog","canvasHeight="+canvasHeight);
+        Log.d("Mylog", "canvasHeight=" + canvasHeight);
         mPaintItem.setShader(new LinearGradient(0, 0, 0, canvasHeight,
                 colorItemTop
                 , colorItemBottom, Shader.TileMode.MIRROR));
@@ -371,6 +476,16 @@ Log.d("Mylog","canvasHeight="+canvasHeight);
 
     }
 
+    /**
+     * метод принимаюший значения для графика и в зависимости от типа <br>
+     *     графика расчитывает для них подписи с низу и подготовливет данные для onDraw
+     * @param day
+     * @param month
+     * @param year
+     * @param arrayListMetodDrawGraph1
+     * @param arrayListMetodDrawGraph2
+     * @param typeViewGraph
+     */
     public void setDrawGraph(int day, int month, int year, ArrayList<Integer> arrayListMetodDrawGraph1, ArrayList<Integer> arrayListMetodDrawGraph2, enumTypeViewGraph typeViewGraph) {
         invalidateColor();
         if (arrayListMetodDrawGraph1 != null) {
@@ -440,7 +555,7 @@ Log.d("Mylog","canvasHeight="+canvasHeight);
                         } else
                             bufMonth++;
                     }
-                    nPuct = daysInPunctArrayList.size();
+                    nBlock = daysInPunctArrayList.size();
                     if (daysInPunctArrayList.get(0) < 14) {
                         daysInPunctArrayList.set(0, daysInPunctArrayList.get(0) + 14);
                         if (twoGraph) {
@@ -485,7 +600,7 @@ Log.d("Mylog","canvasHeight="+canvasHeight);
                             nNepolWeek++;
                         if (monday == 1) shiftPuctInValueDay = 0;
                         else shiftPuctInValueDay = (8f - monday) / 7f;
-                        nPuct = nNepolWeek;
+                        nBlock = nNepolWeek;
                     } else return;
 
 
@@ -582,7 +697,7 @@ Log.d("Mylog","canvasHeight="+canvasHeight);
                 itemBorder = 13;
                 itemRadius = 10;
                 nItemInOneMesh = 1;
-                nPuct = nItem;
+                nBlock = nItem;
             }
 
 
@@ -608,7 +723,7 @@ Log.d("Mylog","canvasHeight="+canvasHeight);
                 }
             }
             //            шаг пунктирных линий
-            step = getStep(((startGorizontalGraph - WIDTH_BORDER * 1.5f) / MIN_HEIGHT_BLOCK), maxValueData1, 1);
+            step = getStep(((startGorizontalGraph - WIDTH_BORDER * 1.5f) / MIN_HEIGHT_BETWEEN_BLOCK), maxValueData1, 1);
             nStep1 = maxValueData1 / step;
             nStep2 = maxValueData2 / step;
             workRegionGrafikHeight = (canvasHeight - WIDTH_BORDER * 1.33f - 40) / (maxValueData1 + maxValueData2);
@@ -635,97 +750,83 @@ Log.d("Mylog","canvasHeight="+canvasHeight);
 
     }
 
-    private boolean onLongClickListenerWork = false;
 
+    /**
+     * слушатель долгого касания для вызова лупы и блока с текстом
+     */
     OnLongClickListener onLongClickListener = new OnLongClickListener() {
         @Override
         public boolean onLongClick(View v) {
-            if (showZoom) selectedZoom.doShow(true);
-            onLongClickListenerWork = true;
-
-
-                if (isScroll)
-                    nSelectedTouch = (int) ((X - bufX - WIDTH_BORDER) / (MIN_WIDTH_BLOCK / nItemInOneMesh));
-                else
-                    nSelectedTouch = (int) ((X - WIDTH_BORDER - bufX) * nItem / (getWidth() - WIDTH_BORDER * 2));
-
+            if (showZoomAndBlockInfo) {
+                workFromZoomAndBlockInfo.setCoordinate(X,Y, nSelectedTouch);
+                workFromZoomAndBlockInfo.updatePrtScn();
+                workFromZoomAndBlockInfo.showZoomAndBlockInfo();
+                viewZoomAndBlockInfo = true;
+            if (isScroll)
+                nSelectedTouch = (int) ((X - bufX - WIDTH_BORDER) / (MIN_WIDTH_BLOCK / nItemInOneMesh));
+            else
+                nSelectedTouch = (int) ((X - WIDTH_BORDER - bufX) * nItem / (getWidth() - WIDTH_BORDER * 2));
             invalidate();
-
+            }
             return false;
         }
     };
-float X;
-    float Y;
+
+
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
         // TODO Auto-generated method stub
 
-
         switch (motionEvent.getAction()) {
             case (MotionEvent.ACTION_DOWN):
-                X=motionEvent.getX();
-                Y=motionEvent.getY();
-                onLongClickListenerWork = false;
-                selectedZoom.setCoordinate(motionEvent.getX(), motionEvent.getY(),nSelectedTouch);
-                Log.d("Mylog", "startTime=" + motionEvent.getX() + "endTime=" + motionEvent.getY());
-
-                showZoom = true;
-
+                X = motionEvent.getX();
+                Y = motionEvent.getY();
+                viewZoomAndBlockInfo = false;
+                showZoomAndBlockInfo = true;
                 bufX = offsetX;
-
                 bufX2 = motionEvent.getX();
+
                 break;
             case (MotionEvent.ACTION_MOVE):
-                X=motionEvent.getX();
-                Y=motionEvent.getY();
-                selectedZoom.setCoordinate(motionEvent.getX(), motionEvent.getY(),nSelectedTouch);
+                X = motionEvent.getX();
+                Y = motionEvent.getY();
 
+                if ((Math.abs(bufX - offsetX) > 4)) showZoomAndBlockInfo = false;
+                if (viewZoomAndBlockInfo) {
+                    workFromZoomAndBlockInfo.setCoordinate(motionEvent.getX(), motionEvent.getY(), nSelectedTouch);
 
-                if ((Math.abs(bufX - offsetX) > 4)) showZoom = false;
+                    int nselbuf = nSelectedTouch;
 
-
-                if (!onLongClickListenerWork) {
-                    offsetX = bufX - (bufX2 - motionEvent.getX());
-                }
-
-                if (onLongClickListenerWork) {
-                      {
+                    {
                         if (isScroll)
                             nSelectedTouch = (int) ((motionEvent.getX() - bufX - WIDTH_BORDER) / (MIN_WIDTH_BLOCK / nItemInOneMesh));
                         else
                             nSelectedTouch = (int) ((motionEvent.getX() - WIDTH_BORDER - bufX) * nItem / (getWidth() - WIDTH_BORDER * 2));
 
                     }
-
-
+                    if (nselbuf != nSelectedTouch) workFromZoomAndBlockInfo.updatePrtScn();
                 }
-
+                else
+                {offsetX = bufX - (bufX2 - motionEvent.getX());}
                 break;
-
             case (MotionEvent.ACTION_UP):
-                showZoom = false;
-                selectedZoom.doShow(false);
-                if (!onLongClickListenerWork) {
+                if (viewZoomAndBlockInfo) {
+                    workFromZoomAndBlockInfo.hideZoomAndBlockInfo();
+                }
+               else {
                     if (Math.abs(bufX - offsetX) < 4) {
                         if (isScroll)
                             nSelectedTouch = (int) ((motionEvent.getX() - bufX - WIDTH_BORDER) / (MIN_WIDTH_BLOCK / nItemInOneMesh));
                         else
                             nSelectedTouch = (int) ((motionEvent.getX() - WIDTH_BORDER - bufX) * nItem / (getWidth() - WIDTH_BORDER * 2));
-
                     }
-
                     offsetX = bufX - (bufX2 - motionEvent.getX());
                 }
-//                if(selectedZoom!=null)selectedZoom.doShow(motionEvent.getX(), motionEvent.getY(), false);
                 break;
-
-
         }
         if (offsetX < -maxX) offsetX = -maxX;
         if (offsetX > minX) offsetX = minX;
-//        Log.d("Mylog","startTime="+startTime+"endTime="+endTime);
         invalidate();
-
         return super.onTouchEvent(motionEvent);
     }
 
@@ -772,7 +873,9 @@ float X;
 
     }
 
-
+    /**
+     * обновление нахождение стрелок для скрола если графика  два <br> то стрелки находяться между ними <br> если один то снизу
+     */
     private void invalidatePathStrelka() {
         float buf;
         if (twoGraph) buf = startGorizontalGraph;
@@ -789,6 +892,11 @@ float X;
         mPathStrelkaLeft.lineTo(canvasWidht - borderLeft * 2 / 3, buf - 8);
     }
 
+
+    /**
+     * рисование выделеного блока
+     * @param canvas
+     */
     private void myDrawSelectedMesh(Canvas canvas) {
         if (hasSelected()) {
             if (nSelectedTouch % 2 == 0)
@@ -799,17 +907,30 @@ float X;
         }
     }
 
+    /**
+     * рисование разделительной полосы если поступило два графика
+     * @param canvas
+     */
+
     private void myDrawDelimeter(Canvas canvas) {
         canvas.clipRect(borderLeft, 0, borderRight, canvasHeight, regionREPLACE);
         myDrawHorizontalLine(canvas, startGorizontalGraph, mPaintCenterDelimeter);
     }
 
+    /**
+     * рисование стрелок для скрала если скролиться
+     * @param canvas
+     */
     private void myDrawStrelki(Canvas canvas) {
         canvas.clipRect(0, 0, canvasWidht, canvasHeight, regionREPLACE);
         if (offsetX != minX) canvas.drawPath(mPathStrelkaRight, mPaintStrelka);
         if (offsetX != -maxX) canvas.drawPath(mPathStrelkaLeft, mPaintStrelka);
     }
 
+    /**
+     * рисование треугольников
+     * @param canvas
+     */
     private void myDrawTriangle(Canvas canvas) {
         if (!hasSelected()) return;
         canvas.clipRect(borderLeft, 0, borderRight, canvasHeight, regionREPLACE);
@@ -839,11 +960,15 @@ float X;
 
     }
 
+    /**
+     * рисование задней сетки и текста снизу
+     * @param canvas
+     */
     private void drawMeshAndText(Canvas canvas) {
         canvas.clipRect(borderLeft, 0, borderRight, canvasHeight);
         //прямоугольники
         int k4 = 0, k5 = 0;
-        for (int i = 0; i < nPuct; i++) {
+        for (int i = 0; i < nBlock; i++) {
             {
                 if (i % 2 == 0) mPaintMesh.setColor(colorMeshOne);
                 else mPaintMesh.setColor(colorMeshTwo);
@@ -885,20 +1010,21 @@ float X;
         //края выделеного прямоугольника
     }
 
-
+    /**
+     * рисование границы
+     * @param canvas
+     */
     private void myDrawBorder(Canvas canvas) {
-        //border borderRight
+
         canvas.drawRect(borderRight, 0, canvasWidht, canvasHeight, mPaintBorder);
-        //border borderBottom
+
 
         canvas.drawRect(0, 0, borderLeft, canvasHeight, mPaintBorder);
-        //border borderBottom
+
         canvas.drawRect(0, borderBottom, canvasWidht, canvasHeight, mPaintBorder);
-        //border borderTop
+
         canvas.drawRect(0, 0, canvasWidht, borderTop, mPaintBorder);
-        //border
-//start line тени для border
-        //
+
         canvas.drawLine(0, borderTop, canvasWidht, borderTop, mPaintBorderLine);
         canvas.drawLine(0, borderBottom, canvasWidht, borderBottom, mPaintBorderLine);
 
@@ -909,8 +1035,16 @@ float X;
         canvas.drawLine(borderRight, borderTop, borderRight, borderBottom, mPaintBorderLine);
     }
 
-    @NonNull
-//    возвращает путь прямоугольника с закруглеными верхними углами
+
+    /**
+     *  возвращает путь прямоугольника с закруглеными верхними углами
+     * @param left
+     * @param top
+     * @param right
+     * @param bottom
+     * @param radius
+     * @return
+     */
     private Path getPathtopRoundRectTop(float left, float top, float right, float bottom, float radius) {
         Path path = new Path();
         path.moveTo(right, bottom);
@@ -922,7 +1056,15 @@ float X;
     }
 
 
-    //    возвращает путь прямоугольника с закруглеными верхними углами
+    /**
+     * возвращает вуть прямоугольника с закруглеными нижними углами
+     * @param left
+     * @param top
+     * @param right
+     * @param bottom
+     * @param radius
+     * @return
+     */
     private Path getPathtopRoundRectBottom(float left, float top, float right, float bottom, float radius) {
         Path path = new Path();
         path.moveTo(right, bottom);
@@ -933,7 +1075,15 @@ float X;
         return path;
     }
 
-    //возврашает шаг по максимальному значению и колво линий
+
+
+    /**
+     * возврашает шаг по максимальному значению и колво линий
+     * @param nElement ково планируемых линий
+     * @param maxValueData максимальное значение масива
+     * @param step для реализации рекурсии
+     * @return
+     */
     int getStep(float nElement, float maxValueData, int step) {
         if ((maxValueData / (step * nElement)) > 5)
             step = getStep(nElement, maxValueData, step * 10);
@@ -948,7 +1098,12 @@ float X;
 
     }
 
-
+    /**
+     * нарисовать горизонтальную линию зная высоту
+     * @param canvas
+     * @param y
+     * @param paint
+     */
     private void myDrawHorizontalLine(Canvas canvas, float y, Paint paint) {
 
         canvas.drawLine(0, y
@@ -957,6 +1112,18 @@ float X;
 
     }
 
+    /**
+     * рисует пунктирные линии для графика
+     * @param canvas
+     * @param step шаг линий
+     * @param nStep количество шагов линий
+     * @param average значение средней чтобы здесь не рисовать линию
+     * @param left начало линий слева
+     * @param right конец линий справа
+     * @param mPaintLine маркер линий
+     * @param showText  показывать текст рядом с линиеё
+     * @param mPaintText маркер линий
+     */
     private void myDrawPunctireLine(Canvas canvas, int step, float nStep, float average, float left, float right, Paint mPaintLine, boolean showText, Paint mPaintText) {
         canvas.clipRect(0, 0, canvasWidht, canvasHeight, regionREPLACE);
 
@@ -974,31 +1141,49 @@ float X;
 
     }
 
-    private float getYforValue(float value) {
+    /**
+     * находит значение по оси Y по значение
+     * @param value
+     * @return
+     */
+    private float getYForValue(float value) {
         return startGorizontalGraph - workRegionGrafikHeight * value;
     }
 
+
+    /**
+     * рисует среднюю линию на графике
+     * @param canvas
+     * @param average
+     */
     private void myDrawAverage(Canvas canvas, float average) {
         canvas.clipRect(0, 0, canvasWidht, canvasHeight, regionREPLACE);
 
-        myDrawHorizontalLine(canvas, getYforValue(average), mPaintPunctirAverage);
+        myDrawHorizontalLine(canvas, getYForValue(average), mPaintPunctirAverage);
 
-        canvas.drawText("ср", WIDTH_BORDER / 2, getYforValue(average) - 5, mPaintFontAverage);
+        canvas.drawText("ср", WIDTH_BORDER / 2, getYForValue(average) - 5, mPaintFontAverage);
     }
 
-    private void myDrawItem(Canvas canvas, int i, boolean bottom, Paint paint) {
+    /**
+     * рисукт пункту графика
+     * @param canvas
+     * @param i номер пункта чтобы вычислить значени
+     * @param bottomTwoGraph если второй график рисуеться
+     * @param paint
+     */
+    private void myDrawItem(Canvas canvas, int i, boolean bottomTwoGraph, Paint paint) {
 
 
-        if (bottom) {
+        if (bottomTwoGraph) {
             canvas.drawPath(getPathtopRoundRectBottom(borderLeft + offsetX + widthBlok / nItemInOneMesh * i + itemBorder,
-                    getYforValue(-arrayListStolbValue2.get(i)),
+                    getYForValue(-arrayListStolbValue2.get(i)),
                     borderLeft + offsetX + widthBlok / nItemInOneMesh * (i + 1) - itemBorder,
                     startGorizontalGraph, itemRadius), paint);
 
 
         } else {
             canvas.drawPath(getPathtopRoundRectTop(borderLeft + offsetX + widthBlok / nItemInOneMesh * i + itemBorder,
-                    getYforValue(arrayListStolbValue1.get(i)),
+                    getYForValue(arrayListStolbValue1.get(i)),
                     borderLeft + offsetX + widthBlok / nItemInOneMesh * (i + 1) - itemBorder,
                     startGorizontalGraph, itemRadius), paint);
         }
@@ -1006,6 +1191,11 @@ float X;
 
     }
 
+    /**
+     * возвращает среднее значение в листе
+     * @param arrayList
+     * @return
+     */
     private int getAverageArrayList(ArrayList<Integer> arrayList) {
         int average = 0;
 
@@ -1017,13 +1207,26 @@ float X;
         return average;
     }
 
+    /**
+     * проверяет выделено какойто блок или нет
+     * @return
+     */
     private boolean hasSelected() {
-//if()
-        return (nSelectedTouch >=0 && nSelectedTouch<arrayListStolbValue1.size()) && (arrayListStolbValue1.get(nSelectedTouch) != 0) && (arrayListStolbValue2.get(nSelectedTouch) != 0);
-    }
+if(arrayListStolbValue1==null)return false;
+        if  (!(nSelectedTouch >= 0 && nSelectedTouch < arrayListStolbValue1.size()))return false;
+        if (twoGraph) {
+            if (arrayListStolbValue2 == null) return false;
+
+            return ((arrayListStolbValue1.get(nSelectedTouch) != 0) && (arrayListStolbValue2.get(nSelectedTouch) != 0));
+
+        }
+        else return (arrayListStolbValue1.get(nSelectedTouch) != 0);
+        }
 
 
-    //ресурсы color
+    /**
+     * цвет отступов
+     */
     private int colorBorder;
 
     public void setColorCenterDelimeter(int colorCenterDelimeter) {
@@ -1031,6 +1234,10 @@ float X;
         invalidateColor();
     }
 
+
+    /**
+     * цвет центральной линие появлюшейся если два графика
+     */
     private int colorCenterDelimeter;
 
     public void setColorBorder(int colorBorder) {
@@ -1043,6 +1250,10 @@ float X;
         invalidateColor();
     }
 
+
+    /**
+     * цвет линий обводки (они придуют тень)
+     */
     private int colorBorderLine;
 
 
@@ -1055,8 +1266,13 @@ float X;
         this.colorItemTop2 = colorItemTop2;
         invalidateColor();
     }
-
+    /**
+     * цвет   пункта графика сверху (так как градиент) (для второго графика если их два)
+     */
     private int colorItemTop2;
+    /**
+     * цвет   пункта графика сверху (так как градиент)
+     */
     private int colorItemTop;
 
     public void setColorItemBottom(int colorItemBottom) {
@@ -1069,7 +1285,14 @@ float X;
         invalidateColor();
     }
 
+    /**
+     * цвет   пункта графика снизу (так как градиент) (для второго графика если их два)
+     */
     private int colorItemBottom2;
+
+    /**
+     * цвет   пункта графика снизу (так как градиент)
+     */
     private int colorItemBottom;
 
     public void setColorItemSelectedTop(int colorItemSelectedTop) {
@@ -1082,7 +1305,13 @@ float X;
         invalidateColor();
     }
 
+    /**
+     * цвет выделеного пункта графика сверху (так как градиент) (для второго графика если их два)
+     */
     private int colorItemSelectedTop2;
+    /**
+     * цвет выделеного пункта графика сверху (так как градиент)
+     */
     private int colorItemSelectedTop;
 
     public void setColorItemSelectedBottom(int colorItemSelectedBottom) {
@@ -1095,7 +1324,13 @@ float X;
         invalidateColor();
     }
 
+    /**
+     * цвет выделеного пункта графика снизу (так как градиент) (для второго графика если их два)
+     */
     private int colorItemSelectedBottom2;
+    /**
+     * цвет выделеного пункта графика снизу (так как градиент)
+     */
     private int colorItemSelectedBottom;
 
     public void setColorMeshOne(int colorMeshOne) {
@@ -1103,12 +1338,19 @@ float X;
         invalidateColor();
     }
 
+    /**
+     * цвет пуктов фона 2
+     */
     private int colorMeshOne;
 
     public void setColorMeshTwo(int colorMeshTwo) {
         this.colorMeshTwo = colorMeshTwo;
         invalidateColor();
     }
+
+    /**
+     * цвет пуктов фона 2
+     */
 
     private int colorMeshTwo;
 
@@ -1117,6 +1359,10 @@ float X;
         invalidateColor();
     }
 
+    /**
+     * цвет линий середины
+     */
+
     private int colorPunctireLineAverage;
 
     public void setColorPunctireLineSelectedColor(int colorPunctireLineSelectedColor) {
@@ -1124,12 +1370,19 @@ float X;
         invalidateColor();
     }
 
+    /**
+     * цвет горизонтального линий у выделеного блока (отличаеться цветом эфект прозрачности)
+     */
     private int colorPunctireLineSelectedColor;
 
     public void setColorPunctirLine(int colorPunctirLine) {
         this.colorPunctirLine = colorPunctirLine;
         invalidateColor();
     }
+
+    /**
+     * цвет линий горизонтальных
+     */
 
     private int colorPunctirLine;
 
@@ -1138,12 +1391,20 @@ float X;
         invalidateColor();
     }
 
+    /**
+     * цвет фона
+     */
+
     private int colorFontAll;
 
     public void setColorFontAverage(int colorFontAverage) {
         this.colorFontAverage = colorFontAverage;
         invalidateColor();
     }
+
+    /**
+     * цвет шрифта средней линий
+     */
 
     private int colorFontAverage;
 
@@ -1153,6 +1414,9 @@ float X;
         invalidateColor();
     }
 
+    /**
+     * цвет треугольника
+     */
     private int colorTriangle;
 
     public void setColorSelectedItemShadowLayer(int colorSelectedItemShadowLayer) {
@@ -1160,6 +1424,9 @@ float X;
         invalidateColor();
     }
 
+    /**
+     * цвет тени выделеный блока на сетки фона
+     */
     private int colorSelectedItemShadowLayer;
 
 

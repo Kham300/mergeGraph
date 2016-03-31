@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
     Button button1, button2, button3,button4,button5;
     Button button6,button7,button8,button9,button10;
-    MyGraphView myGraphView;
+
     myGroopAbsoluteLayout absoluteLayout;
         @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
 
             public void onClick(View v) {
 
-                absoluteLayout.setDrawGraph(28, 1, 2016, testdanStolbValue(), testdanStolbValue6(), enumTypeViewGraph.MESH_DAY_ITEM_DAY);
+                absoluteLayout.setDrawGraph(28, 1, 2016, testdanStolbValue(), testdanStolbValue(), enumTypeViewGraph.MESH_DAY_ITEM_DAY);
 //                myGraphView.setColorBorder(Color.GREEN);
 //                        myGraphView.setStartDayArayDay(28, 1, 2016, testdanStolbValue());
 
@@ -251,15 +251,15 @@ public class MainActivity extends AppCompatActivity {
         arrayList.add(10);
         arrayList.add(154);
         arrayList.add(864);
-        arrayList.add(383);
-        arrayList.add(783);
-        arrayList.add(157);
-        arrayList.add(54);
-        arrayList.add(683);
-        arrayList.add(13);
-        arrayList.add(888);
-        arrayList.add(444);
-        arrayList.add(777);
+//        arrayList.add(383);
+//        arrayList.add(783);
+//        arrayList.add(157);
+//        arrayList.add(54);
+//        arrayList.add(683);
+//        arrayList.add(13);
+//        arrayList.add(888);
+//        arrayList.add(444);
+//        arrayList.add(777);
 
         return arrayList;
     }
