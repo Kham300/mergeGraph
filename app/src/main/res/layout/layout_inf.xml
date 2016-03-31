@@ -41,7 +41,8 @@
             android:textSize="16dp"
 
             android:textStyle="bold"
-            android:layout_gravity="right" />
+            android:layout_gravity="right"
+            android:id="@+id/infoDlit" />
 
     </FrameLayout>
     <RelativeLayout
@@ -62,7 +63,8 @@
             android:textColor="@android:color/black"
             android:textSize="16dp"
             android:layout_alignParentRight="true"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:id="@+id/infoPodxod" />
 
     </RelativeLayout>
     <RelativeLayout
@@ -83,7 +85,8 @@
             android:textColor="@android:color/black"
             android:textSize="16dp"
             android:layout_alignParentRight="true"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:id="@+id/infoRaz" />
 
     </RelativeLayout>
     <RelativeLayout
@@ -104,7 +107,8 @@
             android:textColor="@android:color/black"
             android:textSize="16dp"
             android:layout_alignParentRight="true"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:id="@+id/infoSozheno" />
 
     </RelativeLayout>
     <RelativeLayout
@@ -125,7 +129,8 @@
             android:textColor="@android:color/black"
             android:textSize="16dp"
             android:layout_alignParentRight="true"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:id="@+id/infoPuls" />
 
     </RelativeLayout>
 

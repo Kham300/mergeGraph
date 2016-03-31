@@ -10,42 +10,50 @@ import android.graphics.Region;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.lardis.ivan.testcustomview.myAbsoluteLayout;
+import com.lardis.ivan.testcustomview.myGroopAbsoluteLayout;
 
 /**
  * TODO: document your custom view class.
  */
-public class MyZoomView extends View  {
-   private float x=0;
-    private float y=0;
+public class MyZoomView extends View {
+    private float x = 0;
+    private float y = 0;
 
 
-
-    public void  show() {
+    public void show() {
         this.show = true;
         invalidate();
     }
-    public void  hide( ) {
+
+    public void hide() {
         this.show = false;
         invalidate();
     }
-    private boolean show=false;
-private Bitmap bitmap;
-private Path circle;
 
+    private boolean show = false;
+    private Bitmap bitmap;
+    private Path circle;
 
+    int canvasWight;
+    int canvasHeight;
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        canvasHeight=getHeight();
+        canvasWight=getWidth();
+    }
 
     Paint mPaintCircle;
     Paint mPaintMarker;
 
-    public void setData(float x,float y,Bitmap bitmap) {
+    public void setData(float x, float y, Bitmap bitmap) {
         this.x = x;
         this.y = y;
 
-        this.bitmap=bitmap;
-         invalidate();
+        this.bitmap = bitmap;
+        invalidate();
     }
-
 
 
     public MyZoomView(Context context) {
@@ -72,15 +80,14 @@ private Path circle;
         // Load attributes
 
 
-
-        circle=new Path();
+        circle = new Path();
         setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-        mPaintCircle =new Paint();
+        mPaintCircle = new Paint();
         mPaintCircle.setStyle(Paint.Style.STROKE);
         mPaintCircle.setAntiAlias(true);
         mPaintCircle.setColor(Color.WHITE);
-        mPaintCircle.setStrokeWidth(10);
-        mPaintMarker =new Paint();
+        mPaintCircle.setStrokeWidth(5);
+        mPaintMarker = new Paint();
         mPaintMarker.setColor(Color.WHITE);
         mPaintMarker.setStyle(Paint.Style.STROKE);
         mPaintMarker.setAntiAlias(true);
@@ -90,22 +97,21 @@ private Path circle;
     @Override
     protected void onDraw(Canvas canvas) {
 //canvas.drawRect(getWidth()/3,getHeight()/3,getWidth()*2/3,getHeight()*2/3,new Paint());
-        if(show) {
+        if (show) {
             circle.reset();
-            circle.addCircle(x, y, myAbsoluteLayout.MY_ZOOM_VIEW_RADIUS/2, Path.Direction.CW);
+            circle.addCircle(x, y, myGroopAbsoluteLayout.MY_ZOOM_VIEW_RADIUS / 2, Path.Direction.CW);
 
             canvas.scale(2, 2, x, y);
             canvas.clipPath(circle, Region.Op.REPLACE);
             canvas.drawBitmap(bitmap, 0, 0, mPaintCircle);
+            canvas.clipRect(0, 0, canvasWight, canvasHeight, Region.Op.REPLACE);
             canvas.drawPath(circle, mPaintCircle);
 
-canvas.drawLine(x, y - 10, x, y + 10, mPaintMarker);
-canvas.drawLine(x-10,y,x+10,y,mPaintMarker);
+            canvas.drawLine(x, y - 10, x, y + 10, mPaintMarker);
+            canvas.drawLine(x - 10, y, x + 10, y, mPaintMarker);
         }
 
     }
-
-
 
 
 }

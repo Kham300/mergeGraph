@@ -2,17 +2,14 @@ package com.lardis.ivan.testcustomview;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AbsoluteLayout;
 import android.widget.Button;
 
 import com.lardis.ivan.testcustomview.helper.ViewHelper;
 import com.lardis.ivan.testcustomview.myEnum.enumTypeViewGraph;
 import com.lardis.ivan.testcustomview.myGroopView.MyGraphView;
 import com.lardis.ivan.testcustomview.myGroopView.MyZoomView;
-import com.lardis.ivan.testcustomview.myGroopView.ViewInfo.MyViewGroopBackgroundInfo;
+import com.lardis.ivan.testcustomview.myGroopView.ViewInfo.MyViewGroopInfo;
 
 import java.util.ArrayList;
 
@@ -20,54 +17,14 @@ public class MainActivity extends AppCompatActivity {
     Button button1, button2, button3,button4,button5;
     Button button6,button7,button8,button9,button10;
     MyGraphView myGraphView;
-
-    myAbsoluteLayout absoluteLayout;
-    MyZoomView myZoomView;
-    MyViewGroopBackgroundInfo myViewGroopBackgroundInfo;
-    @Override
+    myGroopAbsoluteLayout absoluteLayout;
+        @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-
-
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        absoluteLayout=(myAbsoluteLayout)findViewById(R.id.mygroop);
+        absoluteLayout=(myGroopAbsoluteLayout)findViewById(R.id.mygroop);
         myGraphView=absoluteLayout.getMyGraphView();
-        myZoomView=absoluteLayout.getMyZoomView();
-        myViewGroopBackgroundInfo=absoluteLayout.getMyViewGroopBackgroundInfo();
-        myGraphView.setSelectedZoom(new MyGraphView.SelectedZoom() {
-
-
-            @Override
-            public void doShow(boolean work) {
-                if (work) {
-                    myZoomView.show();
-
-                    absoluteLayout.showmyViewGroopBackgroundInfo();
-
-
-                }
-                    else {
-                    myZoomView.hide();
-                    absoluteLayout.hidemyViewGroopBackgroundInfo();
-                }
-
-            }
-
-            @Override
-            public void setCoordinate(float x, float y) {
-                myZoomView.setData(x, y, ViewHelper.getBitmapFromView(myGraphView));
-                absoluteLayout.setmyXandY(x,y);
-
-            }
-
-
-        });
-
-
-        button1 = (Button) findViewById(R.id.button);
+           button1 = (Button) findViewById(R.id.button);
         button6 = (Button) findViewById(R.id.button6);
         button7 = (Button) findViewById(R.id.button7);
         button8 = (Button) findViewById(R.id.button8);
@@ -89,9 +46,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 myGraphView.setDrawGraph(28, 1, 2016, testdanStolbValue(), null, enumTypeViewGraph.MESH_DAY_ITEM_DAY);
-//                myGraphView.setColorBorder(Color.GREEN);
-//                        myGraphView.setStartDayArayDay(28, 1, 2016, testdanStolbValue());
-                myGraphView.invalidate();
+                 myGraphView.invalidate();
 
 
             }
@@ -205,6 +160,92 @@ public class MainActivity extends AppCompatActivity {
         arrayList.add(783);
         arrayList.add(157);
         arrayList.add(54);
+
+
+        return arrayList;
+    }
+    public static ArrayList<String[]> testdanForInfo() {
+        ArrayList<String[]> arrayList=new ArrayList<>();
+        arrayList.add(new String[]{"12:32","12","53","23","12"});
+        arrayList.add(new String[]{"11:43","43","23","23","54"});
+        arrayList.add(new String[]{"6:56","45","23","98","54"});
+        arrayList.add(new String[]{"65:12","43","65","12","76"});
+        arrayList.add(new String[]{"1:32","12","65","12","65"});
+        arrayList.add(new String[]{"65:12","34","56","54","12"});
+        arrayList.add(new String[]{"56:12","76","12","54","87"});
+        arrayList.add(new String[]{"87:54","23","65","23","65"});
+        arrayList.add(new String[]{"54:54","23","98","54","67"});
+        arrayList.add(new String[]{"45:78","23","56","12","43"});
+
+        arrayList.add(new String[]{"12:32","12","53","23","12"});
+        arrayList.add(new String[]{"11:43","43","23","23","54"});
+        arrayList.add(new String[]{"6:56","45","23","98","54"});
+        arrayList.add(new String[]{"65:12","43","65","12","76"});
+        arrayList.add(new String[]{"1:32","12","65","12","65"});
+        arrayList.add(new String[]{"65:12","34","56","54","12"});
+        arrayList.add(new String[]{"56:12","76","12","54","87"});
+        arrayList.add(new String[]{"87:54","23","65","23","65"});
+        arrayList.add(new String[]{"54:54","23","98","54","67"});
+        arrayList.add(new String[]{"45:78","23","56","12","43"});
+        arrayList.add(new String[]{"12:32","12","53","23","12"});
+        arrayList.add(new String[]{"11:43","43","23","23","54"});
+        arrayList.add(new String[]{"6:56","45","23","98","54"});
+        arrayList.add(new String[]{"65:12","43","65","12","76"});
+        arrayList.add(new String[]{"1:32","12","65","12","65"});
+        arrayList.add(new String[]{"65:12","34","56","54","12"});
+        arrayList.add(new String[]{"56:12","76","12","54","87"});
+        arrayList.add(new String[]{"87:54","23","65","23","65"});
+        arrayList.add(new String[]{"54:54","23","98","54","67"});
+        arrayList.add(new String[]{"45:78","23","56","12","43"});
+        arrayList.add(new String[]{"12:32","12","53","23","12"});
+        arrayList.add(new String[]{"11:43","43","23","23","54"});
+        arrayList.add(new String[]{"6:56","45","23","98","54"});
+        arrayList.add(new String[]{"65:12","43","65","12","76"});
+        arrayList.add(new String[]{"1:32","12","65","12","65"});
+        arrayList.add(new String[]{"65:12","34","56","54","12"});
+        arrayList.add(new String[]{"56:12","76","12","54","87"});
+        arrayList.add(new String[]{"87:54","23","65","23","65"});
+        arrayList.add(new String[]{"54:54","23","98","54","67"});
+        arrayList.add(new String[]{"45:78","23","56","12","43"});
+        arrayList.add(new String[]{"12:32","12","53","23","12"});
+        arrayList.add(new String[]{"11:43","43","23","23","54"});
+        arrayList.add(new String[]{"6:56","45","23","98","54"});
+        arrayList.add(new String[]{"65:12","43","65","12","76"});
+        arrayList.add(new String[]{"1:32","12","65","12","65"});
+        arrayList.add(new String[]{"65:12","34","56","54","12"});
+        arrayList.add(new String[]{"56:12","76","12","54","87"});
+        arrayList.add(new String[]{"87:54","23","65","23","65"});
+        arrayList.add(new String[]{"54:54","23","98","54","67"});
+        arrayList.add(new String[]{"45:78","23","56","12","43"});
+        arrayList.add(new String[]{"12:32","12","53","23","12"});
+        arrayList.add(new String[]{"11:43","43","23","23","54"});
+        arrayList.add(new String[]{"6:56","45","23","98","54"});
+        arrayList.add(new String[]{"65:12","43","65","12","76"});
+        arrayList.add(new String[]{"1:32","12","65","12","65"});
+        arrayList.add(new String[]{"65:12","34","56","54","12"});
+        arrayList.add(new String[]{"56:12","76","12","54","87"});
+        arrayList.add(new String[]{"87:54","23","65","23","65"});
+        arrayList.add(new String[]{"54:54","23","98","54","67"});
+        arrayList.add(new String[]{"45:78","23","56","12","43"});     arrayList.add(new String[]{"12:32","12","53","23","12"});
+        arrayList.add(new String[]{"11:43","43","23","23","54"});
+        arrayList.add(new String[]{"6:56","45","23","98","54"});
+        arrayList.add(new String[]{"65:12","43","65","12","76"});
+        arrayList.add(new String[]{"1:32","12","65","12","65"});
+        arrayList.add(new String[]{"65:12","34","56","54","12"});
+        arrayList.add(new String[]{"56:12","76","12","54","87"});
+        arrayList.add(new String[]{"87:54","23","65","23","65"});
+        arrayList.add(new String[]{"54:54","23","98","54","67"});
+        arrayList.add(new String[]{"45:78","23","56","12","43"});
+        arrayList.add(new String[]{"12:32","12","53","23","12"});
+        arrayList.add(new String[]{"11:43","43","23","23","54"});
+        arrayList.add(new String[]{"6:56","45","23","98","54"});
+        arrayList.add(new String[]{"65:12","43","65","12","76"});
+        arrayList.add(new String[]{"1:32","12","65","12","65"});
+        arrayList.add(new String[]{"65:12","34","56","54","12"});
+        arrayList.add(new String[]{"56:12","76","12","54","87"});
+        arrayList.add(new String[]{"87:54","23","65","23","65"});
+        arrayList.add(new String[]{"54:54","23","98","54","67"});
+        arrayList.add(new String[]{"45:78","23","56","12","43"});
 
 
         return arrayList;

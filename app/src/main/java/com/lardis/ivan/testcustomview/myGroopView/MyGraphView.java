@@ -131,7 +131,7 @@ public class MyGraphView extends View {
 
         void doShow(boolean work);
 
-        void setCoordinate(float x, float y);
+        void setCoordinate(float x, float y,int nTouch);
 
 
     }
@@ -337,9 +337,6 @@ public class MyGraphView extends View {
         mPaintCenterDelimeter.setStrokeWidth(4);
         mPaintCenterDelimeter.setColor(colorCenterDelimeter);
 
-//        mBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.strelka);
-//        mBitmap = Bitmap.createScaledBitmap(mBitmap, (int) WIDTH_BORDER, (int) WIDTH_BORDER, false);
-//        mBitmap1 = Bitmap.createBitmap(mBitmap, 0, 0, mBitmap.getWidth(), mBitmap.getHeight(), matrixRotate, true);
         invalidateColor();
     }
 
@@ -350,18 +347,18 @@ public class MyGraphView extends View {
         mPaintBorder.setColor(colorBorder);
         mPaintSelectedColumn.setShadowLayer(10.0f, 0.0f, 0.0f, colorSelectedItemShadowLayer);
 
-        mPaintItemSelected.setShader(new LinearGradient(0, 0, 0, getHeight(),
+        mPaintItemSelected.setShader(new LinearGradient(0, 0, 0, canvasHeight,
                 colorItemSelectedTop
                 , colorItemSelectedBottom, Shader.TileMode.MIRROR));
-
-        mPaintItem.setShader(new LinearGradient(0, 0, 0, getHeight(),
+Log.d("Mylog","canvasHeight="+canvasHeight);
+        mPaintItem.setShader(new LinearGradient(0, 0, 0, canvasHeight,
                 colorItemTop
                 , colorItemBottom, Shader.TileMode.MIRROR));
-        mPaintItemSelected2.setShader(new LinearGradient(0, 0, 0, getHeight(),
+        mPaintItemSelected2.setShader(new LinearGradient(0, 0, 0, canvasHeight,
                 colorItemSelectedTop2
                 , colorItemSelectedBottom2, Shader.TileMode.MIRROR));
 
-        mPaintItem2.setShader(new LinearGradient(0, 0, 0, getHeight(),
+        mPaintItem2.setShader(new LinearGradient(0, 0, 0, canvasHeight,
                 colorItemTop2
                 , colorItemBottom2, Shader.TileMode.MIRROR));
 
@@ -375,7 +372,7 @@ public class MyGraphView extends View {
     }
 
     public void setDrawGraph(int day, int month, int year, ArrayList<Integer> arrayListMetodDrawGraph1, ArrayList<Integer> arrayListMetodDrawGraph2, enumTypeViewGraph typeViewGraph) {
-
+        invalidateColor();
         if (arrayListMetodDrawGraph1 != null) {
             typeView = typeViewGraph;
             this.arrayListStolbValueBuf1 = arrayListMetodDrawGraph1;
@@ -638,16 +635,27 @@ public class MyGraphView extends View {
 
     }
 
-    private long startTime = 0;
-    private long endTime = 0;
+    private boolean onLongClickListenerWork = false;
 
     OnLongClickListener onLongClickListener = new OnLongClickListener() {
         @Override
         public boolean onLongClick(View v) {
-            if(showZoom)selectedZoom.doShow(true);
+            if (showZoom) selectedZoom.doShow(true);
+            onLongClickListenerWork = true;
+
+
+                if (isScroll)
+                    nSelectedTouch = (int) ((X - bufX - WIDTH_BORDER) / (MIN_WIDTH_BLOCK / nItemInOneMesh));
+                else
+                    nSelectedTouch = (int) ((X - WIDTH_BORDER - bufX) * nItem / (getWidth() - WIDTH_BORDER * 2));
+
+            invalidate();
+
             return false;
         }
     };
+float X;
+    float Y;
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
         // TODO Auto-generated method stub
@@ -655,9 +663,12 @@ public class MyGraphView extends View {
 
         switch (motionEvent.getAction()) {
             case (MotionEvent.ACTION_DOWN):
-                selectedZoom.setCoordinate(motionEvent.getX(), motionEvent.getY());
+                X=motionEvent.getX();
+                Y=motionEvent.getY();
+                onLongClickListenerWork = false;
+                selectedZoom.setCoordinate(motionEvent.getX(), motionEvent.getY(),nSelectedTouch);
                 Log.d("Mylog", "startTime=" + motionEvent.getX() + "endTime=" + motionEvent.getY());
-                startTime = motionEvent.getEventTime();
+
                 showZoom = true;
 
                 bufX = offsetX;
@@ -665,31 +676,46 @@ public class MyGraphView extends View {
                 bufX2 = motionEvent.getX();
                 break;
             case (MotionEvent.ACTION_MOVE):
-                selectedZoom.setCoordinate(motionEvent.getX(), motionEvent.getY());
-                endTime = motionEvent.getEventTime();
-//
-                if ((Math.abs(bufX - offsetX) > 4) )showZoom=false;
+                X=motionEvent.getX();
+                Y=motionEvent.getY();
+                selectedZoom.setCoordinate(motionEvent.getX(), motionEvent.getY(),nSelectedTouch);
 
 
+                if ((Math.abs(bufX - offsetX) > 4)) showZoom = false;
 
-                offsetX = bufX - (bufX2 - motionEvent.getX());
+
+                if (!onLongClickListenerWork) {
+                    offsetX = bufX - (bufX2 - motionEvent.getX());
+                }
+
+                if (onLongClickListenerWork) {
+                      {
+                        if (isScroll)
+                            nSelectedTouch = (int) ((motionEvent.getX() - bufX - WIDTH_BORDER) / (MIN_WIDTH_BLOCK / nItemInOneMesh));
+                        else
+                            nSelectedTouch = (int) ((motionEvent.getX() - WIDTH_BORDER - bufX) * nItem / (getWidth() - WIDTH_BORDER * 2));
+
+                    }
+
+
+                }
 
                 break;
 
             case (MotionEvent.ACTION_UP):
                 showZoom = false;
                 selectedZoom.doShow(false);
-                if (Math.abs(bufX - offsetX) < 4) {
-                    if (isScroll)
-                        nSelectedTouch = (int) ((motionEvent.getX() - bufX - WIDTH_BORDER) / (MIN_WIDTH_BLOCK / nItemInOneMesh));
-                    else
-                        nSelectedTouch = (int) ((motionEvent.getX() - WIDTH_BORDER - bufX) * nItem / (getWidth() - WIDTH_BORDER * 2));
+                if (!onLongClickListenerWork) {
+                    if (Math.abs(bufX - offsetX) < 4) {
+                        if (isScroll)
+                            nSelectedTouch = (int) ((motionEvent.getX() - bufX - WIDTH_BORDER) / (MIN_WIDTH_BLOCK / nItemInOneMesh));
+                        else
+                            nSelectedTouch = (int) ((motionEvent.getX() - WIDTH_BORDER - bufX) * nItem / (getWidth() - WIDTH_BORDER * 2));
 
+                    }
+
+                    offsetX = bufX - (bufX2 - motionEvent.getX());
                 }
-                startTime = 0;
-                endTime = 0;
-                offsetX = bufX - (bufX2 - motionEvent.getX());
-
 //                if(selectedZoom!=null)selectedZoom.doShow(motionEvent.getX(), motionEvent.getY(), false);
                 break;
 
@@ -700,7 +726,7 @@ public class MyGraphView extends View {
 //        Log.d("Mylog","startTime="+startTime+"endTime="+endTime);
         invalidate();
 
-        return  super.onTouchEvent(motionEvent);
+        return super.onTouchEvent(motionEvent);
     }
 
 
@@ -991,8 +1017,8 @@ public class MyGraphView extends View {
     }
 
     private boolean hasSelected() {
-
-        return (nSelectedTouch != -1) && (arrayListStolbValue1.get(nSelectedTouch) != 0) && (arrayListStolbValue2.get(nSelectedTouch) != 0);
+//if()
+        return (nSelectedTouch >=0 && nSelectedTouch<arrayListStolbValue1.size()) && (arrayListStolbValue1.get(nSelectedTouch) != 0) && (arrayListStolbValue2.get(nSelectedTouch) != 0);
     }
 
 
