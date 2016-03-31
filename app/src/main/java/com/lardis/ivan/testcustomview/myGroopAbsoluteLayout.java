@@ -6,43 +6,91 @@ import android.view.ViewGroup;
 import android.widget.AbsoluteLayout;
 
 import com.lardis.ivan.testcustomview.helper.ViewHelper;
+import com.lardis.ivan.testcustomview.myEnum.enumTypeViewGraph;
 import com.lardis.ivan.testcustomview.myGroopView.MyGraphView;
 import com.lardis.ivan.testcustomview.myGroopView.MyZoomView;
-import com.lardis.ivan.testcustomview.myGroopView.ViewInfo.MyViewGroopInfo;
+import com.lardis.ivan.testcustomview.myGroopView.MyInfoView.MyViewGroopInfo;
 
 import java.util.ArrayList;
 
 /**
- * Created by i.larin on 30.03.2016.
+ * класс реализующий взаимодействия между гравификом, лупой и блоком с информацией
  */
 public class myGroopAbsoluteLayout extends AbsoluteLayout {
+    /**
+     * высота ширина info
+     */
     public static int MY_VIEW_GROOP_BACK_GROUND_INFO_WIGHT ;
+    /**
+     * высота блока info
+     */
     public static int MY_VIEW_GROOP_BACK_GROUND_INFO_HEIGHT;
-    public static int MY_ZOOM_VIEW_RADIUS;
-ArrayList<String[]> arrayList=MainActivity.testdanForInfo();
+    /**
+     * радиус лупы
+     */
+    public   int ZOOM_RADIUS;
 
+    public void setArrayListForInfo(ArrayList<String[]> arrayListForInfo) {
+        this.arrayListForInfo = arrayListForInfo;
+    }
+
+    /**
+     * лист с даными для информаций
+     *  массив  <br> 0 элемент - длитетельсть <br> 1 элемент -количество подходов <br> 2 элемент- количество раз <br>3 элемент- сожжено <br> 4 элемент пульс
+     */
+ArrayList<String[]> arrayListForInfo ;
+    /**
+     * view блок с информацией
+     */
     MyViewGroopInfo myViewGroopInfo;
+    /**
+     * view графика
+     */
     MyGraphView myGraphView;
+    /**
+     * view лупы
+     */
     MyZoomView myZoomView;
 
+    /**
+     * параметры блока с информацией
+     */
     ViewGroup.LayoutParams lpView;
 
 
-
+    /**
+     *
+     * @param x Ко
+     * @param y
+     * @param nTouch
+     */
     public void setmyXandYandNTouch(float x,float y,int nTouch) {
-//       if((x+MY_ZOOM_VIEW_RADIUS)>MY_VIEW_GROOP_BACK_GROUND_INFO_WIGHT)
-        if(nTouch>=0 && nTouch<arrayList.size())myViewGroopInfo.setInfomyViewGroopInfo(arrayList.get(nTouch));
-      if(x>(30+MY_VIEW_GROOP_BACK_GROUND_INFO_WIGHT+MY_ZOOM_VIEW_RADIUS))leftInfo(x,y);
-      else if(y>(30+MY_VIEW_GROOP_BACK_GROUND_INFO_HEIGHT+MY_ZOOM_VIEW_RADIUS))topInfo(x,y);
-        else  if((getWidth()-x)>(30+MY_VIEW_GROOP_BACK_GROUND_INFO_WIGHT+MY_ZOOM_VIEW_RADIUS))rightInfo(x,y);
-      else if((getHeight()-y)>(30+MY_VIEW_GROOP_BACK_GROUND_INFO_HEIGHT+MY_ZOOM_VIEW_RADIUS))bottomInfo(x,y);
+//       if((x+ZOOM_RADIUS)>MY_VIEW_GROOP_BACK_GROUND_INFO_WIGHT)
+        if(arrayListForInfo!=null)
+        if(nTouch>=0 && nTouch< arrayListForInfo.size())myViewGroopInfo.setInfo(arrayListForInfo.get(nTouch));
+
+
+        finfLocatinInfoView(x, y);
 //        bottomInfo(x,y);
     }
+
+    /**
+     * поиск места для расположения блока с информацией
+     * @param x
+     * @param y
+     */
+    private void finfLocatinInfoView(float x, float y) {
+        if(x>(30+MY_VIEW_GROOP_BACK_GROUND_INFO_WIGHT+ ZOOM_RADIUS))leftInfo(x,y);
+        else if(y>(30+MY_VIEW_GROOP_BACK_GROUND_INFO_HEIGHT+ ZOOM_RADIUS))topInfo(x,y);
+          else  if((getWidth()-x)>(30+MY_VIEW_GROOP_BACK_GROUND_INFO_WIGHT+ ZOOM_RADIUS))rightInfo(x,y);
+        else if((getHeight()-y)>(30+MY_VIEW_GROOP_BACK_GROUND_INFO_HEIGHT+ ZOOM_RADIUS))bottomInfo(x,y);
+    }
+
     void leftInfo(float x,float y)
     {
-        myViewGroopInfo.getMyViewBackgroundInfo().setLeftTringulePath();
-        myViewGroopInfo.getMyViewBackgroundInfo().invalidate();
-        myViewGroopInfo.setX(x - MY_ZOOM_VIEW_RADIUS-20 - MY_VIEW_GROOP_BACK_GROUND_INFO_WIGHT);
+        myViewGroopInfo.locationTriangleRight();
+        myViewGroopInfo.invalidate();
+        myViewGroopInfo.setX(x - ZOOM_RADIUS -20 - MY_VIEW_GROOP_BACK_GROUND_INFO_WIGHT);
 float k=y-MY_VIEW_GROOP_BACK_GROUND_INFO_HEIGHT/2;
 
         if(k>(getHeight()-MY_VIEW_GROOP_BACK_GROUND_INFO_HEIGHT))k=getHeight()-MY_VIEW_GROOP_BACK_GROUND_INFO_HEIGHT;
@@ -52,9 +100,9 @@ float k=y-MY_VIEW_GROOP_BACK_GROUND_INFO_HEIGHT/2;
     }
     void rightInfo(float x,float y)
     {
-        myViewGroopInfo.getMyViewBackgroundInfo().setRightTringulePath();
-        myViewGroopInfo.getMyViewBackgroundInfo().invalidate();
-        myViewGroopInfo.setX(x +20+ MY_ZOOM_VIEW_RADIUS);
+        myViewGroopInfo.locationTriangleLeft();
+        myViewGroopInfo.invalidate();
+        myViewGroopInfo.setX(x +20+ ZOOM_RADIUS);
 
         float k=y-MY_VIEW_GROOP_BACK_GROUND_INFO_HEIGHT/2;
         if(k>(getHeight()-MY_VIEW_GROOP_BACK_GROUND_INFO_HEIGHT))k=getHeight()-MY_VIEW_GROOP_BACK_GROUND_INFO_HEIGHT;
@@ -63,35 +111,39 @@ float k=y-MY_VIEW_GROOP_BACK_GROUND_INFO_HEIGHT/2;
 
     }
     void topInfo(float x,float y)
-    { myViewGroopInfo.getMyViewBackgroundInfo().setTopTringulePath();
-        myViewGroopInfo.getMyViewBackgroundInfo().invalidate();
+    { myViewGroopInfo.locationTriangleBottom();
+        myViewGroopInfo.invalidate();
         float k=x-MY_VIEW_GROOP_BACK_GROUND_INFO_WIGHT/2;
         if(k<0)k=0;
         if(k>(getWidth()-MY_VIEW_GROOP_BACK_GROUND_INFO_WIGHT))k=(getWidth()-MY_VIEW_GROOP_BACK_GROUND_INFO_WIGHT);
         myViewGroopInfo.setX(k);
 
-        myViewGroopInfo.setY(y - 20-MY_ZOOM_VIEW_RADIUS - MY_VIEW_GROOP_BACK_GROUND_INFO_HEIGHT);
+        myViewGroopInfo.setY(y - 20 - ZOOM_RADIUS - MY_VIEW_GROOP_BACK_GROUND_INFO_HEIGHT);
 
 
     }
     void bottomInfo(float x,float y)
     {
-        myViewGroopInfo.getMyViewBackgroundInfo().setBattomTringulePath();
-        myViewGroopInfo.getMyViewBackgroundInfo().invalidate();
+        myViewGroopInfo.locationTriangleTop();
+        myViewGroopInfo.invalidate();
         float k=x-MY_VIEW_GROOP_BACK_GROUND_INFO_WIGHT/2;
         if(k<0)k=0;
         if(k>(getWidth()-MY_VIEW_GROOP_BACK_GROUND_INFO_WIGHT))k=(getWidth()-MY_VIEW_GROOP_BACK_GROUND_INFO_WIGHT);
         myViewGroopInfo.setX(k);
 
-        myViewGroopInfo.setY(y + 20+MY_ZOOM_VIEW_RADIUS);
+        myViewGroopInfo.setY(y + 20+ ZOOM_RADIUS);
     }
     void showmyViewGroopBackgroundInfo()
-    {this.addView(myViewGroopInfo,lpView);}
+    {this.addView(myViewGroopInfo, lpView);}
 
     void hidemyViewGroopBackgroundInfo()
     {this.removeView(myViewGroopInfo);}
 
+   void setDrawGraph(int day, int month, int year, ArrayList<Integer> arrayListMetodDrawGraph1, ArrayList<Integer> arrayListMetodDrawGraph2, enumTypeViewGraph typeViewGraph)
+   {myGraphView.setDrawGraph(day, month, year,  arrayListMetodDrawGraph1,  arrayListMetodDrawGraph2,  typeViewGraph);
+       myGraphView.invalidate();
 
+   }
 
     public MyGraphView getMyGraphView() {
         return myGraphView;
@@ -125,11 +177,11 @@ float k=y-MY_VIEW_GROOP_BACK_GROUND_INFO_HEIGHT/2;
 
         MY_VIEW_GROOP_BACK_GROUND_INFO_WIGHT= ViewHelper.convertDpToPixel(210, getContext());
    MY_VIEW_GROOP_BACK_GROUND_INFO_HEIGHT= ViewHelper.convertDpToPixel(170, getContext());
-        MY_ZOOM_VIEW_RADIUS=ViewHelper.convertDpToPixel(100, getContext());
+        ZOOM_RADIUS =ViewHelper.convertDpToPixel(100, getContext());
         myGraphView = new MyGraphView(getContext());
         myViewGroopInfo =new MyViewGroopInfo(getContext());
         myZoomView=new MyZoomView(getContext());
-
+myZoomView.setRadius(ZOOM_RADIUS);
         lpView = new ViewGroup.LayoutParams(MY_VIEW_GROOP_BACK_GROUND_INFO_WIGHT, MY_VIEW_GROOP_BACK_GROUND_INFO_HEIGHT);
 
         this.addView(myGraphView);

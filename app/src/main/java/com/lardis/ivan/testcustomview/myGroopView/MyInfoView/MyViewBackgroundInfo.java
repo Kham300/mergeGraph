@@ -1,8 +1,7 @@
-package com.lardis.ivan.testcustomview.myGroopView.ViewInfo;
+package com.lardis.ivan.testcustomview.myGroopView.MyInfoView;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
@@ -13,17 +12,37 @@ import com.lardis.ivan.testcustomview.R;
 import com.lardis.ivan.testcustomview.helper.ViewHelper;
 
 /**
- * Created by i.larin on 30.03.2016.
+ *view заднего фона для блока информации
  */
 public class MyViewBackgroundInfo extends View {
+    /**
+     *  маркер для треугольника
+     */
+   Paint mPaintTriangle;
+    /**
+     * маркер для заднего фона блока
+     */
    Paint mPaintBackground;
-   Paint mPaintBackground1;
-    int canvasWight;
-    int canvasHeight;
+
+    /**
+     * размеры холста
+     */
+    int canvasWight,canvasHeight;
+    /**
+     * путь треугольника
+     */
 Path pathTriangle;
-    Paint mPaintBackground2;
+    /**
+     * прямоугольник для отрисовки фона
+     */
 RectF rectF;
+    /**
+     * отступ от края
+     */
     int padding;
+    /**
+     * радиус закругления блока
+     */
     int round;
     public MyViewBackgroundInfo(Context context) {
         super(context);
@@ -42,19 +61,19 @@ RectF rectF;
 void init()
 {
     setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-    mPaintBackground=new Paint();
+    mPaintTriangle =new Paint();
 
-    mPaintBackground.setAntiAlias(true);
-    mPaintBackground.setStyle(Paint.Style.FILL);
-    mPaintBackground1=new Paint();
+    mPaintTriangle.setAntiAlias(true);
+    mPaintTriangle.setStyle(Paint.Style.FILL);
+    mPaintBackground =new Paint();
 
+    mPaintTriangle.setColor(getResources().getColor(R.color.myViewBackgroundInfo));
     mPaintBackground.setColor(getResources().getColor(R.color.myViewBackgroundInfo));
-    mPaintBackground1.setColor(getResources().getColor(R.color.myViewBackgroundInfo));
-    mPaintBackground1.setAntiAlias(true);
+    mPaintBackground.setAntiAlias(true);
       padding= ViewHelper.convertDpToPixel(7, getContext());
     round=ViewHelper.convertDpToPixel(7, getContext());
 pathTriangle =new Path();
-    mPaintBackground1.setShadowLayer(5.0f, 0.0f, 0.0f, getResources().getColor(R.color.selectedColumnShadowLayerColorExample));
+    mPaintBackground.setShadowLayer(5.0f, 0.0f, 0.0f, getResources().getColor(R.color.selectedColumnShadowLayerColorExample));
 
 }
 
@@ -64,7 +83,10 @@ pathTriangle =new Path();
         canvasHeight=getHeight();
         canvasWight=getWidth();
     }
-public void setRightTringulePath()
+    /**
+     * переместить треугольник слева относительно блока
+     */
+public void locationTriangleLeft()
 
 {pathTriangle.reset();
     pathTriangle.moveTo(0, canvasHeight / 2);
@@ -72,8 +94,10 @@ public void setRightTringulePath()
     pathTriangle.lineTo(padding, canvasHeight / 2 - padding);
 
 }
-
-    public void setLeftTringulePath()
+    /**
+     * переместить треугольник справа относительно блока
+     */
+    public void locationTriangleRight()
 
     {pathTriangle.reset();
         pathTriangle.moveTo(canvasWight, canvasHeight / 2);
@@ -82,8 +106,10 @@ public void setRightTringulePath()
 
     }
 
-
-    public void setTopTringulePath()
+    /**
+     * переместить треугольник снизу относительно блока
+     */
+    public void locationTriangleBottom()
 
     {
         pathTriangle.reset();
@@ -91,7 +117,11 @@ public void setRightTringulePath()
         pathTriangle.lineTo(canvasWight / 2 - padding, canvasHeight - padding);
         pathTriangle.lineTo(canvasWight / 2 + padding, canvasHeight - padding);
     }
-    public void setBattomTringulePath()
+
+    /**
+     * переместить треугольник сверху относительно блока
+     */
+    public void locationTriangleTop()
 
     {
         pathTriangle.reset();
@@ -102,10 +132,10 @@ public void setRightTringulePath()
     @Override
     protected void onDraw(Canvas canvas) {
         rectF = new RectF(padding,padding,getWidth() - padding, getHeight() - padding);
-//        canvas.drawRect(0, 0, getWidth(), getHeight(), mPaintBackground);
-        canvas.drawRoundRect(rectF, round, round, mPaintBackground1);
 
-canvas.drawPath(pathTriangle, mPaintBackground);
+        canvas.drawRoundRect(rectF, round, round, mPaintBackground);
+
+canvas.drawPath(pathTriangle, mPaintTriangle);
 
 
 

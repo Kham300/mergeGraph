@@ -772,6 +772,7 @@ float X;
 
     }
 
+
     private void invalidatePathStrelka() {
         float buf;
         if (twoGraph) buf = startGorizontalGraph;

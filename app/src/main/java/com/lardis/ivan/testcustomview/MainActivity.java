@@ -5,11 +5,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import com.lardis.ivan.testcustomview.helper.ViewHelper;
 import com.lardis.ivan.testcustomview.myEnum.enumTypeViewGraph;
 import com.lardis.ivan.testcustomview.myGroopView.MyGraphView;
-import com.lardis.ivan.testcustomview.myGroopView.MyZoomView;
-import com.lardis.ivan.testcustomview.myGroopView.ViewInfo.MyViewGroopInfo;
 
 import java.util.ArrayList;
 
@@ -23,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         absoluteLayout=(myGroopAbsoluteLayout)findViewById(R.id.mygroop);
-        myGraphView=absoluteLayout.getMyGraphView();
+
            button1 = (Button) findViewById(R.id.button);
         button6 = (Button) findViewById(R.id.button6);
         button7 = (Button) findViewById(R.id.button7);
@@ -37,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
+            absoluteLayout.setArrayListForInfo(testdanForInfo());
 
 
 
@@ -45,8 +42,8 @@ public class MainActivity extends AppCompatActivity {
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                myGraphView.setDrawGraph(28, 1, 2016, testdanStolbValue(), null, enumTypeViewGraph.MESH_DAY_ITEM_DAY);
-                 myGraphView.invalidate();
+                absoluteLayout.setDrawGraph(28, 1, 2016, testdanStolbValue(), null, enumTypeViewGraph.MESH_DAY_ITEM_DAY);
+
 
 
             }
@@ -55,10 +52,9 @@ public class MainActivity extends AppCompatActivity {
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                myGraphView.setDrawGraph(28, 1, 2016, testdanStolbValue1(), null, enumTypeViewGraph.MESH_MONTH_ITEM_MONTH);
-//myGraphView.setColorBorder(Color.GRAY);
-//                myGraphView.setStartMonthArrayMonth(10, testdanStolbValue1());
-                myGraphView.invalidate();
+                absoluteLayout.setDrawGraph(28, 1, 2016, testdanStolbValue1(), null, enumTypeViewGraph.MESH_MONTH_ITEM_MONTH);
+
+
             }
         });
         button3.setOnClickListener(new View.OnClickListener() {
@@ -68,9 +64,9 @@ public class MainActivity extends AppCompatActivity {
 
 
 //                myGraphView.setStartDayArrayWeekInOneMonth(28, 1, 2016, testdanStolbValue1());
-                myGraphView.setDrawGraph(28, 1, 2016, testdanStolbValue1(), null, enumTypeViewGraph.MESH_WEEK_ITEM_WEEK);
+                absoluteLayout.setDrawGraph(28, 1, 2016, testdanStolbValue1(), null, enumTypeViewGraph.MESH_WEEK_ITEM_WEEK);
 //                myGraphView.setColorBorder(Color.RED);
-                myGraphView.invalidate();
+
             }
         });
         button4.setOnClickListener(new View.OnClickListener() {
@@ -80,8 +76,8 @@ public class MainActivity extends AppCompatActivity {
 
 
 //                myGraphView.setStarMonthArrayDay(  2, 2016, testdanStolbValueDataInMonth());
-                myGraphView.setDrawGraph(1, 1, 2016, testdanStolbValueDataInMonth(), null, enumTypeViewGraph.MESH_WEEK_ITEM_DAY);
-                myGraphView.invalidate();
+                absoluteLayout.setDrawGraph(1, 1, 2016, testdanStolbValueDataInMonth(), null, enumTypeViewGraph.MESH_WEEK_ITEM_DAY);
+
             }
         });
         button5.setOnClickListener(new View.OnClickListener() {
@@ -90,8 +86,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
 
-                myGraphView.setDrawGraph(27, 1, 2016, testdanStolbValue5(), null, enumTypeViewGraph.MESH_MONTH_ITEM_WEEK);
-                myGraphView.invalidate();
+                absoluteLayout.setDrawGraph(27, 1, 2016, testdanStolbValue5(), null, enumTypeViewGraph.MESH_MONTH_ITEM_WEEK);
+
             }
         });
         button6.setOnClickListener(new View.OnClickListener() {
@@ -99,20 +95,20 @@ public class MainActivity extends AppCompatActivity {
 
             public void onClick(View v) {
 
-                myGraphView.setDrawGraph(28, 1, 2016, testdanStolbValue(), testdanStolbValue6(), enumTypeViewGraph.MESH_DAY_ITEM_DAY);
+                absoluteLayout.setDrawGraph(28, 1, 2016, testdanStolbValue(), testdanStolbValue6(), enumTypeViewGraph.MESH_DAY_ITEM_DAY);
 //                myGraphView.setColorBorder(Color.GREEN);
 //                        myGraphView.setStartDayArayDay(28, 1, 2016, testdanStolbValue());
-                myGraphView.invalidate();
+
             }
         });
         button7.setOnClickListener(new View.OnClickListener() {
             @Override
 
             public void onClick(View v) {
-                myGraphView.setDrawGraph(28, 1, 2016, testdanStolbValue1(), testdanStolbValue1(), enumTypeViewGraph.MESH_MONTH_ITEM_MONTH);
+                absoluteLayout.setDrawGraph(28, 1, 2016, testdanStolbValue1(), testdanStolbValue1(), enumTypeViewGraph.MESH_MONTH_ITEM_MONTH);
 //myGraphView.setColorBorder(Color.GRAY);
 //                myGraphView.setStartMonthArrayMonth(10, testdanStolbValue1());
-           myGraphView.invalidate();
+
             }
         });
         button8.setOnClickListener(new View.OnClickListener() {
@@ -120,8 +116,8 @@ public class MainActivity extends AppCompatActivity {
 
             public void onClick(View v) {
 
-                myGraphView.setDrawGraph(28, 1, 2016, testdanStolbValue1(), testdanStolbValue1(), enumTypeViewGraph.MESH_WEEK_ITEM_WEEK);
-                myGraphView.invalidate();
+                absoluteLayout.setDrawGraph(28, 1, 2016, testdanStolbValue1(), testdanStolbValue1(), enumTypeViewGraph.MESH_WEEK_ITEM_WEEK);
+
             }
         });
         button9.setOnClickListener(new View.OnClickListener() {
@@ -130,8 +126,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
 
-                myGraphView.setDrawGraph(1, 1, 2016, testdanStolbValueDataInMonth(), testdanStolbValueDataInMonth(), enumTypeViewGraph.MESH_WEEK_ITEM_DAY);
-                myGraphView.invalidate();
+                absoluteLayout.setDrawGraph(1, 1, 2016, testdanStolbValueDataInMonth(), testdanStolbValueDataInMonth(), enumTypeViewGraph.MESH_WEEK_ITEM_DAY);
+
             }
         });
         button10.setOnClickListener(new View.OnClickListener() {
@@ -140,8 +136,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
 
-                myGraphView.setDrawGraph(1, 1, 2016, testdanStolbValue5(), testdanStolbValue5(), enumTypeViewGraph.MESH_MONTH_ITEM_WEEK);
-                myGraphView.invalidate();
+                absoluteLayout.setDrawGraph(1, 1, 2016, testdanStolbValue5(), testdanStolbValue5(), enumTypeViewGraph.MESH_MONTH_ITEM_WEEK);
+
             }
         });
 
@@ -164,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
 
         return arrayList;
     }
-    public static ArrayList<String[]> testdanForInfo() {
+    public   ArrayList<String[]> testdanForInfo() {
         ArrayList<String[]> arrayList=new ArrayList<>();
         arrayList.add(new String[]{"12:32","12","53","23","12"});
         arrayList.add(new String[]{"11:43","43","23","23","54"});
