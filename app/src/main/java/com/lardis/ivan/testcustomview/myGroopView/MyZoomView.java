@@ -10,7 +10,7 @@ import android.graphics.Region;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.lardis.ivan.testcustomview.helper.ViewHelper;
+import com.lardis.ivan.testcustomview.helper.HelperView;
 
 /**
  * Класс для лупы
@@ -112,7 +112,7 @@ public class MyZoomView extends View {
 
 
     private void init(AttributeSet attrs, int defStyle) {
-        radius = ViewHelper.convertDpToPixel(100, getContext());
+        radius = HelperView.convertDpToPixel(100, getContext());
         circle = new Path();
         setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         mPaintCircle = new Paint();

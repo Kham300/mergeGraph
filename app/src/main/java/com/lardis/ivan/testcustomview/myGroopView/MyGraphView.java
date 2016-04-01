@@ -9,7 +9,6 @@ import android.graphics.DashPathEffect;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Region;
 import android.graphics.Shader;
@@ -20,7 +19,7 @@ import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 
 import com.lardis.ivan.testcustomview.R;
-import com.lardis.ivan.testcustomview.helper.ViewHelper;
+import com.lardis.ivan.testcustomview.helper.HelperView;
 import com.lardis.ivan.testcustomview.myEnum.enumTypeViewGraph;
 
 import java.util.ArrayList;
@@ -475,8 +474,14 @@ public class MyGraphView extends View {
 
 
     public void initLayout() {
-        rateDpToPixel = ViewHelper.getRateDpToPixel(getContext());
+        twoGraph=false;
+        rateDpToPixel = HelperView.getRateDpToPixel(getContext());
 
+        textSizeAll = (int) getPx(10);
+
+        mPaintFontAllColor.setTextSize(textSizeAll);
+        mPaintFontAverage.setTextSize(textSizeAll);
+        maxTextHeight = HelperView.getTextHeight(mPaintFontAverage);
         canvasWidht = getWidth();
         canvasHeight = getHeight();
         WIDTH_BORDER = getPx(35);
@@ -484,25 +489,14 @@ public class MyGraphView extends View {
         MIN_HEIGHT_BETWEEN_BLOCK = getPx(20);
 
         borderTop = WIDTH_BORDER / 3;
-        borderBottom = canvasHeight - WIDTH_BORDER;
+        calculateBorderButtom(typeView);
         borderLeft = WIDTH_BORDER;
         borderRight = canvasWidht - WIDTH_BORDER;
-        workRegionGrafikHeight = (borderBottom - borderTop - getPx(20));
-        textSizeAll = (int) getPx(10);
-        mPaintFontAllColor.setTextSize(textSizeAll);
-        mPaintFontAverage.setTextSize(textSizeAll);
-
-        // Подсчитаем размер текста
-        Rect rectSizeText = new Rect();
-        mPaintFontAverage.getTextBounds("s", 0, "s".length(), rectSizeText);
-        //mTextWidth = textBounds.width();
-        // Используем measureText для измерения ширины
-        maxTextWidth = mPaintFontAverage.measureText("s");
-        maxTextHeight = rectSizeText.height();
+        workRegionGrafikHeight = (borderBottom - borderTop - maxTextHeight * 5);
 
         itemBorder = MIN_WIDTH_BLOCK / 8;
         itemRadius = MIN_WIDTH_BLOCK / 8;
-        maxWidthBlock = MIN_WIDTH_BLOCK + 20;
+        calculateNItemInOneMesh();
     }
 
 
@@ -525,7 +519,6 @@ public class MyGraphView extends View {
         mPaintItemSelected.setShader(new LinearGradient(0, 0, 0, canvasHeight,
                 colorItemSelectedTop
                 , colorItemSelectedBottom, Shader.TileMode.MIRROR));
-        Log.d("Mylog", "canvasHeight=" + canvasHeight);
         mPaintItem.setShader(new LinearGradient(0, 0, 0, canvasHeight,
                 colorItemTop
                 , colorItemBottom, Shader.TileMode.MIRROR));
@@ -546,6 +539,16 @@ public class MyGraphView extends View {
 
     }
 
+    private void clear() {
+        arrayListStolbValue1.clear();
+        arrayListStolbValue2.clear();
+        daysInPunctArrayList.clear();
+
+        arrayListStolbValueBuf1.clear();
+        arrayListStolbValueBuf2.clear();
+        arrayListName.clear();
+    }
+
     /**
      * метод принимаюший значения для графика и в зависимости от типа <br>
      * графика расчитывает для них подписи с низу и подготовливет данные для onDraw
@@ -560,31 +563,27 @@ public class MyGraphView extends View {
     public void setDrawGraph(int day, int month, int year, ArrayList<Integer> arrayListMetodDrawGraph1, ArrayList<Integer> arrayListMetodDrawGraph2, enumTypeViewGraph typeViewGraph) {
         invalidateColor();
         if (arrayListMetodDrawGraph1 != null) {
-            arrayListStolbValue1.clear();
-            arrayListStolbValue2.clear();
-
-
-            arrayListStolbValueBuf1.clear();
-            arrayListStolbValueBuf2.clear();
             typeView = typeViewGraph;
+
+            initLayout();
+            clear();
+
+            if (arrayListMetodDrawGraph2 != null)
+                twoGraph = arrayListMetodDrawGraph2.size() == arrayListMetodDrawGraph1.size();
+
+
             this.arrayListStolbValueBuf1 = arrayListMetodDrawGraph1;
-            arrayListName.clear();
+
             myCalendar.set(year, month, day);
             maxValueData1 = Collections.max(arrayListMetodDrawGraph1);
             averageValueData1 = getAverageArrayList(arrayListMetodDrawGraph1);
-            if (arrayListMetodDrawGraph2 != null) {
-                if (arrayListMetodDrawGraph2.size() == arrayListMetodDrawGraph1.size()) {
-                    this.arrayListStolbValueBuf2 = arrayListMetodDrawGraph2;
-                    maxValueData2 = Collections.max(arrayListMetodDrawGraph2);
-                    averageValueData2 = getAverageArrayList(arrayListMetodDrawGraph2);
-
-                    startGorizontalGraph = (borderBottom - borderTop) / (maxValueData1 + maxValueData2) * maxValueData1 + borderTop;
-
-                    twoGraph = true;
-                }
-
+            if (twoGraph) {
+                this.arrayListStolbValueBuf2 = arrayListMetodDrawGraph2;
+                maxValueData2 = Collections.max(arrayListMetodDrawGraph2);
+                averageValueData2 = getAverageArrayList(arrayListMetodDrawGraph2);
+                startGorizontalGraph = (borderBottom - borderTop) / (maxValueData1 + maxValueData2) * maxValueData1 + borderTop;
             } else {
-                twoGraph = false;
+
                 startGorizontalGraph = borderBottom;
                 maxValueData2 = 0;
                 averageValueData2 = 0;
@@ -594,166 +593,35 @@ public class MyGraphView extends View {
             switch (typeView) {
 
                 case MESH_MONTH_ITEM_WEEK:
-                    daysInPunctArrayList.clear();
-                    int days;
-                    int DAY_OF_WEEK = myCalendar.get(Calendar.DAY_OF_WEEK);
-                    days = arrayListMetodDrawGraph1.size() * 7;
-                    nItemInOneMesh = 4;
 
-                    if (DAY_OF_WEEK != 1) day = day + 2 - DAY_OF_WEEK;
-                    else {
-                        day = day - 6;
-                    }
-                    if (day <= 0) {
-                        month--;
-                        myCalendar.set(2016, month, 1);
-                        day = myCalendar.getActualMaximum(Calendar.DATE) + day;
-                    }
-                    int bufMonth = month;
-                    myCalendar.set(year, bufMonth, day);
-                    days = days - (myCalendar.getActualMaximum(Calendar.DATE) - day + 1);
-                    daysInPunctArrayList.add(myCalendar.getActualMaximum(Calendar.DATE) - day + 1);
-                    arrayListName.add(shortMonthName[bufMonth] + "");
-                    bufMonth++;
-                    while (days > 0) {
-                        myCalendar.set(year, bufMonth, day);
-                        arrayListName.add(shortMonthName[bufMonth] + "");
-                        if (days < myCalendar.getActualMaximum(Calendar.DATE)) {
-                            daysInPunctArrayList.add(days);
-                            days = 0;
-                        } else {
-                            daysInPunctArrayList.add(myCalendar.getActualMaximum(Calendar.DATE));
-                            days = days - myCalendar.getActualMaximum(Calendar.DATE);
-                        }
-                        if (bufMonth == 11) {
-                            year++;
-                            bufMonth = 0;
-                        } else
-                            bufMonth++;
-                    }
-                    nBlock = daysInPunctArrayList.size();
-                    if (daysInPunctArrayList.get(0) < 14) {
-                        daysInPunctArrayList.set(0, daysInPunctArrayList.get(0) + 14);
-                        if (twoGraph) {
-                            arrayListMetodDrawGraph2.add(0, 0);
-                            arrayListMetodDrawGraph2.add(0, 0);
-                        }
-                        arrayListMetodDrawGraph1.add(0, 0);
-                        arrayListMetodDrawGraph1.add(0, 0);
-                    }
-                    if (daysInPunctArrayList.get(daysInPunctArrayList.size() - 1) < 14) {
-                        daysInPunctArrayList.set(daysInPunctArrayList.size() - 1, daysInPunctArrayList.get(daysInPunctArrayList.size() - 1) + 14);
+                    calculateValueMeshMonthItemWeek(day, month, year, arrayListMetodDrawGraph1, arrayListMetodDrawGraph2);
 
-                        arrayListMetodDrawGraph1.add(0);
-                        arrayListMetodDrawGraph1.add(0);
-                        if (twoGraph) {
-                            arrayListMetodDrawGraph2.add(0);
-                            arrayListMetodDrawGraph2.add(0);
-                        }
-                    }
 
 
                     break;
 
                 case MESH_WEEK_ITEM_DAY:
-                    nItemInOneMesh = 7;
 
-                    int max_date = myCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-                    if (max_date == arrayListMetodDrawGraph1.size()) {
 
-                        myCalendar.set(year, month, 1);
 
-                        int monday = (1 - myCalendar.get(Calendar.DAY_OF_WEEK) + 7 + 2) % 7;
-                        if (monday == 0) monday = 7;
-                        for (int i = 0; i < arrayListMetodDrawGraph1.size(); i++) {
-                            if ((i + 1) % 7 == monday) arrayListName.add(i + 1 + "");
-                            else arrayListName.add("");
-                        }
-                        nNepolWeek = myCalendar.getActualMaximum(Calendar.DAY_OF_MONTH) / 7;
-                        if (monday != 1) nNepolWeek++;
-                        if (myCalendar.getActualMaximum(Calendar.DAY_OF_MONTH) % 7 + 1 - monday > 0)
-                            nNepolWeek++;
-                        if (monday == 1) shiftPuctInValueDay = 0;
-                        else shiftPuctInValueDay = (8f - monday) / 7f;
-                        nBlock = nNepolWeek;
-                    } else return;
+                    if (myCalendar.getActualMaximum(Calendar.DAY_OF_MONTH)  == arrayListMetodDrawGraph1.size()) {
+
+                        calculateMeshWeekItemDay(month, year, arrayListMetodDrawGraph1);
+
+
+                    } else break;
 
 
                     break;
 
                 case MESH_WEEK_ITEM_WEEK:
-                    nItemInOneMesh = 1;
-                    DAY_OF_WEEK = myCalendar.get(Calendar.DAY_OF_WEEK);
-                    if (DAY_OF_WEEK != 1) day = day + 2 - DAY_OF_WEEK;
-                    else {
-                        day = day - 6;
-                    }
-                    if (day <= 0) {
-                        month--;
-                        myCalendar.set(2016, month, 1);
-                        day = myCalendar.getActualMaximum(Calendar.DATE) + day;
-                    }
-                    //day понедельник
-                    int daySunday;
-                    int monthSunday;
-                    arrayListTwoName = new ArrayList<String>();
-                    for (int i = 0; i < arrayListMetodDrawGraph1.size(); i++) {
-                        myCalendar.set(year, month, day);
-                        if (day + 6 > myCalendar.getActualMaximum(Calendar.DATE)) {
-                            daySunday = day + 6 - myCalendar.getActualMaximum(Calendar.DATE);
-                            if (month == 11) monthSunday = 0;
-                            else
-                                monthSunday = month + 1;
-                        } else {
-                            monthSunday = month;
-                            daySunday = day + 6;
-                        }
-                        arrayListName.add(day + shortMonthName[month] + "");
-                        arrayListTwoName.add(daySunday + shortMonthName[monthSunday] + "");
-                        if (day + 7 > myCalendar.getActualMaximum(Calendar.DATE)) {
-                            day = day + 7 - myCalendar.getActualMaximum(Calendar.DATE);
-
-                            if (month == 11) {
-                                month = 0;
-                                year++;
-                            } else
-                                month++;
-                            Log.d("Mylog", "day=" + day + "month=" + month);
-                        } else {
-                            day = day + 7;
-                        }
-                    }
+                    calculateMeshWeekItemWeek(day, month, year, arrayListMetodDrawGraph1);
                     break;
 
                 case MESH_DAY_ITEM_DAY:
                 case MESH_MONTH_ITEM_MONTH:
-                    nItemInOneMesh = 1;
 
-                    max_date = myCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-
-                    for (int i = 0; i < arrayListMetodDrawGraph1.size(); i++) {
-                        if (typeView == enumTypeViewGraph.MESH_DAY_ITEM_DAY) {
-                            arrayListName.add(day + " " + shortMonthName[month]);
-
-                            if (day == max_date) {
-                                day = 1;
-
-                                if (month == 11) month = 0;
-                                else month++;
-                                myCalendar.set(year, month, day);
-                                max_date = myCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-                            } else day++;
-                        }
-                        if (typeView == enumTypeViewGraph.MESH_MONTH_ITEM_MONTH) {
-                            arrayListName.add(shortMonthName[month]);
-
-                            if (month == 11) {
-                                month = 0;
-
-
-                            } else month++;
-                        }
-                    }
+                    calculateMeshDayItemDayAndMeshMonthItemMonth(day, month, year, arrayListMetodDrawGraph1);
                     break;
             }
 
@@ -779,7 +647,7 @@ public class MyGraphView extends View {
             nSelectedTouch = -1;
             // границы скрола
             if (nItem != 0) {
-                      isScroll = !(MIN_WIDTH_BLOCK < canvasWidht / nItem);
+                isScroll = !(MIN_WIDTH_BLOCK < canvasWidht / nItem);
                 if (enumTypeViewGraph.MESH_WEEK_ITEM_DAY == typeView) isScroll = false;
                 if (typeView == enumTypeViewGraph.MESH_MONTH_ITEM_WEEK)
                     isScroll = !(MIN_WIDTH_BLOCK < canvasWidht / arrayListStolbValueBuf1.size() * 4);
@@ -810,6 +678,152 @@ public class MyGraphView extends View {
             workRegionGrafikHeightInValue = workRegionGrafikHeight / (maxValueData1 + maxValueData2);
 
             animator.start();
+        }
+    }
+
+    private void calculateMeshDayItemDayAndMeshMonthItemMonth(int day, int month, int year, ArrayList<Integer> arrayListMetodDrawGraph1) {
+        int  max_date = myCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+
+        for (int i = 0; i < arrayListMetodDrawGraph1.size(); i++) {
+            if (typeView == enumTypeViewGraph.MESH_DAY_ITEM_DAY) {
+                arrayListName.add(day + " " + shortMonthName[month]);
+
+                if (day == max_date) {
+                    day = 1;
+
+                    if (month == 11) month = 0;
+                    else month++;
+                    myCalendar.set(year, month, day);
+                    max_date = myCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+                } else day++;
+            }
+            if (typeView == enumTypeViewGraph.MESH_MONTH_ITEM_MONTH) {
+                arrayListName.add(shortMonthName[month]);
+
+                if (month == 11) {
+                    month = 0;
+
+
+                } else month++;
+            }
+        }
+    }
+
+    private void calculateMeshWeekItemWeek(int day, int month, int year, ArrayList<Integer> arrayListMetodDrawGraph1) {
+        int DAY_OF_WEEK;
+        DAY_OF_WEEK = myCalendar.get(Calendar.DAY_OF_WEEK);
+        if (DAY_OF_WEEK != 1) day = day + 2 - DAY_OF_WEEK;
+        else {
+            day = day - 6;
+        }
+        if (day <= 0) {
+            month--;
+            myCalendar.set(2016, month, 1);
+            day = myCalendar.getActualMaximum(Calendar.DATE) + day;
+        }
+        //day понедельник
+        int daySunday;
+        int monthSunday;
+        arrayListTwoName = new ArrayList<String>();
+        for (int i = 0; i < arrayListMetodDrawGraph1.size(); i++) {
+            myCalendar.set(year, month, day);
+            if (day + 6 > myCalendar.getActualMaximum(Calendar.DATE)) {
+                daySunday = day + 6 - myCalendar.getActualMaximum(Calendar.DATE);
+                if (month == 11) monthSunday = 0;
+                else
+                    monthSunday = month + 1;
+            } else {
+                monthSunday = month;
+                daySunday = day + 6;
+            }
+            arrayListName.add(day + shortMonthName[month] + "");
+            arrayListTwoName.add(daySunday + shortMonthName[monthSunday] + "");
+            if (day + 7 > myCalendar.getActualMaximum(Calendar.DATE)) {
+                day = day + 7 - myCalendar.getActualMaximum(Calendar.DATE);
+
+                if (month == 11) {
+                    month = 0;
+                    year++;
+                } else
+                    month++;
+            } else {
+                day = day + 7;
+            }
+        }
+    }
+
+    private void calculateMeshWeekItemDay(int month, int year, ArrayList<Integer> arrayListMetodDrawGraph1) {
+        myCalendar.set(year, month, 1);
+
+        int monday = (1 - myCalendar.get(Calendar.DAY_OF_WEEK) + 7 + 2) % 7;
+        if (monday == 0) monday = 7;
+        for (int i = 0; i < arrayListMetodDrawGraph1.size(); i++) {
+            if ((i + 1) % 7 == monday) arrayListName.add(i + 1 + "");
+            else arrayListName.add("");
+        }
+        nNepolWeek = myCalendar.getActualMaximum(Calendar.DAY_OF_MONTH) / 7;
+        if (monday != 1) nNepolWeek++;
+        if (myCalendar.getActualMaximum(Calendar.DAY_OF_MONTH) % 7 + 1 - monday > 0)
+            nNepolWeek++;
+        if (monday == 1) shiftPuctInValueDay = 0;
+        else shiftPuctInValueDay = (8f - monday) / 7f;
+        nBlock = nNepolWeek;
+    }
+
+    private void calculateValueMeshMonthItemWeek(int day, int month, int year, ArrayList<Integer> arrayListMetodDrawGraph1, ArrayList<Integer> arrayListMetodDrawGraph2) {
+        int days;
+        int DAY_OF_WEEK = myCalendar.get(Calendar.DAY_OF_WEEK);
+        days = arrayListMetodDrawGraph1.size() * 7;
+        if (DAY_OF_WEEK != 1) day = day + 2 - DAY_OF_WEEK;
+        else {
+            day = day - 6;
+        }
+        if (day <= 0) {
+            month--;
+            myCalendar.set(2016, month, 1);
+            day = myCalendar.getActualMaximum(Calendar.DATE) + day;
+        }
+        int bufMonth = month;
+        myCalendar.set(year, bufMonth, day);
+        days = days - (myCalendar.getActualMaximum(Calendar.DATE) - day + 1);
+        daysInPunctArrayList.add(myCalendar.getActualMaximum(Calendar.DATE) - day + 1);
+        arrayListName.add(shortMonthName[bufMonth] + "");
+        bufMonth++;
+        while (days > 0) {
+            myCalendar.set(year, bufMonth, day);
+            arrayListName.add(shortMonthName[bufMonth] + "");
+            if (days < myCalendar.getActualMaximum(Calendar.DATE)) {
+                daysInPunctArrayList.add(days);
+                days = 0;
+            } else {
+                daysInPunctArrayList.add(myCalendar.getActualMaximum(Calendar.DATE));
+                days = days - myCalendar.getActualMaximum(Calendar.DATE);
+            }
+            if (bufMonth == 11) {
+                year++;
+                bufMonth = 0;
+            } else
+                bufMonth++;
+        }
+        nBlock = daysInPunctArrayList.size();
+        if (daysInPunctArrayList.get(0) < 14) {
+            daysInPunctArrayList.set(0, daysInPunctArrayList.get(0) + 14);
+            if (twoGraph) {
+                arrayListMetodDrawGraph2.add(0, 0);
+                arrayListMetodDrawGraph2.add(0, 0);
+            }
+            arrayListMetodDrawGraph1.add(0, 0);
+            arrayListMetodDrawGraph1.add(0, 0);
+        }
+        if (daysInPunctArrayList.get(daysInPunctArrayList.size() - 1) < 14) {
+            daysInPunctArrayList.set(daysInPunctArrayList.size() - 1, daysInPunctArrayList.get(daysInPunctArrayList.size() - 1) + 14);
+
+            arrayListMetodDrawGraph1.add(0);
+            arrayListMetodDrawGraph1.add(0);
+            if (twoGraph) {
+                arrayListMetodDrawGraph2.add(0);
+                arrayListMetodDrawGraph2.add(0);
+            }
         }
     }
 
@@ -865,12 +879,11 @@ public class MyGraphView extends View {
                     workFromZoomAndBlockInfo.setCoordinate(motionEvent.getX(), motionEvent.getY(), nSelectedTouch);
 
                     int nselbuf = nSelectedTouch;
-updateNSelectedTouch(X);
+                    updateNSelectedTouch(X);
                     if (nselbuf != nSelectedTouch) workFromZoomAndBlockInfo.updatePrtScn();
 
 
-                }
-else {
+                } else {
                     updateOffsetX();
                 }
                 break;
@@ -881,7 +894,7 @@ else {
 
                 }
                 updateOffsetX();
-if(Math.abs(offsetX-bufOffsetX)<4)updateNSelectedTouch(X);
+                if (Math.abs(offsetX - bufOffsetX) < 4) updateNSelectedTouch(X);
 
                 break;
         }
@@ -894,7 +907,7 @@ if(Math.abs(offsetX-bufOffsetX)<4)updateNSelectedTouch(X);
         offsetX = bufOffsetX - (bufX2 - X);
         if (offsetX < -maxX) offsetX = -maxX;
         if (offsetX > minX) offsetX = minX;
-        Log.d("Mylog","offsetX="+offsetX);
+        Log.d("Mylog", "offsetX=" + offsetX);
     }
 
     private void updateNSelectedTouch(Float X) {
@@ -1015,24 +1028,76 @@ if(Math.abs(offsetX-bufOffsetX)<4)updateNSelectedTouch(X);
         if ((typeView == enumTypeViewGraph.MESH_WEEK_ITEM_DAY) || (typeView == enumTypeViewGraph.MESH_MONTH_ITEM_WEEK))
             lr = 0;
         if (typeView == enumTypeViewGraph.MESH_WEEK_ITEM_WEEK) {
-            mPath.moveTo(leftRectSelectedMesh + lr, canvasHeight - 3);
-            mPath.lineTo(rightRectSelectedMesh - lr, canvasHeight - 3);
-            mPath.lineTo((leftRectSelectedMesh + rightRectSelectedMesh) / 2, canvasHeight - WIDTH_BORDER / 3);
+            mPath.moveTo(leftRectSelectedMesh + lr, borderBottom + 6 * maxTextHeight - 3);
+            mPath.lineTo(rightRectSelectedMesh - lr, borderBottom + 6 * maxTextHeight - 3);
+            mPath.lineTo((leftRectSelectedMesh + rightRectSelectedMesh) / 2, borderBottom + maxTextHeight * 4);
         } else {
-            mPath.moveTo(leftRectSelectedMesh + lr, canvasHeight - WIDTH_BORDER / 3 + 5);
-            mPath.lineTo(rightRectSelectedMesh - lr, canvasHeight - WIDTH_BORDER / 3 + 5);
-            mPath.lineTo((leftRectSelectedMesh + rightRectSelectedMesh) / 2, canvasHeight - WIDTH_BORDER * 2 / 3 + 5);
+            mPath.moveTo(leftRectSelectedMesh + lr, borderBottom + 4 * maxTextHeight);
+            mPath.lineTo(rightRectSelectedMesh - lr, borderBottom + 4 * maxTextHeight);
+            mPath.lineTo((leftRectSelectedMesh + rightRectSelectedMesh) / 2, borderBottom + maxTextHeight * 2);
         }
         canvas.drawPath(mPath, mPaintTriangle);
         mPath.reset();
-        mPath.moveTo(leftRectSelectedMesh + lr, WIDTH_BORDER / 3 + 3);
-        mPath.lineTo(rightRectSelectedMesh - lr, WIDTH_BORDER / 3 + 3);
-        mPath.lineTo((leftRectSelectedMesh + rightRectSelectedMesh) / 2, WIDTH_BORDER * 2 / 3 + 3);
+        mPath.moveTo(leftRectSelectedMesh + lr, borderTop + 3);
+        mPath.lineTo(rightRectSelectedMesh - lr, borderTop + 3);
+        mPath.lineTo((leftRectSelectedMesh + rightRectSelectedMesh) / 2, borderTop + maxTextHeight * 2 + 3);
 
         canvas.drawPath(mPath, mPaintTriangle);
 
 
 //end  треугольник снизу и сверху выделеного блока
+
+    }
+
+
+    public void calculateBorderButtom(enumTypeViewGraph enumTypeViewGraph) {
+        if (enumTypeViewGraph == enumTypeViewGraph.MESH_WEEK_ITEM_WEEK) {
+            borderBottom = canvasHeight - maxTextHeight * 6 - 3;
+
+        } else {
+            borderBottom = canvasHeight - maxTextHeight * 4 - 3;
+
+
+        }
+
+
+    }
+
+
+    public void calculateNItemInOneMesh()
+
+
+
+
+
+    {
+if(typeView!=null)
+        switch (typeView) {
+            case MESH_MONTH_ITEM_WEEK:
+
+                nItemInOneMesh = 4;
+                break;
+            case MESH_WEEK_ITEM_DAY:
+                nItemInOneMesh = 7;
+                break;
+            case MESH_WEEK_ITEM_WEEK:
+            case MESH_MONTH_ITEM_MONTH:
+            case MESH_DAY_ITEM_DAY:
+
+                nItemInOneMesh = 1;
+                break;
+
+
+        }
+
+
+        if (typeView == enumTypeViewGraph.MESH_MONTH_ITEM_WEEK) {
+            nItemInOneMesh = 4;
+
+        } else if (typeView == enumTypeViewGraph.MESH_WEEK_ITEM_DAY) {
+            nItemInOneMesh = 7;
+        }
+
 
     }
 
@@ -1055,7 +1120,7 @@ if(Math.abs(offsetX-bufOffsetX)<4)updateNSelectedTouch(X);
                     buf_k1 = buf_k;
 
                     buf_k = buf_k + daysInPunctArrayList.get(i);
-                    canvas.drawText(arrayListStolbName.get(i), WIDTH_BORDER + offsetX + widthBlock / 28 * (buf_k1 + (buf_k - buf_k1) / 2), borderBottom + 12, mPaintFontAllColor);
+                    canvas.drawText(arrayListStolbName.get(i), WIDTH_BORDER + offsetX + widthBlock / 28 * (buf_k1 + (buf_k - buf_k1) / 2), borderBottom + maxTextHeight * 2, mPaintFontAllColor);
 
                     canvas.drawRect(WIDTH_BORDER + offsetX + widthBlock / 28 * buf_k1, borderTop, WIDTH_BORDER + offsetX + widthBlock / 28 * buf_k, borderBottom, mPaintMesh);
 
@@ -1074,9 +1139,9 @@ if(Math.abs(offsetX-bufOffsetX)<4)updateNSelectedTouch(X);
         if (typeView != enumTypeViewGraph.MESH_MONTH_ITEM_WEEK) {
             for (int i = 0; i < nItem; i++) {
                 {
-                    canvas.drawText(arrayListStolbName.get(i), WIDTH_BORDER + offsetX + widthBlock / nItemInOneMesh * (i + 1.0f / 2.0f - shiftPuctInValueDay), borderBottom + ViewHelper.convertDpToPixel(12, getContext()), mPaintFontAllColor);
+                    canvas.drawText(arrayListStolbName.get(i), WIDTH_BORDER + offsetX + widthBlock / nItemInOneMesh * (i + 1.0f / 2.0f - shiftPuctInValueDay), borderBottom + maxTextHeight * 2, mPaintFontAllColor);
                     if (typeView == enumTypeViewGraph.MESH_WEEK_ITEM_WEEK)
-                        canvas.drawText(arrayListTwoName.get(i), WIDTH_BORDER + offsetX + widthBlock * (i + 1.0f / 2.0f), borderBottom + ViewHelper.convertDpToPixel(22, getContext()), mPaintFontAllColor);
+                        canvas.drawText(arrayListTwoName.get(i), WIDTH_BORDER + offsetX + widthBlock * (i + 1.0f / 2.0f), borderBottom + maxTextHeight * 4, mPaintFontAllColor);
                 }
             }
         }

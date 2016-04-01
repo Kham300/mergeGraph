@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.widget.AbsoluteLayout;
 
-import com.lardis.ivan.testcustomview.helper.ViewHelper;
+import com.lardis.ivan.testcustomview.helper.HelperView;
 import com.lardis.ivan.testcustomview.myEnum.enumTypeViewGraph;
 import com.lardis.ivan.testcustomview.myGroopView.MyGraphView;
 import com.lardis.ivan.testcustomview.myGroopView.MyZoomView;
@@ -222,9 +222,9 @@ public class myGroopAbsoluteLayout extends AbsoluteLayout {
     {
 
 
-        INFO_WIGHT = ViewHelper.convertDpToPixel(210, getContext());
-        INFO_HEIGHT = ViewHelper.convertDpToPixel(170, getContext());
-        ZOOM_RADIUS = ViewHelper.convertDpToPixel(100, getContext());
+        INFO_WIGHT = HelperView.convertDpToPixel(210, getContext());
+        INFO_HEIGHT = HelperView.convertDpToPixel(170, getContext());
+        ZOOM_RADIUS = HelperView.convertDpToPixel(100, getContext());
         myGraphView = new MyGraphView(getContext());
         myViewGroopInfo = new MyViewGroopInfo(getContext());
         myZoomView = new MyZoomView(getContext());
@@ -261,7 +261,7 @@ public class myGroopAbsoluteLayout extends AbsoluteLayout {
 
             @Override
             public void updatePrtScn() {
-                myZoomView.updateBitmapPrtScn(ViewHelper.getBitmapFromView(myGraphView));
+                myZoomView.updateBitmapPrtScn(HelperView.getBitmapFromView(myGraphView));
             }
 
 

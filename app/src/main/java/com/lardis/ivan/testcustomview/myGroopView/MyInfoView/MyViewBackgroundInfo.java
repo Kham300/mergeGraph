@@ -9,7 +9,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.lardis.ivan.testcustomview.R;
-import com.lardis.ivan.testcustomview.helper.ViewHelper;
+import com.lardis.ivan.testcustomview.helper.HelperView;
 
 /**
  *view заднего фона для блока информации
@@ -70,8 +70,8 @@ void init()
     mPaintTriangle.setColor(getResources().getColor(R.color.myViewBackgroundInfo));
     mPaintBackground.setColor(getResources().getColor(R.color.myViewBackgroundInfo));
     mPaintBackground.setAntiAlias(true);
-      padding= ViewHelper.convertDpToPixel(7, getContext());
-    round=ViewHelper.convertDpToPixel(7, getContext());
+      padding= HelperView.convertDpToPixel(7, getContext());
+    round= HelperView.convertDpToPixel(7, getContext());
 pathTriangle =new Path();
     mPaintBackground.setShadowLayer(5.0f, 0.0f, 0.0f, getResources().getColor(R.color.selectedColumnShadowLayerColorExample));
 
