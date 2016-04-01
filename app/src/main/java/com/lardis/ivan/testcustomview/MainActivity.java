@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 //                myGraphView.setStarMonthArrayDay(  2, 2016, testdanStolbValueDataInMonth());
-                absoluteLayout.setDrawGraph(1, 1, 2016, testdanStolbValueDataInMonth(), null, enumTypeViewGraph.MESH_WEEK_ITEM_DAY);
+                absoluteLayout.setDrawGraph(1, 4, 2016, testdanStolbValueDataInMonth(), null, enumTypeViewGraph.MESH_WEEK_ITEM_DAY);
 
             }
         });
@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
 
-                absoluteLayout.setDrawGraph(1, 1, 2016, testdanStolbValueDataInMonth(), testdanStolbValueDataInMonth(), enumTypeViewGraph.MESH_WEEK_ITEM_DAY);
+                absoluteLayout.setDrawGraph(1, 2, 2016, testdanStolbValueDataInMonth(), testdanStolbValueDataInMonth(), enumTypeViewGraph.MESH_WEEK_ITEM_DAY);
 
             }
         });
@@ -248,23 +248,18 @@ public class MainActivity extends AppCompatActivity {
     }
     private ArrayList<Integer> testdanStolbValue() {
         ArrayList<Integer> arrayList=new ArrayList<>();
+        arrayList.add(54);
+        arrayList.add(683);
+        arrayList.add(13);
+        arrayList.add(888);
+        arrayList.add(444);
+        arrayList.add(1777);
         arrayList.add(10);
         arrayList.add(154);
         arrayList.add(864);
         arrayList.add(383);
         arrayList.add(783);
         arrayList.add(157);
-        arrayList.add(54);
-        arrayList.add(683);
-        arrayList.add(13);
-        arrayList.add(888);
-        arrayList.add(444);
-        arrayList.add(777);
-
-        return arrayList;
-    }
-    private ArrayList<Integer> testdanStolbValue222() {
-        ArrayList<Integer> arrayList=new ArrayList<>();
 
         arrayList.add(54);
         arrayList.add(683);
@@ -278,6 +273,36 @@ public class MainActivity extends AppCompatActivity {
         arrayList.add(383);
         arrayList.add(783);
         arrayList.add(157);
+        return arrayList;
+    }
+    private ArrayList<Integer> testdanStolbValue222() {
+        ArrayList<Integer> arrayList=new ArrayList<>();
+
+
+        arrayList.add(1777);
+        arrayList.add(10);
+        arrayList.add(154);
+        arrayList.add(864);
+        arrayList.add(383);
+        arrayList.add(783);
+        arrayList.add(54);
+        arrayList.add(683);
+        arrayList.add(13);
+        arrayList.add(888);
+        arrayList.add(444);
+        arrayList.add(1777);
+        arrayList.add(10);
+        arrayList.add(154);
+        arrayList.add(864);
+        arrayList.add(383);
+        arrayList.add(783);
+        arrayList.add(157);
+        arrayList.add(157);
+        arrayList.add(54);
+        arrayList.add(683);
+        arrayList.add(13);
+        arrayList.add(888);
+        arrayList.add(444);
         return arrayList;
     }
     private ArrayList<Integer> testdanStolbValue1() {
@@ -354,8 +379,9 @@ public class MainActivity extends AppCompatActivity {
         arrayList.add(1224);
         arrayList.add( 514);
         arrayList.add(364);
-        arrayList.add(583);
-        arrayList.add(183);
+        arrayList.add(364);
+        arrayList.add(364);
+
 
         arrayList.add(557);
         arrayList.add(888);
@@ -387,7 +413,8 @@ public class MainActivity extends AppCompatActivity {
         arrayList.add(777);
 
 
-
+        arrayList.add(444);
+        arrayList.add(777);
 
 
         return arrayList;

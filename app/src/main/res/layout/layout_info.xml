@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="@dimen/layout_info_width"
+    android:layout_height="@dimen/layout_info_height">
 
     <LinearLayout
 
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="@dimen/layout_info_width"
+        android:layout_height="@dimen/layout_info_height"
         android:orientation="vertical"
-
-        android:paddingBottom="15dip"
-        android:paddingLeft="15dip"
-        android:paddingRight="15dip">
+        android:layout_marginTop="@dimen/layout_info_padding"
+        android:paddingBottom="@dimen/layout_info_padding"
+        android:paddingLeft="@dimen/layout_info_padding"
+        android:paddingRight="@dimen/layout_info_padding">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="15dp"
+            android:layout_marginBottom="@dimen/layout_info_padding_raz"
+            android:layout_marginTop="@dimen/layout_info_padding_raz"
             android:text="РАЗМИНКА"
             android:textColor="@color/razminka"
-            android:textSize="16dp"
+            android:textSize="@dimen/layout_info_text_size"
             android:textStyle="bold" />
 
         <FrameLayout
@@ -35,7 +35,7 @@
                 android:layout_height="wrap_content"
                 android:text="Длительность:"
                 android:textColor="@android:color/black"
-                android:textSize="16dp" />
+                android:textSize="@dimen/layout_info_text_size" />
 
             <TextView
                 android:id="@+id/infodlit"
@@ -45,7 +45,7 @@
                 android:text="00:12"
 
                 android:textColor="@android:color/black"
-                android:textSize="16dp"
+                android:textSize="@dimen/layout_info_text_size"
                 android:textStyle="bold" />
 
         </FrameLayout>
@@ -60,7 +60,7 @@
                 android:layout_height="wrap_content"
                 android:text="Кол-во подходов:"
                 android:textColor="@android:color/black"
-                android:textSize="16dp" />
+                android:textSize="@dimen/layout_info_text_size" />
 
             <TextView
                 android:id="@+id/infoPodxod"
@@ -69,7 +69,7 @@
                 android:layout_gravity="right"
                 android:text="20"
                 android:textColor="@android:color/black"
-                android:textSize="16dp"
+                android:textSize="@dimen/layout_info_text_size"
                 android:textStyle="bold" />
 
         </FrameLayout>
@@ -84,7 +84,7 @@
                 android:layout_height="wrap_content"
                 android:text="Кол-во раз:"
                 android:textColor="@android:color/black"
-                android:textSize="16dp" />
+                android:textSize="@dimen/layout_info_text_size" />
 
             <TextView
                 android:id="@+id/infoRaz"
@@ -94,7 +94,7 @@
                 android:text="00:12"
 
                 android:textColor="@android:color/black"
-                android:textSize="16dp"
+                android:textSize="@dimen/layout_info_text_size"
                 android:textStyle="bold" />
 
         </FrameLayout>
@@ -109,7 +109,7 @@
                 android:layout_height="wrap_content"
                 android:text="Сожжено:"
                 android:textColor="@android:color/black"
-                android:textSize="16dp" />
+                android:textSize="@dimen/layout_info_text_size" />
 
             <TextView
                 android:id="@+id/infoSozheno"
@@ -118,7 +118,7 @@
                 android:layout_gravity="right"
                 android:text="10калл"
                 android:textColor="@android:color/black"
-                android:textSize="16dp"
+                android:textSize="@dimen/layout_info_text_size"
                 android:textStyle="bold" />
 
         </FrameLayout>
@@ -133,7 +133,7 @@
                 android:layout_height="wrap_content"
                 android:text="Пульс:"
                 android:textColor="@android:color/black"
-                android:textSize="16dp" />
+                android:textSize="@dimen/layout_info_text_size" />
 
             <TextView
                 android:id="@+id/infoPuls"
@@ -142,7 +142,7 @@
                 android:layout_gravity="right"
                 android:text="102 уд/мин"
                 android:textColor="@android:color/black"
-                android:textSize="16dp"
+                android:textSize="@dimen/layout_info_text_size"
                 android:textStyle="bold" />
 
         </FrameLayout>

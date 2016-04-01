@@ -3,7 +3,8 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="layout_info_text_size">16dp</dimen>
-    <dimen name="layout_info_width">160dp</dimen>
-    <dimen name="layout_info_height">160dp</dimen>
+    <dimen name="layout_info_width">200dp</dimen>
+    <dimen name="layout_info_height">180dp</dimen>
     <dimen name="layout_info_padding">15dp</dimen>
+
 </resources>

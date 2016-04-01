@@ -20,7 +20,7 @@ public class myGroopAbsoluteLayout extends AbsoluteLayout {
     /**
      *   ширина блока info (view)
      */
-    public static int INFO_WIGHT;
+    public static int INFO_WIDHT;
     /**
      * высота блока info (view)
      */
@@ -81,7 +81,7 @@ public class myGroopAbsoluteLayout extends AbsoluteLayout {
      */
 
     public void setmyXandYandNTouch(float x, float y, int nSelectTouch) {
-//       if((x+ZOOM_RADIUS)>INFO_WIGHT)
+//       if((x+ZOOM_RADIUS)>INFO_WIDHT)
         if (arrayListForInfo != null)
             if (nSelectTouch >= 0 && nSelectTouch < arrayListForInfo.size())
                 myViewGroopInfo.setInfo(arrayListForInfo.get(nSelectTouch));
@@ -98,9 +98,9 @@ public class myGroopAbsoluteLayout extends AbsoluteLayout {
      * @param y
      */
     private void findLocatinInfoView(float x, float y) {
-        if (x > (30 + INFO_WIGHT + ZOOM_RADIUS)) leftInfo(x, y);
+        if (x > (30 + INFO_WIDHT + ZOOM_RADIUS)) leftInfo(x, y);
         else if (y > (30 + INFO_HEIGHT + ZOOM_RADIUS)) topInfo(x, y);
-        else if ((getWidth() - x) > (30 + INFO_WIGHT + ZOOM_RADIUS))
+        else if ((getWidth() - x) > (30 + INFO_WIDHT + ZOOM_RADIUS))
             rightInfo(x, y);
         else if ((getHeight() - y) > (30 + INFO_HEIGHT + ZOOM_RADIUS))
             bottomInfo(x, y);
@@ -115,7 +115,7 @@ public class myGroopAbsoluteLayout extends AbsoluteLayout {
     void leftInfo(float x, float y) {
         myViewGroopInfo.locationTriangleRight();
         myViewGroopInfo.invalidate();
-        myViewGroopInfo.setX(x - ZOOM_RADIUS - 20 - INFO_WIGHT);
+        myViewGroopInfo.setX(x - ZOOM_RADIUS - 20 - INFO_WIDHT);
         float k = y - INFO_HEIGHT / 2;
 
         if (k > (getHeight() - INFO_HEIGHT))
@@ -153,10 +153,10 @@ public class myGroopAbsoluteLayout extends AbsoluteLayout {
     void topInfo(float x, float y) {
         myViewGroopInfo.locationTriangleBottom();
         myViewGroopInfo.invalidate();
-        float k = x - INFO_WIGHT / 2;
+        float k = x - INFO_WIDHT / 2;
         if (k < 0) k = 0;
-        if (k > (getWidth() - INFO_WIGHT))
-            k = (getWidth() - INFO_WIGHT);
+        if (k > (getWidth() - INFO_WIDHT))
+            k = (getWidth() - INFO_WIDHT);
         myViewGroopInfo.setX(k);
 
         myViewGroopInfo.setY(y - 20 - ZOOM_RADIUS - INFO_HEIGHT);
@@ -173,10 +173,10 @@ public class myGroopAbsoluteLayout extends AbsoluteLayout {
     void bottomInfo(float x, float y) {
         myViewGroopInfo.locationTriangleTop();
         myViewGroopInfo.invalidate();
-        float k = x - INFO_WIGHT / 2;
+        float k = x - INFO_WIDHT / 2;
         if (k < 0) k = 0;
-        if (k > (getWidth() - INFO_WIGHT))
-            k = (getWidth() - INFO_WIGHT);
+        if (k > (getWidth() - INFO_WIDHT))
+            k = (getWidth() - INFO_WIDHT);
         myViewGroopInfo.setX(k);
 
         myViewGroopInfo.setY(y + 20 + ZOOM_RADIUS);
@@ -208,7 +208,7 @@ public class myGroopAbsoluteLayout extends AbsoluteLayout {
      * @param typeViewGraph            тип вывода данных графика
      */
     void setDrawGraph(int day, int month, int year, ArrayList<Integer> arrayListMetodDrawGraph1, ArrayList<Integer> arrayListMetodDrawGraph2, enumTypeViewGraph typeViewGraph) {
-        myGraphView.setDrawGraph(day, month, year, arrayListMetodDrawGraph1, arrayListMetodDrawGraph2, typeViewGraph);
+        myGraphView.setGraphDataAndCalculate(day, month, year, arrayListMetodDrawGraph1, arrayListMetodDrawGraph2, typeViewGraph);
         myGraphView.invalidate();
 
     }
@@ -222,14 +222,21 @@ public class myGroopAbsoluteLayout extends AbsoluteLayout {
     {
 
 
-        INFO_WIGHT = HelperView.convertDpToPixel(210, getContext());
-        INFO_HEIGHT = HelperView.convertDpToPixel(170, getContext());
-        ZOOM_RADIUS = HelperView.convertDpToPixel(100, getContext());
+
+        ZOOM_RADIUS = HelperView.convertDpToPixel(50, getContext());
         myGraphView = new MyGraphView(getContext());
         myViewGroopInfo = new MyViewGroopInfo(getContext());
         myZoomView = new MyZoomView(getContext());
         myZoomView.setRadius(ZOOM_RADIUS);
-        lpView = new ViewGroup.LayoutParams(INFO_WIGHT, INFO_HEIGHT);
+
+INFO_HEIGHT=getResources().getDimensionPixelSize(R.dimen.layout_info_height);
+INFO_WIDHT=getResources().getDimensionPixelSize(R.dimen.layout_info_width);
+
+
+
+
+
+        lpView = new ViewGroup.LayoutParams(INFO_WIDHT, INFO_HEIGHT);
 
         this.addView(myGraphView);
         this.addView(myZoomView);
