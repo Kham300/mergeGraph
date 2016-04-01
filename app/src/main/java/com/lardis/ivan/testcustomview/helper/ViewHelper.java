@@ -49,4 +49,11 @@ public class ViewHelper {
         int px = (int)(dp * ((float)metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT));
         return px;
     }
+    public static float getRateDpToPixel( Context context){
+        Resources resources = context.getResources();
+        DisplayMetrics metrics = resources.getDisplayMetrics();
+        float rateDpToPixel =    ((float)metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+        return rateDpToPixel;
+    }
+//    public short getTex
 }
