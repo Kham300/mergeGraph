@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements InterfaceData {
 
 
     @Override
-    public void updateData(DataActivity dataActivity) {
+    public void updateData(ModelActivity dataActivity) {
 
         tvDetStatPeriod.setText(dataActivity.getDetStatPeriod());
         tvDetStatSrednee.setText(dataActivity.getDetStatSrednee());
@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements InterfaceData {
         tvDetStatInfoMonth.setText(dataActivity.getDetStatInfoMonth());
         tvDetStatSredneeZnazhenie.setText(dataActivity.getDetStatSredneeZnazhenie());
 
-        absoluteLayout.setDataGraphAndInfo(dataActivity.getDataGraph(),dataActivity.getArrayListBlockInfo());
+        absoluteLayout.setDataGraphAndInfo(dataActivity.getDataGraph(), dataActivity.getArrayListBlockInfo());
 
 
     }

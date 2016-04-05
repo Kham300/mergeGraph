@@ -8,7 +8,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.lardis.ivan.testcustomview.R;
-import com.lardis.ivan.testcustomview.View.DataBlockInfo;
+import com.lardis.ivan.testcustomview.View.ModelBlockInfo;
 
 /**
  * Задний фон блока и информация о блоке (связь 2 view)
@@ -100,7 +100,7 @@ public class MyViewGroopInfo extends RelativeLayout {
      * Информация для рисования,
      *
      */
-    public void setInfo(DataBlockInfo dataBlockInfo) {
+    public void setInfo(ModelBlockInfo dataBlockInfo) {
 
         setInfoDlit(dataBlockInfo.getInfoDlit());
         setInfoPodxod(dataBlockInfo.getInfoPodxod());

@@ -6,10 +6,9 @@ import android.view.ViewGroup;
 import android.widget.AbsoluteLayout;
 
 import com.lardis.ivan.testcustomview.R;
-import com.lardis.ivan.testcustomview.View.DataBlockInfo;
-import com.lardis.ivan.testcustomview.View.DataGraph;
+import com.lardis.ivan.testcustomview.View.ModelBlockInfo;
+import com.lardis.ivan.testcustomview.View.ModelGraph;
 import com.lardis.ivan.testcustomview.View.ViewGraph.helper.HelperView;
-import com.lardis.ivan.testcustomview.View.ViewGraph.myEnum.enumTypeViewGraph;
 import com.lardis.ivan.testcustomview.View.ViewGraph.myGroopView.MyGraphView;
 import com.lardis.ivan.testcustomview.View.ViewGraph.myGroopView.MyZoomView;
 import com.lardis.ivan.testcustomview.View.ViewGraph.myGroopView.MyInfoView.MyViewGroopInfo;
@@ -57,7 +56,7 @@ public class myGroopAbsoluteLayout extends AbsoluteLayout {
      * лист с даными для информаций
      * массив  <br> 0 элемент - длитетельсть <br> 1 элемент -количество подходов <br> 2 элемент- количество раз <br>3 элемент- сожжено <br> 4 элемент пульс
      */
-    ArrayList<DataBlockInfo> arrayListForInfo;
+    ArrayList<ModelBlockInfo> arrayListForInfo;
     /**
      * view блок с информацией
      */
@@ -205,7 +204,7 @@ public class myGroopAbsoluteLayout extends AbsoluteLayout {
      *
 
      */
-    public void setDataGraphAndInfo(DataGraph dataGraph, ArrayList<DataBlockInfo> arrayListForInfo) {
+    public void setDataGraphAndInfo(ModelGraph dataGraph, ArrayList<ModelBlockInfo> arrayListForInfo) {
 
         this.arrayListForInfo = arrayListForInfo;
         if(arrayListForInfo!=null)

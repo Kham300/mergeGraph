@@ -19,9 +19,9 @@ import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 
 import com.lardis.ivan.testcustomview.R;
-import com.lardis.ivan.testcustomview.View.DataGraph;
+import com.lardis.ivan.testcustomview.View.ModelGraph;
 import com.lardis.ivan.testcustomview.View.ViewGraph.helper.HelperView;
-import com.lardis.ivan.testcustomview.View.ViewGraph.myEnum.enumTypeViewGraph;
+import com.lardis.ivan.testcustomview.View.ViewGraph.myEnum.EnumTypeViewGraph;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -402,7 +402,7 @@ public class MyGraphView extends View {
     /**
      * тип графика
      */
-    private enumTypeViewGraph typeGraph;
+    private EnumTypeViewGraph typeGraph;
 
 
     public MyGraphView(Context context) {
@@ -691,7 +691,7 @@ public class MyGraphView extends View {
      *
 
      */
-    public void setGraphDataAndCalculate(DataGraph dataGraph) {
+    public void setGraphDataAndCalculate(ModelGraph dataGraph) {
 
         clear();
         initData(dataGraph.getDay(), dataGraph.getMonth(), dataGraph.getYear(), dataGraph.getArrayListGraph1(), dataGraph.getArrayListGraph2(), dataGraph.getTypeViewGraph());
@@ -699,7 +699,7 @@ public class MyGraphView extends View {
         calculateNameForValue();
     }
 
-    private void initData(int day, int month, int year, ArrayList<Integer> arrayListMetodDrawGraph1, ArrayList<Integer> arrayListMetodDrawGraph2, enumTypeViewGraph typeGraph) {
+    private void initData(int day, int month, int year, ArrayList<Integer> arrayListMetodDrawGraph1, ArrayList<Integer> arrayListMetodDrawGraph2, EnumTypeViewGraph typeGraph) {
         this.day=day;
         this.month=month;
         this.year=year;
@@ -769,7 +769,7 @@ public class MyGraphView extends View {
             }
             invalidatePathStrelka();
             nItem = arrayListStolbValueBuf1.size();
-            if ((this.typeGraph == enumTypeViewGraph.MESH_DAY_ITEM_DAY) || (this.typeGraph == enumTypeViewGraph.MESH_MONTH_ITEM_MONTH) || this.typeGraph == enumTypeViewGraph.MESH_WEEK_ITEM_WEEK)
+            if ((this.typeGraph == EnumTypeViewGraph.MESH_DAY_ITEM_DAY) || (this.typeGraph == EnumTypeViewGraph.MESH_MONTH_ITEM_MONTH) || this.typeGraph == EnumTypeViewGraph.MESH_WEEK_ITEM_WEEK)
             {
                 nBlock = nItem;
             }
@@ -788,8 +788,8 @@ public class MyGraphView extends View {
     private void calculateBorderScrollAndWidthBlock() {
         if (nItem != 0) {
             isScroll = !(minWidthBlock < canvasWidht / nItem);
-            if (enumTypeViewGraph.MESH_WEEK_ITEM_DAY == typeGraph) isScroll = false;
-            if (typeGraph == enumTypeViewGraph.MESH_MONTH_ITEM_WEEK)
+            if (EnumTypeViewGraph.MESH_WEEK_ITEM_DAY == typeGraph) isScroll = false;
+            if (typeGraph == EnumTypeViewGraph.MESH_MONTH_ITEM_WEEK)
                 isScroll = !(minWidthBlock < canvasWidht / arrayListStolbValueBuf1.size() * 4);
             if (hasScroll()) {
                 widthBlock = minWidthBlock;
@@ -797,9 +797,9 @@ public class MyGraphView extends View {
             } else {
 
                 widthBlock = (canvasWidht - widthBorder * 2) * nItemInOneMesh / nItem;
-                if ((maxWidthBlock < widthBlock) && (maxWidthBlock > minWidthBlock) && (typeGraph != enumTypeViewGraph.MESH_WEEK_ITEM_DAY))
+                if ((maxWidthBlock < widthBlock) && (maxWidthBlock > minWidthBlock) && (typeGraph != EnumTypeViewGraph.MESH_WEEK_ITEM_DAY))
                     widthBlock = maxWidthBlock;
-                if (typeGraph == enumTypeViewGraph.MESH_MONTH_ITEM_WEEK) {
+                if (typeGraph == EnumTypeViewGraph.MESH_MONTH_ITEM_WEEK) {
                     widthBlock = (canvasWidht - widthBorder * 2) / arrayListStolbValueBuf1.size() * 4;
 
                 }
@@ -821,7 +821,7 @@ public class MyGraphView extends View {
         int max_date = myCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
 
         for (int i = 0; i < arrayListMetodDrawGraph1.size(); i++) {
-            if (typeGraph == enumTypeViewGraph.MESH_DAY_ITEM_DAY) {
+            if (typeGraph == EnumTypeViewGraph.MESH_DAY_ITEM_DAY) {
                 arrayListName.add(day + " " + shortMonthName[month]);
 
                 if (day == max_date) {
@@ -833,7 +833,7 @@ public class MyGraphView extends View {
                     max_date = myCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
                 } else day++;
             }
-            if (typeGraph == enumTypeViewGraph.MESH_MONTH_ITEM_MONTH) {
+            if (typeGraph == EnumTypeViewGraph.MESH_MONTH_ITEM_MONTH) {
                 arrayListName.add(shortMonthName[month]);
 
                 if (month == 11) {
@@ -1199,9 +1199,9 @@ if(!draw)return;
         canvas.clipRect(borderLeft, 0, borderRight, canvasHeight, regionReplace);
         mPathTriangule.reset();
         float lr = (rightRectSelectedMesh - leftRectSelectedMesh) / 3;
-        if ((typeGraph == enumTypeViewGraph.MESH_WEEK_ITEM_DAY) || (typeGraph == enumTypeViewGraph.MESH_MONTH_ITEM_WEEK))
+        if ((typeGraph == EnumTypeViewGraph.MESH_WEEK_ITEM_DAY) || (typeGraph == EnumTypeViewGraph.MESH_MONTH_ITEM_WEEK))
             lr = 0;
-        if (typeGraph == enumTypeViewGraph.MESH_WEEK_ITEM_WEEK) {
+        if (typeGraph == EnumTypeViewGraph.MESH_WEEK_ITEM_WEEK) {
             mPathTriangule.moveTo(leftRectSelectedMesh + lr, borderBottom + 6 * maxTextHeight - 3);
             mPathTriangule.lineTo(rightRectSelectedMesh - lr, borderBottom + 6 * maxTextHeight - 3);
             mPathTriangule.lineTo((leftRectSelectedMesh + rightRectSelectedMesh) / 2, borderBottom + maxTextHeight * 4);
@@ -1228,7 +1228,7 @@ if(!draw)return;
      *
      * @param enumTypeViewGraph
      */
-    public void calculateBorderButtom(enumTypeViewGraph enumTypeViewGraph) {
+    public void calculateBorderButtom(EnumTypeViewGraph enumTypeViewGraph) {
         if (enumTypeViewGraph == enumTypeViewGraph.MESH_WEEK_ITEM_WEEK) {
             borderBottom = canvasHeight - maxTextHeight * 6 - 3;
 
@@ -1265,10 +1265,10 @@ if(!draw)return;
             }
 
 
-        if (typeGraph == enumTypeViewGraph.MESH_MONTH_ITEM_WEEK) {
+        if (typeGraph == EnumTypeViewGraph.MESH_MONTH_ITEM_WEEK) {
             nItemInOneMesh = 4;
 
-        } else if (typeGraph == enumTypeViewGraph.MESH_WEEK_ITEM_DAY) {
+        } else if (typeGraph == EnumTypeViewGraph.MESH_WEEK_ITEM_DAY) {
             nItemInOneMesh = 7;
         }
 
@@ -1289,7 +1289,7 @@ if(!draw)return;
                 if (i % 2 == 0) mPaintMesh.setColor(colorMeshOne);
                 else mPaintMesh.setColor(colorMeshTwo);
 
-                if (typeGraph == enumTypeViewGraph.MESH_MONTH_ITEM_WEEK) {
+                if (typeGraph == EnumTypeViewGraph.MESH_MONTH_ITEM_WEEK) {
 
                     buf_k1 = buf_k;
 
@@ -1312,13 +1312,13 @@ if(!draw)return;
         //  текс снизу
 
 
-        if (typeGraph != enumTypeViewGraph.MESH_MONTH_ITEM_WEEK) {
+        if (typeGraph != EnumTypeViewGraph.MESH_MONTH_ITEM_WEEK) {
             for (int i = 0; i < nItem; i++) {
                 {
                     Log.d("Mylog", "i=" + i + "   arrayListName=" + arrayListName.get(i));
 
                     canvas.drawText(arrayListName.get(i), widthBorder + offsetX + widthBlock / nItemInOneMesh * (i + 1.0f / 2.0f - shiftPuctInValueDay), borderBottom + maxTextHeight * 2, mPaintFontAllColor);
-                    if (typeGraph == enumTypeViewGraph.MESH_WEEK_ITEM_WEEK)
+                    if (typeGraph == EnumTypeViewGraph.MESH_WEEK_ITEM_WEEK)
                         canvas.drawText(arrayListTwoName.get(i), widthBorder + offsetX + widthBlock * (i + 1.0f / 2.0f), borderBottom + maxTextHeight * 4, mPaintFontAllColor);
                 }
             }

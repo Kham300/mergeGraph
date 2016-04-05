@@ -5,18 +5,18 @@ import java.util.ArrayList;
 /**
  * Created by i.larin on 05.04.2016.
  */
-public class DataActivity {
-    ArrayList<DataBlockInfo> arrayListBlockInfo;
+public class ModelActivity {
+    ArrayList<ModelBlockInfo> arrayListBlockInfo;
 
-    public ArrayList<DataBlockInfo> getArrayListBlockInfo() {
+    public ArrayList<ModelBlockInfo> getArrayListBlockInfo() {
         return arrayListBlockInfo;
     }
 
-    public void setArrayListBlockInfo(ArrayList<DataBlockInfo> arrayListBlockInfo) {
+    public void setArrayListBlockInfo(ArrayList<ModelBlockInfo> arrayListBlockInfo) {
         this.arrayListBlockInfo = arrayListBlockInfo;
     }
 
-    public DataActivity(String detStatPeriod, String detStatSrednee, String detStatItogo, String detStatProideno, String detStatInfoMonth, String detStatSredneeZnazhenie, DataGraph dataGraph, ArrayList<DataBlockInfo> arrayListBlockInfo) {
+    public ModelActivity(String detStatPeriod, String detStatSrednee, String detStatItogo, String detStatProideno, String detStatInfoMonth, String detStatSredneeZnazhenie, ModelGraph dataGraph, ArrayList<ModelBlockInfo> arrayListBlockInfo) {
         this.detStatPeriod = detStatPeriod;
         this.detStatSrednee = detStatSrednee;
         this.detStatItogo = detStatItogo;
@@ -76,11 +76,11 @@ public class DataActivity {
         this.detStatSredneeZnazhenie = detStatSredneeZnazhenie;
     }
 
-    public DataGraph getDataGraph() {
+    public ModelGraph getDataGraph() {
         return dataGraph;
     }
 
-    public void setDataGraph(DataGraph dataGraph) {
+    public void setDataGraph(ModelGraph dataGraph) {
         this.dataGraph = dataGraph;
     }
 
@@ -90,7 +90,7 @@ public class DataActivity {
     private  String detStatProideno;
     private String detStatInfoMonth;
     private  String detStatSredneeZnazhenie;
-    private  DataGraph dataGraph;
+    private ModelGraph dataGraph;
 
 
 

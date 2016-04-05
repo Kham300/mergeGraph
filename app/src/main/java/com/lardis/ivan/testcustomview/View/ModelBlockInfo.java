@@ -3,7 +3,7 @@ package com.lardis.ivan.testcustomview.View;
 /**
  * Created by i.larin on 05.04.2016.
  */
-public class DataBlockInfo {
+public class ModelBlockInfo {
 
     public String getInfoDlit() {
         return infoDlit;
@@ -55,7 +55,7 @@ public class DataBlockInfo {
 
     String infoDlit,infoPodxod,infoRaz,infoSozheno,infoPuls,infoXmlLayout;
 
-    public DataBlockInfo(String infoDlit, String infoPodxod, String infoRaz, String infoSozheno, String infoPuls) {
+    public ModelBlockInfo(String infoDlit, String infoPodxod, String infoRaz, String infoSozheno, String infoPuls) {
         this.infoDlit = infoDlit;
         this.infoPodxod = infoPodxod;
         this.infoRaz = infoRaz;

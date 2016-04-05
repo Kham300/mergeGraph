@@ -1,14 +1,14 @@
 package com.lardis.ivan.testcustomview.View;
 
-import com.lardis.ivan.testcustomview.View.ViewGraph.myEnum.enumTypeViewGraph;
+import com.lardis.ivan.testcustomview.View.ViewGraph.myEnum.EnumTypeViewGraph;
 
 import java.util.ArrayList;
 
 /**
  * Created by i.larin on 05.04.2016.
  */
-public class DataGraph {
-    public DataGraph(int day, int month, int year, ArrayList<Integer> arrayListGraph1, ArrayList<Integer> arrayListGraph2, enumTypeViewGraph typeViewGraph) {
+public class ModelGraph {
+    public ModelGraph(int day, int month, int year, ArrayList<Integer> arrayListGraph1, ArrayList<Integer> arrayListGraph2, EnumTypeViewGraph typeViewGraph) {
         this.day = day;
         this.month = month;
         this.year = year;
@@ -22,7 +22,7 @@ public class DataGraph {
     private  int year;
     private  ArrayList<Integer> arrayListGraph1=null;
     private  ArrayList<Integer> arrayListGraph2=null;
-    private  enumTypeViewGraph typeViewGraph;
+    private EnumTypeViewGraph typeViewGraph;
 
     public int getDay() {
         return day;
@@ -64,11 +64,11 @@ public class DataGraph {
         this.arrayListGraph2 = arrayListGraph2;
     }
 
-    public enumTypeViewGraph getTypeViewGraph() {
+    public EnumTypeViewGraph getTypeViewGraph() {
         return typeViewGraph;
     }
 
-    public void setTypeViewGraph(enumTypeViewGraph typeViewGraph) {
+    public void setTypeViewGraph(EnumTypeViewGraph typeViewGraph) {
         this.typeViewGraph = typeViewGraph;
     }
 }

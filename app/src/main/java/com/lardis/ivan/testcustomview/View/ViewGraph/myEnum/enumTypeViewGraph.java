@@ -11,7 +11,7 @@ package com.lardis.ivan.testcustomview.View.ViewGraph.myEnum;
 
  */
 
-public enum enumTypeViewGraph {
+public enum EnumTypeViewGraph {
     /**
      * столбцы графика дни, задняя сетка недели
      */
