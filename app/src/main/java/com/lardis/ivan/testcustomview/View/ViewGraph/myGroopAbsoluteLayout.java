@@ -1,15 +1,18 @@
-package com.lardis.ivan.testcustomview;
+package com.lardis.ivan.testcustomview.View.ViewGraph;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.widget.AbsoluteLayout;
 
-import com.lardis.ivan.testcustomview.helper.HelperView;
-import com.lardis.ivan.testcustomview.myEnum.enumTypeViewGraph;
-import com.lardis.ivan.testcustomview.myGroopView.MyGraphView;
-import com.lardis.ivan.testcustomview.myGroopView.MyZoomView;
-import com.lardis.ivan.testcustomview.myGroopView.MyInfoView.MyViewGroopInfo;
+import com.lardis.ivan.testcustomview.R;
+import com.lardis.ivan.testcustomview.View.DataBlockInfo;
+import com.lardis.ivan.testcustomview.View.DataGraph;
+import com.lardis.ivan.testcustomview.View.ViewGraph.helper.HelperView;
+import com.lardis.ivan.testcustomview.View.ViewGraph.myEnum.enumTypeViewGraph;
+import com.lardis.ivan.testcustomview.View.ViewGraph.myGroopView.MyGraphView;
+import com.lardis.ivan.testcustomview.View.ViewGraph.myGroopView.MyZoomView;
+import com.lardis.ivan.testcustomview.View.ViewGraph.myGroopView.MyInfoView.MyViewGroopInfo;
 
 import java.util.ArrayList;
 
@@ -30,9 +33,9 @@ public class myGroopAbsoluteLayout extends AbsoluteLayout {
      */
     public int ZOOM_RADIUS;
 
-    public void setArrayListForInfo(ArrayList<String[]> arrayListForInfo) {
-        this.arrayListForInfo = arrayListForInfo;
-    }
+
+
+
 
     public myGroopAbsoluteLayout(Context context) {
         super(context);
@@ -54,7 +57,7 @@ public class myGroopAbsoluteLayout extends AbsoluteLayout {
      * лист с даными для информаций
      * массив  <br> 0 элемент - длитетельсть <br> 1 элемент -количество подходов <br> 2 элемент- количество раз <br>3 элемент- сожжено <br> 4 элемент пульс
      */
-    ArrayList<String[]> arrayListForInfo;
+    ArrayList<DataBlockInfo> arrayListForInfo;
     /**
      * view блок с информацией
      */
@@ -200,15 +203,46 @@ public class myGroopAbsoluteLayout extends AbsoluteLayout {
     /**
      * пересыл даных view рисуюшему графики
      *
-     * @param day
-     * @param month
-     * @param year
-     * @param arrayListMetodDrawGraph1 масив  значений для столбиков
-     * @param arrayListMetodDrawGraph2 2 массив значиний если два графика
-     * @param typeViewGraph            тип вывода данных графика
+
      */
-    void setDrawGraph(int day, int month, int year, ArrayList<Integer> arrayListMetodDrawGraph1, ArrayList<Integer> arrayListMetodDrawGraph2, enumTypeViewGraph typeViewGraph) {
-        myGraphView.setGraphDataAndCalculate(day, month, year, arrayListMetodDrawGraph1, arrayListMetodDrawGraph2, typeViewGraph);
+    public void setDataGraphAndInfo(DataGraph dataGraph, ArrayList<DataBlockInfo> arrayListForInfo) {
+
+        this.arrayListForInfo = arrayListForInfo;
+        if(arrayListForInfo!=null)
+        myGraphView.setWorkFromZoomAndBlockInfo(new MyGraphView.WorkFromZoomAndBlockInfo() {
+
+
+            @Override
+            public void showZoomAndBlockInfo() {
+                myZoomView.show();
+
+                showBlockInfo();
+            }
+
+            @Override
+            public void hideZoomAndBlockInfo() {
+                myZoomView.hide();
+                hideBlockInfo();
+            }
+
+            @Override
+            public void setCoordinate(float x, float y, int nTouch) {
+                myZoomView.setData(x, y);
+                setmyXandYandNTouch(x, y, nTouch);
+
+            }
+
+            @Override
+            public void updatePrtScn() {
+                myZoomView.updateBitmapPrtScn(HelperView.getBitmapFromView(myGraphView));
+            }
+
+
+        });
+        else  myGraphView.setWorkFromZoomAndBlockInfo(null);
+
+
+           myGraphView.setGraphDataAndCalculate(dataGraph);
         myGraphView.invalidate();
 
     }
@@ -243,36 +277,8 @@ INFO_WIDHT=getResources().getDimensionPixelSize(R.dimen.layout_info_width);
 /**
  * связь графика с Лупой и Блоком информации
  */
-        myGraphView.setWorkFromZoomAndBlockInfo(new MyGraphView.WorkFromZoomAndBlockInfo() {
 
 
-            @Override
-            public void showZoomAndBlockInfo() {
-                myZoomView.show();
-
-                showBlockInfo();
-            }
-
-            @Override
-            public void hideZoomAndBlockInfo() {
-                myZoomView.hide();
-                hideBlockInfo();
-            }
-
-            @Override
-            public void setCoordinate(float x, float y, int nTouch) {
-                myZoomView.setData(x, y);
-                setmyXandYandNTouch(x, y, nTouch);
-
-            }
-
-            @Override
-            public void updatePrtScn() {
-                myZoomView.updateBitmapPrtScn(HelperView.getBitmapFromView(myGraphView));
-            }
-
-
-        });
 
     }
 }

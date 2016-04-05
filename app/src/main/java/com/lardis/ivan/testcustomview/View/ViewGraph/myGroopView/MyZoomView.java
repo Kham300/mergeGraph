@@ -1,4 +1,4 @@
-package com.lardis.ivan.testcustomview.myGroopView;
+package com.lardis.ivan.testcustomview.View.ViewGraph.myGroopView;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -10,7 +10,7 @@ import android.graphics.Region;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.lardis.ivan.testcustomview.helper.HelperView;
+import com.lardis.ivan.testcustomview.View.ViewGraph.helper.HelperView;
 
 /**
  * Класс для лупы

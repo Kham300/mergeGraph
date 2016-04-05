@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding ="@dimen/det_stat_padding"
+
+    tools:context=".View.MainActivity"
+    android:background="#E7E9EB">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/livLayDown"
+        android:layout_alignParentStart="false">
+
+        <LinearLayout
+            android:id="@+id/linUp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvDetStatPeriod"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:padding="@dimen/det_stat_text_padding_title"
+                android:text="Март 2015-Фвгуст 2015"
+                android:textSize="@dimen/det_stat_text_size_title"
+                android:textStyle="bold" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/det_stat_text_frame_padding">
+
+
+                <TextView
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:text="Среднее значение"
+                    android:textSize="@dimen/det_stat_text_size"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvDetStatSrednee"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:text="9 км"
+                    android:textSize="@dimen/det_stat_text_size" />
+
+
+            </FrameLayout>
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/det_stat_text_frame_padding">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:text="Всего за период"
+                    android:textSize="@dimen/det_stat_text_size"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvDetStatItogo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:text="58км"
+                    android:textSize="@dimen/det_stat_text_size" />
+
+
+            </FrameLayout>
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/det_stat_text_frame_padding">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:text="Пройдено с ONETRAK"
+                    android:textSize="@dimen/det_stat_text_size"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvDetStatProideno"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:text="1500 км"
+                    android:textSize="@dimen/det_stat_text_size" />
+
+
+            </FrameLayout>
+
+
+        </LinearLayout>
+        <com.lardis.ivan.testcustomview.View.ViewGraph.myGroopAbsoluteLayout
+            android:id="@+id/mygroop"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+
+            android:layout_below="@+id/linUp" />
+
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:id="@+id/livLayDown"
+        android:layout_width="match_parent"
+
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentStart="false"
+        android:orientation="vertical"
+         >
+
+        <TextView
+            android:id="@+id/tvDetStatInfoMonth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:padding="@dimen/det_stat_text_frame_padding"
+            android:textSize="@dimen/det_stat_text_size"
+            android:text="Информация за август " />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/det_stat_text_frame_padding"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:text="Средняя дистанция"
+                android:textSize="@dimen/det_stat_text_size"/>
+
+            <TextView
+                android:id="@+id/tvDetStatSredneeZnazhenie"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:textSize="@dimen/det_stat_text_size"
+                android:text="8,2км" />
+        </FrameLayout>
+
+        <Button
+            android:id="@+id/btDetStatRazvernut"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Развернуть"
+            android:background="#ffffff"
+            android:textColor="#3B8E27"
+            android:textStyle="bold"
+            android:elevation="20dp"/>
+    </LinearLayout>
+
+
+</RelativeLayout>
+
+
+

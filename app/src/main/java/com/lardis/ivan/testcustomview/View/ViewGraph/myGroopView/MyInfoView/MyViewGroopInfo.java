@@ -1,4 +1,4 @@
-package com.lardis.ivan.testcustomview.myGroopView.MyInfoView;
+package com.lardis.ivan.testcustomview.View.ViewGraph.myGroopView.MyInfoView;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -8,6 +8,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.lardis.ivan.testcustomview.R;
+import com.lardis.ivan.testcustomview.View.DataBlockInfo;
 
 /**
  * Задний фон блока и информация о блоке (связь 2 view)
@@ -98,15 +99,14 @@ public class MyViewGroopInfo extends RelativeLayout {
     /**
      * Информация для рисования,
      *
-     * @param strings массив  <br> 0 элемент - длитетельсть <br> 1 элемент -количество подходов <br> 2 элемент- количество раз <br>3 элемент- сожжено <br> 4 элемент пульс
      */
-    public void setInfo(String[] strings) {
+    public void setInfo(DataBlockInfo dataBlockInfo) {
 
-        setInfoDlit(strings[0]);
-        setInfoPodxod(strings[1]);
-        setInfoRaz(strings[2]);
-        setInfoSozheno(strings[3]);
-        setInfoPuls(strings[4]);
+        setInfoDlit(dataBlockInfo.getInfoDlit());
+        setInfoPodxod(dataBlockInfo.getInfoPodxod());
+        setInfoRaz(dataBlockInfo.getInfoRaz());
+        setInfoSozheno(dataBlockInfo.getInfoSozheno());
+        setInfoPuls(dataBlockInfo.getInfoPuls());
     }
 
     /**
@@ -171,7 +171,7 @@ public class MyViewGroopInfo extends RelativeLayout {
         myViewBackgroundInfo = new MyViewBackgroundInfo(getContext());
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
 
-        infoXmlLayout = layoutInflater.inflate(R.layout.layout_info, null);
+        infoXmlLayout = layoutInflater.inflate(R.layout.view_viewgraf_mygroopview_myinfoview, null);
 
         this.addView(myViewBackgroundInfo);
         this.addView(infoXmlLayout);

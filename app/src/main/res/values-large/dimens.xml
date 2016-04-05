@@ -7,4 +7,11 @@
     <dimen name="layout_info_height">180dp</dimen>
     <dimen name="layout_info_padding">15dp</dimen>
 
+
+    <dimen name="det_stat_text_size">20dp</dimen>>
+    <dimen name="det_stat_text_size_title">25dp</dimen>>
+    <dimen name="det_stat_text_padding_title">17dp</dimen>>
+    <dimen name="det_stat_text_frame_padding">10dp</dimen>>
+    <dimen name="det_stat_padding">10dp</dimen>>
+
 </resources>

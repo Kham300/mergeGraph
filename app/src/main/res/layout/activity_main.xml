@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context=".View.MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -92,7 +92,7 @@
             android:text="5 данные" />
     </LinearLayout>
 
-    <com.lardis.ivan.testcustomview.myGroopAbsoluteLayout
+    <com.lardis.ivan.testcustomview.View.ViewGraph.myGroopAbsoluteLayout
         android:id="@+id/mygroop"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
