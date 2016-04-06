@@ -1,4 +1,4 @@
-package com.lardis.ivan.testcustomview.View.ViewGraph.myGroopView;
+package com.lardis.ivan.testcustomview.View.ViewGraph.myGroopViewZoomInfoGraph.MyGraphView;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -19,8 +19,7 @@ import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 
 import com.lardis.ivan.testcustomview.R;
-import com.lardis.ivan.testcustomview.View.ModelGraph;
-import com.lardis.ivan.testcustomview.View.ViewGraph.helper.HelperView;
+import com.lardis.ivan.testcustomview.View.helper.HelperView;
 import com.lardis.ivan.testcustomview.View.ViewGraph.myEnum.EnumTypeViewGraph;
 
 import java.util.ArrayList;
@@ -658,7 +657,7 @@ public class MyGraphView extends View {
         mPaintItem2.setShader(new LinearGradient(0, 0, 0, canvasHeight,
                 colorItemTop2
                 , colorItemBottom2, Shader.TileMode.MIRROR));
-
+mPaintTriangle.setAntiAlias(true);
         mPaintTriangle.setColor(colorTriangle);
         mPaintPunctirAverage.setColor(colorPunctireLineAverage);
         mPaintLinePunctireSelected.setColor(colorPunctireLineSelectedColor);
@@ -677,7 +676,7 @@ public class MyGraphView extends View {
         daysInPunctArrayList.clear();
 
         arrayListStolbValueBuf1.clear();
-        arrayListStolbValueBuf2.clear();
+if(arrayListStolbValueBuf2!=null)        arrayListStolbValueBuf2.clear();
         arrayListName.clear();
         offsetX = 0;
         nSelectedTouch = -1;

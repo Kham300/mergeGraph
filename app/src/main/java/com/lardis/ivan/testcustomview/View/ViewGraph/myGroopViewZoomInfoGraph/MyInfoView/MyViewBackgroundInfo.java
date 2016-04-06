@@ -1,4 +1,4 @@
-package com.lardis.ivan.testcustomview.View.ViewGraph.myGroopView.MyInfoView;
+package com.lardis.ivan.testcustomview.View.ViewGraph.myGroopViewZoomInfoGraph.MyInfoView;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -9,7 +9,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.lardis.ivan.testcustomview.R;
-import com.lardis.ivan.testcustomview.View.ViewGraph.helper.HelperView;
+import com.lardis.ivan.testcustomview.View.helper.HelperView;
 
 /**
  *view заднего фона для блока информации

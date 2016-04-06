@@ -1,4 +1,4 @@
-package com.lardis.ivan.testcustomview.View.ViewGraph.helper;
+package com.lardis.ivan.testcustomview.View.helper;
 
 import android.content.Context;
 import android.content.res.Resources;

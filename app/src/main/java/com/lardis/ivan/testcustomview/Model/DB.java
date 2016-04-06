@@ -1,10 +1,17 @@
 package com.lardis.ivan.testcustomview.Model;
 
-import com.lardis.ivan.testcustomview.Presenter.ModelPresenter;
+import android.util.Log;
+
+import com.lardis.ivan.testcustomview.EnumActivitySpinner1;
+import com.lardis.ivan.testcustomview.EnumActivitySpinner2;
+import com.lardis.ivan.testcustomview.EnumActivitySpinner3;
 import com.lardis.ivan.testcustomview.View.ModelActivity;
-import com.lardis.ivan.testcustomview.View.ModelBlockInfo;
-import com.lardis.ivan.testcustomview.View.ModelGraph;
+import com.lardis.ivan.testcustomview.View.ModelActivityWithoutSpiners;
+
+import com.lardis.ivan.testcustomview.View.ModelSpinners;
+import com.lardis.ivan.testcustomview.View.ViewGraph.myGroopViewZoomInfoGraph.MyGraphView.ModelGraph;
 import com.lardis.ivan.testcustomview.View.ViewGraph.myEnum.EnumTypeViewGraph;
+import com.lardis.ivan.testcustomview.View.ViewGraph.myGroopViewZoomInfoGraph.MyInfoView.ModelBlockInfo;
 
 import java.util.ArrayList;
 
@@ -12,40 +19,124 @@ import java.util.ArrayList;
  * Created by i.larin on 05.04.2016.
  */
 public class DB {
-Otvet otvet;
-
+    Otvet otvet;
+    ModelGraph modelGraph;  ModelActivityWithoutSpiners modelActivityWithoutSpiners;
     public void setOtvet(Otvet otvet) {
         this.otvet = otvet;
     }
 
-    public void getData()
-    {if(otvet!=null)
+    public void getData(EnumActivitySpinner1 enumActivitySpinner1,EnumActivitySpinner2 enumActivitySpinner2,EnumActivitySpinner3 enumActivitySpinner3) {
+
+        Log.d("Mylog1", "enumActivitySpinner1=" + enumActivitySpinner1 + "enumActivitySpinner2=" + enumActivitySpinner2 + "enumActivitySpinner3=" + enumActivitySpinner3);
+
+
+        if (otvet != null)
+
+        {
+
+
+            switch (enumActivitySpinner3)
+            {
+                case SLEEP:
+                    modelGraph = new ModelGraph(4, 11, 1993, testdanStolbValue5(),  null, EnumTypeViewGraph.MESH_MONTH_ITEM_MONTH);
+                    modelActivityWithoutSpiners = new ModelActivityWithoutSpiners("SLEEP", "Время", "Чтото еще", "Итд", "Итр", "кууу", modelGraph, testdanForInfo());
+
+                    break;
+
+                case PRESSURE:
+                    modelGraph = new ModelGraph(4, 11, 1993, testdanStolbValue6(), testdanStolbValue6(), EnumTypeViewGraph.MESH_MONTH_ITEM_MONTH);
+                    modelActivityWithoutSpiners = new ModelActivityWithoutSpiners("PRESSURE", "Время", "Чтото еще", "Итд", "Итр", "кууу", modelGraph, testdanForInfo());
+
+                    break;
+
+                case CALORIES:
+                    modelGraph = new ModelGraph(4, 11, 1993, testdanStolbValue6(), null , EnumTypeViewGraph.MESH_MONTH_ITEM_MONTH);
+                    modelActivityWithoutSpiners = new ModelActivityWithoutSpiners("CALORIES", "Время", "Чтото еще", "Итд", "Итр", "кууу", modelGraph, testdanForInfo());
+
+                    break;
+
+                case WATER:
+                    modelGraph = new ModelGraph(4, 11, 1993, testdanStolbValue222(),null, EnumTypeViewGraph.MESH_MONTH_ITEM_MONTH);
+                    modelActivityWithoutSpiners = new ModelActivityWithoutSpiners("WATER", "Время", "Чтото еще", "Итд", "Итр", "кууу", modelGraph, testdanForInfo());
+
+                    break;
+
+                case WEIGHT:
+                    modelGraph = new ModelGraph(4, 11, 1993, testdanStolbValue222(), testdanStolbValue222(), EnumTypeViewGraph.MESH_MONTH_ITEM_MONTH);
+                    modelActivityWithoutSpiners = new ModelActivityWithoutSpiners("WEIGHT", "Время", "Чтото еще", "Итд", "Итр", "кууу", modelGraph, testdanForInfo());
+
+                    break;
+
+                case PULSE:
+                    modelGraph = new ModelGraph(4, 11, 1993, testdanStolbValue6(), testdanStolbValue6(), EnumTypeViewGraph.MESH_MONTH_ITEM_MONTH);
+                    modelActivityWithoutSpiners = new ModelActivityWithoutSpiners("PULSE", "Время", "Чтото еще", "Итд", "Итр", "кууу", modelGraph, testdanForInfo());
+
+                    break;
+
+                case STEP:
+                    modelGraph = new ModelGraph(4, 11, 1993, testdanStolbValue222(), null, EnumTypeViewGraph.MESH_MONTH_ITEM_MONTH);
+                    modelActivityWithoutSpiners = new ModelActivityWithoutSpiners("STEP", "Время", "Чтото еще", "Итд", "Итр", "кууу", modelGraph, testdanForInfo());
+
+                    break;
+
+
+                case DISTANCE:
+                      modelGraph = new ModelGraph(4, 11, 1993, testdanStolbValue6(), null, EnumTypeViewGraph.MESH_MONTH_ITEM_MONTH);
+                      modelActivityWithoutSpiners = new ModelActivityWithoutSpiners("DISTANCE", "Время", "Чтото еще", "Итд", "Итр", "кууу", modelGraph, testdanForInfo());
+
+                    break;
+
+default:
+
+    modelGraph = new ModelGraph(4, 11, 1993,  testdanStolbValue222(),null, EnumTypeViewGraph.MESH_MONTH_ITEM_MONTH);
+    modelActivityWithoutSpiners = new ModelActivityWithoutSpiners("Default", "Время", "Чтото еще", "Итд", "Итр", "кууу", modelGraph, testdanForInfo());
+
+            }
+
+
+            otvet.setDataModelActivityWithoutSpiners(modelActivityWithoutSpiners);
+
+
+        }
+
+
+    }
+    public void getTitleSpinner()
+    {
+        ArrayList<EnumActivitySpinner3> arrayList3=new ArrayList<>();
+        ArrayList<EnumActivitySpinner1> arrayList1=new ArrayList<>();
+        ArrayList<EnumActivitySpinner2> arrayList2=new ArrayList<>();
+        arrayList3.add(EnumActivitySpinner3.CALORIES);
+        arrayList3.add(EnumActivitySpinner3.PULSE);
+        arrayList3.add(EnumActivitySpinner3.PRESSURE);
+        arrayList3.add(EnumActivitySpinner3.SLEEP);
+        arrayList3.add(EnumActivitySpinner3.DISTANCE );
+        arrayList3.add(EnumActivitySpinner3.STEP );
+        arrayList3.add(EnumActivitySpinner3.WATER );
+        arrayList3.add(EnumActivitySpinner3.WEIGHT );
+
+        arrayList1.add(EnumActivitySpinner1.HALF);
+        arrayList1.add(EnumActivitySpinner1.MONTH);
+        arrayList1.add(EnumActivitySpinner1.WEEK);
+        arrayList2.add(EnumActivitySpinner2.BY_DAY);
+        arrayList2.add(EnumActivitySpinner2.BY_MONTH);
+        if(otvet!=null) {
+            otvet.setTitleSpinner(new ModelSpinners(arrayList1, arrayList2, arrayList3));
+            modelGraph = new ModelGraph(4, 11, 1993, testdanStolbValue5(),  null, EnumTypeViewGraph.MESH_MONTH_ITEM_MONTH);
+            modelActivityWithoutSpiners = new ModelActivityWithoutSpiners("SLEEP", "Время", "Чтото еще", "Итд", "Итр", "кууу", modelGraph, testdanForInfo());
+
+            otvet.setDataModelActivityWithoutSpiners(modelActivityWithoutSpiners);
+        }
+    }
+
+    public interface Otvet
 
     {
-        ModelGraph modelGraph=new ModelGraph(4,11,1993,testdanStolbValue6(),testdanStolbValue6(), EnumTypeViewGraph.MESH_MONTH_ITEM_MONTH);
-      ModelActivity modelActivity=new ModelActivity("Период","Время","Чтото еще","Итд","Итр","кууу",modelGraph,testdanForInfo());
-
-
-ModelPresenter modelPresenter=new ModelPresenter(null,null,null,modelActivity,null);
-otvet.work(modelPresenter);
-
-
-
+        void setDataModelActivityWithoutSpiners(ModelActivityWithoutSpiners ModelActivityWithoutSpiners);
+        void setTitleSpinner(ModelSpinners modelSpinners);
     }
-
-
-
-
-    }
-
-   public interface Otvet
-
-{  void work(ModelPresenter modelPresenter);}
 
 //    String detStatPeriod, String detStatSrednee, String detStatItogo, String detStatProideno, String detStatInfoMonth, String detStatSredneeZnazhenie, int day, int month, int year, ArrayList<Integer> arrayListGraph1, ArrayList<Integer> arrayListGraph2, EnumTypeViewGraph typeViewGraph,ArrayList<ModelBlockInfo> blockInfoArrayList
-
-
-
 
 
     private ArrayList<Integer> testdanStolbValue6() {

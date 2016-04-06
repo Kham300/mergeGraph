@@ -22,37 +22,49 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 <LinearLayout
-    android:padding="10dp"
+
     android:layout_width="match_parent"
 android:orientation="horizontal"
 android:background="#FAFAFA"
-    android:clipToPadding="false"
+
     android:elevation="5dp"
 
-    android:layout_height="wrap_content">
+    android:layout_height="50dp">
 
 
     <Spinner
         android:textAlignment="center"
         android:layout_weight="1"
-
+        android:textSize="5dp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:entries="@array/period"></Spinner>
-
+        android:layout_height="match_parent"
+        android:id="@+id/det_stat_spiner1"
+       ></Spinner>
+    <View
+        android:layout_margin="10dp"
+        android:layout_width="2dp"
+        android:layout_height="fill_parent"
+        android:background="#E4E5E8" />
     <Spinner
+        android:layout_gravity="center"
         android:textAlignment="center"
         android:layout_weight="1"
+        android:id="@+id/det_stat_spiner2"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:entries="@array/time"></Spinner>
-
+        android:layout_height="match_parent"
+      ></Spinner>
+    <View
+        android:layout_margin="10dp"
+        android:layout_width="2dp"
+        android:layout_height="fill_parent"
+        android:background="#E4E5E8" />
     <Spinner
         android:textAlignment="center"
         android:entries="@array/catlist"
+        android:id="@+id/det_stat_spiner3"
         android:layout_weight="1"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
 
 />
 
@@ -149,7 +161,7 @@ android:background="#FAFAFA"
 
         </LinearLayout>
 
-        <com.lardis.ivan.testcustomview.View.ViewGraph.myGroopAbsoluteLayout
+        <com.lardis.ivan.testcustomview.View.ViewGraph.myGroopView_Zoom_Info_Graph
             android:id="@+id/mygroop"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -206,8 +218,9 @@ android:background="#FAFAFA"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#ffffff"
-            android:elevation="-20dp"
+
             android:text="Развернуть"
+            android:padding="20dp"
             android:textColor="#3B8E27"
             android:textStyle="bold" />
     </LinearLayout>

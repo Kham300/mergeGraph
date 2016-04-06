@@ -1,4 +1,4 @@
-package com.lardis.ivan.testcustomview.View;
+package com.lardis.ivan.testcustomview.View.ViewGraph.myGroopViewZoomInfoGraph.MyGraphView;
 
 import com.lardis.ivan.testcustomview.View.ViewGraph.myEnum.EnumTypeViewGraph;
 

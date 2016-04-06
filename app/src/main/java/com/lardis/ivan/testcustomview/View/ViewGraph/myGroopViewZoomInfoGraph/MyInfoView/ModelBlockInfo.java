@@ -1,4 +1,4 @@
-package com.lardis.ivan.testcustomview.View;
+package com.lardis.ivan.testcustomview.View.ViewGraph.myGroopViewZoomInfoGraph.MyInfoView;
 
 /**
  * Created by i.larin on 05.04.2016.

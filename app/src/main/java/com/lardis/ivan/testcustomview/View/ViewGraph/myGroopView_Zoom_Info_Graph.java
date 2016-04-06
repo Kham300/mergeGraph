@@ -6,19 +6,19 @@ import android.view.ViewGroup;
 import android.widget.AbsoluteLayout;
 
 import com.lardis.ivan.testcustomview.R;
-import com.lardis.ivan.testcustomview.View.ModelBlockInfo;
-import com.lardis.ivan.testcustomview.View.ModelGraph;
-import com.lardis.ivan.testcustomview.View.ViewGraph.helper.HelperView;
-import com.lardis.ivan.testcustomview.View.ViewGraph.myGroopView.MyGraphView;
-import com.lardis.ivan.testcustomview.View.ViewGraph.myGroopView.MyZoomView;
-import com.lardis.ivan.testcustomview.View.ViewGraph.myGroopView.MyInfoView.MyViewGroopInfo;
+import com.lardis.ivan.testcustomview.View.ViewGraph.myGroopViewZoomInfoGraph.MyInfoView.ModelBlockInfo;
+import com.lardis.ivan.testcustomview.View.ViewGraph.myGroopViewZoomInfoGraph.MyGraphView.ModelGraph;
+import com.lardis.ivan.testcustomview.View.helper.HelperView;
+import com.lardis.ivan.testcustomview.View.ViewGraph.myGroopViewZoomInfoGraph.MyGraphView.MyGraphView;
+import com.lardis.ivan.testcustomview.View.ViewGraph.myGroopViewZoomInfoGraph.MyZoomView.MyZoomView;
+import com.lardis.ivan.testcustomview.View.ViewGraph.myGroopViewZoomInfoGraph.MyInfoView.MyViewGroopInfo;
 
 import java.util.ArrayList;
 
 /**
  * класс реализующий взаимодействия между гравификом, лупой и блоком с информацией
  */
-public class myGroopAbsoluteLayout extends AbsoluteLayout {
+public class myGroopView_Zoom_Info_Graph extends AbsoluteLayout {
     /**
      *   ширина блока info (view)
      */
@@ -36,17 +36,17 @@ public class myGroopAbsoluteLayout extends AbsoluteLayout {
 
 
 
-    public myGroopAbsoluteLayout(Context context) {
+    public myGroopView_Zoom_Info_Graph(Context context) {
         super(context);
         init();
     }
 
-    public myGroopAbsoluteLayout(Context context, AttributeSet attrs) {
+    public myGroopView_Zoom_Info_Graph(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public myGroopAbsoluteLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+    public myGroopView_Zoom_Info_Graph(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }

@@ -1,4 +1,4 @@
-package com.lardis.ivan.testcustomview.View.ViewGraph.myGroopView.MyInfoView;
+package com.lardis.ivan.testcustomview.View.ViewGraph.myGroopViewZoomInfoGraph.MyInfoView;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -8,7 +8,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.lardis.ivan.testcustomview.R;
-import com.lardis.ivan.testcustomview.View.ModelBlockInfo;
 
 /**
  * Задний фон блока и информация о блоке (связь 2 view)
