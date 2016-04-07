@@ -4,7 +4,10 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -12,7 +15,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.lardis.ivan.testcustomview.EnumActivitySpinner1;
 import com.lardis.ivan.testcustomview.EnumActivitySpinner2;
@@ -28,7 +33,7 @@ public class MainActivity extends AppCompatActivity implements InterfaceMainActi
     myGroopView_Zoom_Info_Graph absoluteLayout;
     TextView tvDetStatPeriod, tvDetStatSrednee, tvDetStatItogo,
             tvDetStatProideno, tvDetStatInfoMonth, tvDetStatSredneeZnazhenie;
-
+    private Toolbar mToolbar;
     Button btDetStatRazvernut;
     MySpinner3Adapter adapterSpinner3;
     MySpinner1And2Adapter adapterSpinner2,adapterSpinner1;
@@ -43,8 +48,61 @@ public class MainActivity extends AppCompatActivity implements InterfaceMainActi
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.det_stat_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId())
+        {
+
+            case R.id.action_settings1:
+
+                  Toast.makeText(this,"test1",Toast.LENGTH_LONG).show();
+                break;
+
+            case R.id.action_settings2:
+
+                Toast.makeText(this,"test2",Toast.LENGTH_LONG).show();
+                break;
+            case R.id.action_settings3:
+
+                Toast.makeText(this,"test3",Toast.LENGTH_LONG).show();
+                break;
+            case R.id.action_settings4:
+
+                Toast.makeText(this,"test4",Toast.LENGTH_LONG).show();
+                break;
+            case R.id.action_settings5:
+
+                Toast.makeText(this,"test5",Toast.LENGTH_LONG).show();
+                break;
+
+
+
+        }
+
+        return true;
+
+
+
+
+    }
 
     private void init() {
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setTitle("Детальная статистика");
+        setSupportActionBar(mToolbar);
+        mToolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_18dp);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+              finish();
+            }
+        });
         presenterActivity = new PresenterActivity(this);
         absoluteLayout = (myGroopView_Zoom_Info_Graph) findViewById(R.id.mygroop);
         spinner1 = (Spinner) findViewById(R.id.det_stat_spiner1);
@@ -100,17 +158,17 @@ public class MainActivity extends AppCompatActivity implements InterfaceMainActi
 
         if (adapterSpinner3 == null) {
             adapterSpinner3 = new MySpinner3Adapter(this,
-                    R.layout.my_spiner3_for_activity, modelSpinners.getSpinner3ArrayList());
+                    R.layout.det_stat_my_spiner3_for_activity, modelSpinners.getSpinner3ArrayList());
             spinner3.setAdapter(adapterSpinner3);
         }
         if (adapterSpinner2 == null) {
             adapterSpinner2 = new MySpinner1And2Adapter(this,
-                    R.layout.my_spiner1_and2_for_activity, modelSpinners.getSpinner2ArrayList());
+                    R.layout.det_stat_my_spiner1_and2_for_activity, modelSpinners.getSpinner2ArrayList());
             spinner2.setAdapter(adapterSpinner2);
         }
         if (adapterSpinner1 == null) {
             adapterSpinner1 = new MySpinner1And2Adapter(this,
-                    R.layout.my_spiner1_and2_for_activity, modelSpinners.getSpinner1ArrayList());
+                    R.layout.det_stat_my_spiner1_and2_for_activity, modelSpinners.getSpinner1ArrayList());
             spinner1.setAdapter(adapterSpinner1);
         }
 
@@ -147,7 +205,7 @@ public class MainActivity extends AppCompatActivity implements InterfaceMainActi
                                   ViewGroup parent) {
 
             LayoutInflater inflater = getLayoutInflater();
-            View row = inflater.inflate(R.layout.my_spiner3_for_activity, parent, false);
+            View row = inflater.inflate(R.layout.det_stat_my_spiner3_for_activity, parent, false);
             TextView label = (TextView) row.findViewById(R.id.weekofday);
             label.setText(getDataSpinner3(arrayListSpinner3.get(position)).getName());
 
@@ -196,7 +254,7 @@ public class MainActivity extends AppCompatActivity implements InterfaceMainActi
                                   ViewGroup parent) {
 
             LayoutInflater inflater = getLayoutInflater();
-            View row = inflater.inflate(R.layout.my_spiner1_and2_for_activity, parent, false);
+            View row = inflater.inflate(R.layout.det_stat_my_spiner1_and2_for_activity, parent, false);
             TextView label = (TextView) row.findViewById(R.id.weekofday);
 
             if(arrayListSpinner!=null)if(arrayListSpinner.size()>0) {

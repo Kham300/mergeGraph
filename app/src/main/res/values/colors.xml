@@ -44,5 +44,11 @@
 
     <color name="test">#66d3d922</color>
     <color name="myViewBackgroundInfo">#FAFAFA</color>
+    <color name="det_stat_text_color_name">#6B6D70</color>
+    <color name="det_stat_text_color_value">#262A31</color>
+
+
+
+
 
 </resources>

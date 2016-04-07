@@ -1,11 +1,10 @@
-package com.lardis.ivan.testcustomview.Model;
+package com.lardis.ivan.testcustomview.Storage;
 
 import android.util.Log;
 
 import com.lardis.ivan.testcustomview.EnumActivitySpinner1;
 import com.lardis.ivan.testcustomview.EnumActivitySpinner2;
 import com.lardis.ivan.testcustomview.EnumActivitySpinner3;
-import com.lardis.ivan.testcustomview.View.ModelActivity;
 import com.lardis.ivan.testcustomview.View.ModelActivityWithoutSpiners;
 
 import com.lardis.ivan.testcustomview.View.ModelSpinners;
@@ -38,7 +37,7 @@ public class DB {
             switch (enumActivitySpinner3)
             {
                 case SLEEP:
-                    modelGraph = new ModelGraph(4, 11, 1993, testdanStolbValue5(),  null, EnumTypeViewGraph.MESH_MONTH_ITEM_MONTH);
+                    modelGraph = new ModelGraph(4, 11, 1993, testdanStolbValue5(),  null, EnumTypeViewGraph.MESH_DAY_ITEM_DAY);
                     modelActivityWithoutSpiners = new ModelActivityWithoutSpiners("SLEEP", "Время", "Чтото еще", "Итд", "Итр", "кууу", modelGraph, testdanForInfo());
 
                     break;

@@ -2,18 +2,13 @@ package com.lardis.ivan.testcustomview.Presenter;
 
 import android.util.Log;
 
-import com.lardis.ivan.testcustomview.EnumActivitySpinner1;
-import com.lardis.ivan.testcustomview.EnumActivitySpinner2;
-import com.lardis.ivan.testcustomview.EnumActivitySpinner3;
-import com.lardis.ivan.testcustomview.Model.DB;
+import com.lardis.ivan.testcustomview.Storage.DB;
 import com.lardis.ivan.testcustomview.View.ModelActivity;
 import com.lardis.ivan.testcustomview.View.InterfaceMainActivity;
 import com.lardis.ivan.testcustomview.View.ModelActivityWithoutSpiners;
 import com.lardis.ivan.testcustomview.View.ModelSpinners;
-import com.lardis.ivan.testcustomview.View.ViewGraph.myEnum.EnumTypeViewGraph;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 
 /**
  * Created by i.larin on 05.04.2016.
