@@ -19,13 +19,14 @@ public class ModelDataGraph {
     }
 
 
+    private int day;
+    private int month;
+    private int year;
+    private ArrayList<Integer> arrayListGraph1 = null;
+    private ArrayList<Integer> arrayListGraph2 = null;
 
-    private   int day;
-    private  int month;
-    private  int year;
-    private  ArrayList<Integer> arrayListGraph1=null;
-    private  ArrayList<Integer> arrayListGraph2=null;
 
+    private ArrayList<String> labels = null;
     private EnumTypeViewGraph typeViewGraph;
 
     public int getDay() {
@@ -74,5 +75,13 @@ public class ModelDataGraph {
 
     public void setTypeViewGraph(EnumTypeViewGraph typeViewGraph) {
         this.typeViewGraph = typeViewGraph;
+    }
+
+    public ArrayList<String> getLabels() {
+        return labels;
+    }
+
+    public void setLabels(ArrayList<String> labels) {
+        this.labels = labels;
     }
 }

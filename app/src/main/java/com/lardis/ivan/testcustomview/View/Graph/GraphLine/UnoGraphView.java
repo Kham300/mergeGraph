@@ -182,8 +182,7 @@ public class UnoGraphView extends View implements InterfaceGraph {
 
     }
 
-    public UnoGraphView(Context context, AttributeSet attrs, double mGoal,
-                        double[] values) {
+    public UnoGraphView(Context context, AttributeSet attrs, double mGoal) {
         this(context, attrs);
         this.mGoal = mGoal;
         this.localMeasurementSystem = context.getString(R.string.localMeasurementSystem);
@@ -864,6 +863,12 @@ public class UnoGraphView extends View implements InterfaceGraph {
         for (int i = 0; i < values.length; ++i) {
             values[i] = modelDataGraph.getArrayListGraph1().get(i);
         }
+
+        this.months = new String[modelDataGraph.getLabels().size()];
+        for (int i = 0; i < months.length; ++i) {
+            months[i] = modelDataGraph.getLabels().get(i);
+        }
+
     }
 
     @Override
@@ -881,6 +886,6 @@ public class UnoGraphView extends View implements InterfaceGraph {
     @Override
     public void setCallback(CallbackDrawGraph callbackDrawGrapg) {
         measure(wBox, hBox);
-        callbackDrawGrapg.updateDrawByQ(mDesiredWidth, months.length, leftStripe);
+        callbackDrawGrapg.updateDrawByQ(mDesiredWidth, values.length, leftStripe);
     }
 }

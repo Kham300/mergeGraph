@@ -10,6 +10,7 @@ import android.view.View;
 
 import com.lardis.ivan.testcustomview.R;
 import com.lardis.ivan.testcustomview.Model.ModelDataGraph;
+import com.lardis.ivan.testcustomview.View.Graph.GraphLine.UnoGraphView;
 
 import java.util.ArrayList;
 
@@ -73,6 +74,8 @@ public class NewBackround extends View {
 
     private int colorMeshTwo;
 
+    private AttributeSet attributeSet;
+
     public NewBackround(Context context) {
         super(context);
         init(  null,   1);
@@ -99,12 +102,12 @@ public class NewBackround extends View {
 
     public void setDataGraph(ModelDataGraph modelDataGraph, TypeGraph typeGraph) {
         switch (typeGraph) {
-            case IvanGraph: {
-
+            case GraphLine: {
+                graph = new UnoGraphView(getContext(), attributeSet, 50);
 
                 break;
             }
-            case AlexGraph: {
+            case GraphPunct: {
 
 
                 break;
@@ -132,6 +135,7 @@ public class NewBackround extends View {
 
 
     void init(AttributeSet attrs, int defStyle) {
+        this.attributeSet = attrs;
         final TypedArray a = getContext().obtainStyledAttributes(
                 attrs, R.styleable.Myview, defStyle, 0);
         initColor(a);
