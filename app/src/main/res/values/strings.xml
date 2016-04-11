@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">testcustomview</string>
-
+    <string name="localMeasurementSystem">kg</string>
+    <string name="graphError">Use setMonths AND setValues to properly display the graph</string>
 
     <string-array name="period">
         <item>Неделя</item>

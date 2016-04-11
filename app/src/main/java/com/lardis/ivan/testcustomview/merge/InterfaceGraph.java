@@ -10,7 +10,5 @@ public interface InterfaceGraph {
     void updateOfsset(float v,Canvas canvas);
     void click(int n,Canvas canvas);
     void setCallback(CallbackDrawGraph callbackDrawGrapg);
-
-
 }
 

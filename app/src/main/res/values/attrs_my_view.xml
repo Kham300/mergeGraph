@@ -37,4 +37,14 @@
         <attr name="exampleColor" format="color" />
         <attr name="exampleDrawable" format="color|reference" />
     </declare-styleable>
+
+    <declare-styleable name="UnoGraphView">
+        <attr name="back_color1" format="integer"/>
+        <attr name="back_color2" format="integer"/>
+        <attr name="back_line_color" format="integer"/>
+        <attr name="graph_line_color" format="integer"/>
+        <attr name="text_color" format="integer"/>
+        <attr name="real_width" format="integer"/>
+        <attr name="fill_na" format="boolean"/>
+    </declare-styleable>
 </resources>
