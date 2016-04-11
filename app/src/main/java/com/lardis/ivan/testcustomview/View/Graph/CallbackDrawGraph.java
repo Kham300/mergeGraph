@@ -1,4 +1,4 @@
-package com.lardis.ivan.testcustomview.merge;
+package com.lardis.ivan.testcustomview.View.Graph;
 
 import java.util.ArrayList;
 

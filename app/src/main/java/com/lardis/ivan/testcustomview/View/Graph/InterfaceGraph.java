@@ -1,6 +1,8 @@
-package com.lardis.ivan.testcustomview.merge;
+package com.lardis.ivan.testcustomview.View.Graph;
 
 import android.graphics.Canvas;
+
+import com.lardis.ivan.testcustomview.Model.ModelDataGraph;
 
 /**
  * Created by i.larin on 11.04.2016.
