@@ -30,7 +30,7 @@ public class NewBackround extends View {
     /**
      * правая граница скрола для расчета скролинга
      */
-    private float maxX=50;
+    private float maxX = 50;
     /**
      * временая переменя для расчета касании
      */
@@ -40,14 +40,15 @@ public class NewBackround extends View {
      */
     private float bufX2 = 0;
 
-    int nSelectedTouch=-1;
-    private boolean isTouch()
-    {
-        if(nSelectedTouch<0 || nSelectedTouch>=sizeBackroundPunct)return false;
+    int nSelectedTouch = -1;
+
+    private boolean isTouch() {
+        if (nSelectedTouch < 0 || nSelectedTouch >= sizeBackroundPunct) return false;
         else return true;
 
 
     }
+
     float X;
     /**
      * координата У
@@ -56,7 +57,7 @@ public class NewBackround extends View {
     /**
      * сдвиг по X
      */
-    private float offsetX=0;
+    private float offsetX = 0;
     private Paint mPaintSelectedColumn;
     private Paint mPaintMesh;
 
@@ -78,11 +79,12 @@ public class NewBackround extends View {
 
     public NewBackround(Context context) {
         super(context);
-        init(  null,   1);
+        init(null, 1);
     }
+
     public NewBackround(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(  attrs,   1);
+        init(attrs, 1);
     }
 
     public NewBackround(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -133,7 +135,6 @@ public class NewBackround extends View {
     }
 
 
-
     void init(AttributeSet attrs, int defStyle) {
         this.attributeSet = attrs;
         final TypedArray a = getContext().obtainStyledAttributes(
@@ -145,10 +146,10 @@ public class NewBackround extends View {
         mPaintSelectedColumn.setTextSize(35.0f);
         mPaintSelectedColumn.setStrokeWidth(2.0f);
         mPaintSelectedColumn.setStyle(Paint.Style.FILL_AND_STROKE);
-        mPaintMesh=new Paint();
+        mPaintMesh = new Paint();
         mPaintSelectedColumn.setShadowLayer(10.0f, 0.0f, 0.0f, colorSelectedItemShadowLayer);
 
-        graph=new InterfaceGraph() {
+        graph = new InterfaceGraph() {
             @Override
             public void setData(ModelDataGraph modelDataGraph) {
 
@@ -186,16 +187,16 @@ public class NewBackround extends View {
     }
 
 
-    void testdata()
-    {
-        ofssetborderBackround=51;
-        sizeBackroundPunct=52;
-        widthBlockBackround=231;
+    void testdata() {
+        ofssetborderBackround = 51;
+        sizeBackroundPunct = 52;
+        widthBlockBackround = 231;
         updateMaxX();
 
 
         invalidate();
     }
+
     @Override
     protected void onDraw(Canvas canvas) {
 
@@ -203,21 +204,21 @@ public class NewBackround extends View {
         for (int i = 0; i < sizeBackroundPunct; i++) {
             if (i % 2 == 0) mPaintMesh.setColor(colorMeshOne);
             else mPaintMesh.setColor(colorMeshTwo);
-            drawMesh(canvas, i,mPaintMesh);
+            drawMesh(canvas, i, mPaintMesh);
         }
         if (nSelectedTouch % 2 == 0)
             mPaintSelectedColumn.setColor(colorMeshOne);
         if (nSelectedTouch % 2 == 1)
             mPaintSelectedColumn.setColor(colorMeshTwo);
-        if(isTouch())   drawMesh(canvas, nSelectedTouch, new Paint());
-        if(isTouch())   drawMesh(canvas, nSelectedTouch,mPaintSelectedColumn);
+        if (isTouch()) drawMesh(canvas, nSelectedTouch, new Paint());
+        if (isTouch()) drawMesh(canvas, nSelectedTouch, mPaintSelectedColumn);
 
         graph.updateOfsset(offsetX, canvas);
 
     }
 
-    private void drawMesh(Canvas canvas, int i,Paint paint) {
-        canvas.drawRect(ofssetborderBackround + offsetX + widthBlockBackround * (i ),
+    private void drawMesh(Canvas canvas, int i, Paint paint) {
+        canvas.drawRect(ofssetborderBackround + offsetX + widthBlockBackround * (i),
                 0,
                 ofssetborderBackround + offsetX + widthBlockBackround * (i + 1),
                 getHeight(), paint);
@@ -241,7 +242,6 @@ public class NewBackround extends View {
                 Y = motionEvent.getY();
 
 
-
                 updateOffsetX();
 
                 break;
@@ -254,22 +254,23 @@ public class NewBackround extends View {
         }
 
 
-
-
         invalidate();
         return true;
 
     }
+
     private void updateOffsetX() {
         offsetX = bufOffsetX - (bufX2 - X);
         if (offsetX < -maxX) offsetX = -maxX;
         if (offsetX > minX) offsetX = minX;
 
     }
+
     private void updateMaxX() {
-        maxX=ofssetborderBackround*2+widthBlockBackround*sizeBackroundPunct-canvasWidht;
+        maxX = ofssetborderBackround * 2 + widthBlockBackround * sizeBackroundPunct - canvasWidht;
 
     }
+
     private void updateNSelectedTouch(Float X) {
         nSelectedTouch = (int) ((X - bufOffsetX - ofssetborderBackround) / (widthBlockBackround));
 

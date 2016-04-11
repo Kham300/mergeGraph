@@ -16,7 +16,6 @@ import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.lardis.ivan.testcustomview.Model.ModelDataGraph;
 import com.lardis.ivan.testcustomview.R;
@@ -176,6 +175,7 @@ public class UnoGraphView extends View implements InterfaceGraph {
         mBackColor2 = a.getInteger(R.styleable.UnoGraphView_back_color2, Color.parseColor("#e7e9eb"));
         mBackLineColor = a.getInteger(R.styleable.UnoGraphView_back_line_color, Color.parseColor("#cdd1d6"));
         mTextColor = a.getInteger(R.styleable.UnoGraphView_text_color, Color.parseColor("#2a2a2a"));
+        mGraphLineColor = a.getInteger(R.styleable.UnoGraphView_graph_line_color, Color.parseColor("#a58143"));
         mDesiredWidth = a.getInteger(R.styleable.UnoGraphView_real_width, 0);
         mFillNa = a.getBoolean(R.styleable.UnoGraphView_fill_na, false);
         a.recycle();
