@@ -7,7 +7,7 @@ import android.widget.AbsoluteLayout;
 
 import com.lardis.ivan.testcustomview.R;
 import com.lardis.ivan.testcustomview.View.ViewGraph.myGroopViewZoomInfoGraph.MyInfoView.ModelBlockInfo;
-import com.lardis.ivan.testcustomview.View.ViewGraph.myGroopViewZoomInfoGraph.MyGraphView.ModelGraph;
+import com.lardis.ivan.testcustomview.merge.ModelDataGraph;
 import com.lardis.ivan.testcustomview.View.helper.HelperView;
 import com.lardis.ivan.testcustomview.View.ViewGraph.myGroopViewZoomInfoGraph.MyGraphView.MyGraphView;
 import com.lardis.ivan.testcustomview.View.ViewGraph.myGroopViewZoomInfoGraph.MyZoomView.MyZoomView;
@@ -204,7 +204,7 @@ public class myGroopView_Zoom_Info_Graph extends AbsoluteLayout {
      *
 
      */
-    public void setDataGraphAndInfo(ModelGraph dataGraph, ArrayList<ModelBlockInfo> arrayListForInfo) {
+    public void setDataGraphAndInfo(ModelDataGraph dataGraph, ArrayList<ModelBlockInfo> arrayListForInfo) {
 
         this.arrayListForInfo = arrayListForInfo;
         if(arrayListForInfo!=null)

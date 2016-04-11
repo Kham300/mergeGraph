@@ -20,7 +20,8 @@ import android.view.animation.AccelerateInterpolator;
 
 import com.lardis.ivan.testcustomview.R;
 import com.lardis.ivan.testcustomview.View.helper.HelperView;
-import com.lardis.ivan.testcustomview.View.ViewGraph.myEnum.EnumTypeViewGraph;
+import com.lardis.ivan.testcustomview.merge.EnumTypeViewGraph;
+import com.lardis.ivan.testcustomview.merge.ModelDataGraph;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -690,7 +691,7 @@ if(arrayListStolbValueBuf2!=null)        arrayListStolbValueBuf2.clear();
      *
 
      */
-    public void setGraphDataAndCalculate(ModelGraph dataGraph) {
+    public void setGraphDataAndCalculate(ModelDataGraph dataGraph) {
 
         clear();
         initData(dataGraph.getDay(), dataGraph.getMonth(), dataGraph.getYear(), dataGraph.getArrayListGraph1(), dataGraph.getArrayListGraph2(), dataGraph.getTypeViewGraph());
@@ -1027,6 +1028,7 @@ if(draw)        calculateNameForValue();
 if(!touch)return false;
         switch (motionEvent.getAction()) {
             case (MotionEvent.ACTION_DOWN):
+
                 X = motionEvent.getX();
                 Y = motionEvent.getY();
                 viewZoomAndBlockInfo = false;

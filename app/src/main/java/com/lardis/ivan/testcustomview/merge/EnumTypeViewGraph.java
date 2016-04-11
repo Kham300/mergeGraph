@@ -1,4 +1,4 @@
-package com.lardis.ivan.testcustomview.View.ViewGraph.myEnum;
+package com.lardis.ivan.testcustomview.merge;
 
 /**
  * enum тип графика

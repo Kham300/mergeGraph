@@ -1,9 +1,6 @@
 package com.lardis.ivan.testcustomview.View;
 
-import com.lardis.ivan.testcustomview.EnumActivitySpinner1;
-import com.lardis.ivan.testcustomview.EnumActivitySpinner2;
-import com.lardis.ivan.testcustomview.EnumActivitySpinner3;
-import com.lardis.ivan.testcustomview.View.ViewGraph.myGroopViewZoomInfoGraph.MyGraphView.ModelGraph;
+import com.lardis.ivan.testcustomview.merge.ModelDataGraph;
 import com.lardis.ivan.testcustomview.View.ViewGraph.myGroopViewZoomInfoGraph.MyInfoView.ModelBlockInfo;
 
 import java.util.ArrayList;
@@ -11,7 +8,7 @@ import java.util.ArrayList;
 /**
  * Created by i.larin on 05.04.2016.
  */
-public class ModelActivityWithoutSpiners {
+public class ModelObjectActivityWithoutSpiners {
     ArrayList<ModelBlockInfo> arrayListBlockInfo;
 
 
@@ -25,7 +22,7 @@ public class ModelActivityWithoutSpiners {
         this.arrayListBlockInfo = arrayListBlockInfo;
     }
 
-    public ModelActivityWithoutSpiners(String detStatPeriod, String detStatSrednee, String detStatItogo, String detStatProideno, String detStatInfoMonth, String detStatSredneeZnazhenie, ModelGraph dataGraph, ArrayList<ModelBlockInfo> arrayListBlockInfo) {
+    public ModelObjectActivityWithoutSpiners(String detStatPeriod, String detStatSrednee, String detStatItogo, String detStatProideno, String detStatInfoMonth, String detStatSredneeZnazhenie, ModelDataGraph dataGraph, ArrayList<ModelBlockInfo> arrayListBlockInfo) {
         this.detStatPeriod = detStatPeriod;
         this.detStatSrednee = detStatSrednee;
         this.detStatItogo = detStatItogo;
@@ -85,11 +82,11 @@ public class ModelActivityWithoutSpiners {
         this.detStatSredneeZnazhenie = detStatSredneeZnazhenie;
     }
 
-    public ModelGraph getDataGraph() {
+    public ModelDataGraph getDataGraph() {
         return dataGraph;
     }
 
-    public void setDataGraph(ModelGraph dataGraph) {
+    public void setDataGraph(ModelDataGraph dataGraph) {
         this.dataGraph = dataGraph;
     }
 
@@ -99,7 +96,7 @@ public class ModelActivityWithoutSpiners {
     private  String detStatProideno;
     private String detStatInfoMonth;
     private  String detStatSredneeZnazhenie;
-    private ModelGraph dataGraph;
+    private ModelDataGraph dataGraph;
 
 
 

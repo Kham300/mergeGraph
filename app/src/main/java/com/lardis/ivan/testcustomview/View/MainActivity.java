@@ -15,7 +15,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -139,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements InterfaceMainActi
 
 
     @Override
-    public void updateData(ModelActivityWithoutSpiners dataActivity) {
+    public void updateData(ModelObjectActivityWithoutSpiners dataActivity) {
 
         tvDetStatPeriod.setText(dataActivity.getDetStatPeriod());
         tvDetStatSrednee.setText(dataActivity.getDetStatSrednee());
@@ -154,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements InterfaceMainActi
     }
 
     @Override
-    public void updateAdapterSpinner(ModelSpinners modelSpinners) {
+    public void updateAdapterSpinner(ModelObjectSpinners modelSpinners) {
 
         if (adapterSpinner3 == null) {
             adapterSpinner3 = new MySpinner3Adapter(this,
@@ -274,32 +273,32 @@ public class MainActivity extends AppCompatActivity implements InterfaceMainActi
 
     }
     @NonNull
-    private ModelSpinner3 getDataSpinner3(EnumActivitySpinner3 enumDataGraph) {
+    private ModelObjectSpinner3 getDataSpinner3(EnumActivitySpinner3 enumDataGraph) {
         switch (enumDataGraph) {
             case SLEEP:
-                return new ModelSpinner3("Сон", R.drawable.sleep);
+                return new ModelObjectSpinner3("Сон", R.drawable.sleep);
 
             case PRESSURE:
-                return new ModelSpinner3("Давление", R.drawable.pressure);
+                return new ModelObjectSpinner3("Давление", R.drawable.pressure);
 
             case CALORIES:
-                return new ModelSpinner3("Калорий", R.drawable.calories);
+                return new ModelObjectSpinner3("Калорий", R.drawable.calories);
 
             case WATER:
-                return new ModelSpinner3("Вода", R.drawable.water);
+                return new ModelObjectSpinner3("Вода", R.drawable.water);
 
             case WEIGHT:
-                return new ModelSpinner3("Вес", R.drawable.weight);
+                return new ModelObjectSpinner3("Вес", R.drawable.weight);
 
             case PULSE:
-                return new ModelSpinner3("Пульс", R.drawable.pulse);
+                return new ModelObjectSpinner3("Пульс", R.drawable.pulse);
 
             case STEP:
-                return new ModelSpinner3("Шаги", R.drawable.step);
+                return new ModelObjectSpinner3("Шаги", R.drawable.step);
 
 
             case DISTANCE:
-                return new ModelSpinner3("Дистанция", R.drawable.distance);
+                return new ModelObjectSpinner3("Дистанция", R.drawable.distance);
 
 
         }

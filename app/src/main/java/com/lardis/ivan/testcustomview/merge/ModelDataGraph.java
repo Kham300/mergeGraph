@@ -1,27 +1,29 @@
-package com.lardis.ivan.testcustomview.View.ViewGraph.myGroopViewZoomInfoGraph.MyGraphView;
-
-import com.lardis.ivan.testcustomview.View.ViewGraph.myEnum.EnumTypeViewGraph;
+package com.lardis.ivan.testcustomview.merge;
 
 import java.util.ArrayList;
 
 /**
  * Created by i.larin on 05.04.2016.
  */
-public class ModelGraph {
-    public ModelGraph(int day, int month, int year, ArrayList<Integer> arrayListGraph1, ArrayList<Integer> arrayListGraph2, EnumTypeViewGraph typeViewGraph) {
+public class ModelDataGraph {
+    public ModelDataGraph(int day, int month, int year, ArrayList<Integer> arrayListGraph1, ArrayList<Integer> arrayListGraph2, EnumTypeViewGraph typeViewGraph) {
         this.day = day;
         this.month = month;
         this.year = year;
         this.arrayListGraph1 = arrayListGraph1;
         this.arrayListGraph2 = arrayListGraph2;
+
         this.typeViewGraph = typeViewGraph;
     }
+
+
 
     private   int day;
     private  int month;
     private  int year;
     private  ArrayList<Integer> arrayListGraph1=null;
     private  ArrayList<Integer> arrayListGraph2=null;
+
     private EnumTypeViewGraph typeViewGraph;
 
     public int getDay() {

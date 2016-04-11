@@ -3,11 +3,11 @@ package com.lardis.ivan.testcustomview.View;
 /**
  * Created by i.larin on 06.04.2016.
  */
-public class ModelSpinner3 {
+public class ModelObjectSpinner3 {
     String name;
     int resourseImg;
 
-    public ModelSpinner3(String name, int resourseImg) {
+    public ModelObjectSpinner3(String name, int resourseImg) {
         this.name = name;
         this.resourseImg = resourseImg;
     }

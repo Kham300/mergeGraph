@@ -3,10 +3,10 @@ package com.lardis.ivan.testcustomview.Presenter;
 import android.util.Log;
 
 import com.lardis.ivan.testcustomview.Storage.DB;
-import com.lardis.ivan.testcustomview.View.ModelActivity;
+import com.lardis.ivan.testcustomview.View.ModelObjectActivity;
 import com.lardis.ivan.testcustomview.View.InterfaceMainActivity;
-import com.lardis.ivan.testcustomview.View.ModelActivityWithoutSpiners;
-import com.lardis.ivan.testcustomview.View.ModelSpinners;
+import com.lardis.ivan.testcustomview.View.ModelObjectActivityWithoutSpiners;
+import com.lardis.ivan.testcustomview.View.ModelObjectSpinners;
 
 import java.lang.ref.WeakReference;
 
@@ -15,22 +15,22 @@ import java.lang.ref.WeakReference;
  */
 public class PresenterActivity {
     DB DB;
-    ModelActivity modelActivity;
+    ModelObjectActivity modelActivity;
     WeakReference<InterfaceMainActivity> interfaceActivity;
 
     public PresenterActivity(InterfaceMainActivity interfaceData1) {
         this.interfaceActivity = new WeakReference<InterfaceMainActivity>(interfaceData1);
-        modelActivity = new ModelActivity();
+        modelActivity = new ModelObjectActivity();
         DB = new DB();
         DB.setOtvet(new DB.Otvet() {
             @Override
-            public void setDataModelActivityWithoutSpiners(ModelActivityWithoutSpiners modelActivityWithoutSpiners) {
+            public void setDataModelActivityWithoutSpiners(ModelObjectActivityWithoutSpiners modelActivityWithoutSpiners) {
                 modelActivity.setModelActivityWithoutSpiners(modelActivityWithoutSpiners);
                 interfaceActivity.get().updateData(modelActivityWithoutSpiners);
             }
 
             @Override
-            public void setTitleSpinner(ModelSpinners modelSpinners) {
+            public void setTitleSpinner(ModelObjectSpinners modelSpinners) {
                 modelActivity.setModelSpinners(modelSpinners);
                 interfaceActivity.get().updateAdapterSpinner(modelSpinners);
             }

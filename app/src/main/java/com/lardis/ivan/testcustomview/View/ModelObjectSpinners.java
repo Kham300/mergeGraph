@@ -9,8 +9,8 @@ import java.util.ArrayList;
 /**
  * Created by i.larin on 06.04.2016.
  */
-public class ModelSpinners {
-    public ModelSpinners(ArrayList<EnumActivitySpinner1> spinner1ArrayList, ArrayList<EnumActivitySpinner2> spinner2ArrayList, ArrayList<EnumActivitySpinner3> spinner3ArrayList) {
+public class ModelObjectSpinners {
+    public ModelObjectSpinners(ArrayList<EnumActivitySpinner1> spinner1ArrayList, ArrayList<EnumActivitySpinner2> spinner2ArrayList, ArrayList<EnumActivitySpinner3> spinner3ArrayList) {
         this.spinner1ArrayList = spinner1ArrayList;
         this.spinner2ArrayList = spinner2ArrayList;
         this.spinner3ArrayList = spinner3ArrayList;
