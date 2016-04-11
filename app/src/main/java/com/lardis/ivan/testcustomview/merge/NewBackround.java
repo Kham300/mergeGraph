@@ -12,7 +12,39 @@ public class NewBackround extends View{
     public NewBackround(Context context) {
         super(context);init();
     }
-//public void setDataGraph
+    InterfaceGraph graph;
+public void setDataGraph(ModelDataGraph modelDataGraph,TypeGraph typeGraph)
+{
+    switch (typeGraph)
+    {
+        case IvanGraph:
+        {
+
+
+            break;
+        }
+        case AlexGraph:
+        {
+
+
+
+
+
+
+
+            break;
+        }
+
+
+    }
+
+
+
+
+
+
+}
+
     public NewBackround(Context context, AttributeSet attrs) {
         super(context, attrs);init();
     }
