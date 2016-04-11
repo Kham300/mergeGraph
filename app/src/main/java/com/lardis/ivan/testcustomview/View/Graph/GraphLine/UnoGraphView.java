@@ -118,6 +118,7 @@ public class UnoGraphView extends View implements InterfaceGraph {
 
     // Layout data
     int wBox, hBox;
+    int realW;
     float topIndent;
     float belowIndent;
     float stripeWidth;
@@ -180,8 +181,9 @@ public class UnoGraphView extends View implements InterfaceGraph {
         a.recycle();
 
     }
-    public UnoGraphView(Context context, AttributeSet attrs, double mGoal, String[] months,
-                        double[] values, int h, int w) {
+
+    public UnoGraphView(Context context, AttributeSet attrs, double mGoal,
+                        double[] values) {
         this(context, attrs);
         this.mGoal = mGoal;
         this.localMeasurementSystem = context.getString(R.string.localMeasurementSystem);
@@ -189,8 +191,6 @@ public class UnoGraphView extends View implements InterfaceGraph {
         this.graphErrorText = context.getString(R.string.graphError);
 
         this.context = context;
-        this.wBox = w;
-        this.hBox = h;
 
         this.values = values;
         init();
@@ -321,7 +321,7 @@ public class UnoGraphView extends View implements InterfaceGraph {
             labelsUnderX = new float[months.length];
             labelsUnderY = new float[months.length];
             for (int i = 0; i < months.length; ++i) {
-                labelsUnderX[i] = leftStripe + stripeWidth * i
+                labelsUnderX[i] = offset + leftStripe + stripeWidth * i
                         + 0.5f * (stripeWidth - mTextPaint.measureText(months[i]));
                 labelsUnderY[i] = h - belowIndent;
             }
@@ -364,20 +364,20 @@ public class UnoGraphView extends View implements InterfaceGraph {
 
 
         if (stripeId != -1 && curTime / segmentDuration >= stripeId) {
-            lowerTrianglePoints[0].set((int) (leftStripe + stripeId * stripeWidth + stripeWidth / 2),
+            lowerTrianglePoints[0].set((int) (offset + leftStripe + stripeId * stripeWidth + stripeWidth / 2),
                     (int) (labelsUnderY[stripeId] + mTextSize + lowerTrianglePadding));
-            lowerTrianglePoints[1].set((int) (leftStripe + stripeId * stripeWidth + 3 * stripeWidth / 4),
+            lowerTrianglePoints[1].set((int) (offset + leftStripe + stripeId * stripeWidth + 3 * stripeWidth / 4),
                     (int) (h - lowerTriangleBound));
-            lowerTrianglePoints[2].set((int) (leftStripe + stripeId * stripeWidth + stripeWidth / 4),
+            lowerTrianglePoints[2].set((int) (offset + leftStripe + stripeId * stripeWidth + stripeWidth / 4),
                     (int) (h - lowerTriangleBound));
 
             float lowerTrHeight = lowerTrianglePoints[1].y - lowerTrianglePoints[0].y;
 
-            upperTrianglePoints[0].set((int) (leftStripe + stripeId * stripeWidth + stripeWidth / 2),
+            upperTrianglePoints[0].set((int) (offset + leftStripe + stripeId * stripeWidth + stripeWidth / 2),
                     (int) (topIndent + upperTrianglePadding + lowerTrHeight));
-            upperTrianglePoints[1].set((int) (leftStripe + stripeId * stripeWidth + 3 * stripeWidth / 4),
+            upperTrianglePoints[1].set((int) (offset + leftStripe + stripeId * stripeWidth + 3 * stripeWidth / 4),
                     (int) (topIndent + upperTrianglePadding));
-            upperTrianglePoints[2].set((int) (leftStripe + stripeId * stripeWidth + stripeWidth / 4),
+            upperTrianglePoints[2].set((int) (offset + leftStripe + stripeId * stripeWidth + stripeWidth / 4),
                     (int) (topIndent + upperTrianglePadding));
         }
     }
@@ -396,7 +396,7 @@ public class UnoGraphView extends View implements InterfaceGraph {
 
         long curAnimDur = 0;
         for (int i = 0; i < values.length; ++i) {
-            float valueX = leftStripe + stripeWidth * ((float) i + 0.5f);
+            float valueX = offset + leftStripe + stripeWidth * ((float) i + 0.5f);
             float valueY = convertValuetoHeight(values[i], h);
 
             if ((mFillNa && values[i] != 0) || !mFillNa) {
@@ -432,6 +432,7 @@ public class UnoGraphView extends View implements InterfaceGraph {
         calculateLinesHeights(h);
 
     }
+
     protected void calculateLinesHeights(int h) {
         graphStep = (int) (linesMax - linesMin) / preferredNumLines;
         firstLineHeight = (int) (linesMin + linesMin % graphStep);
@@ -509,10 +510,10 @@ public class UnoGraphView extends View implements InterfaceGraph {
             drawGraphLines(canvas);
 
             canvas.drawRect(mLeftRect, mRectPaint);
-            drawHorizontalText(canvas, offset);
-            drawGoalText(canvas, offset);
-            drawLimitedHorizontalLines(canvas, offset + leftStripe);
-            drawGoalLineLimited(canvas, offset + leftStripe);
+            drawHorizontalText(canvas, -offset);
+            drawGoalText(canvas, -offset);
+            drawLimitedHorizontalLines(canvas, -offset + leftStripe);
+            drawGoalLineLimited(canvas, -offset + leftStripe);
             drawArrows(canvas);
 
             // Hidden feature of scrolling
@@ -553,10 +554,10 @@ public class UnoGraphView extends View implements InterfaceGraph {
     }
 
     protected void drawArrows(Canvas canvas) {
-        if (offset != 0)
+        if (-offset != 0)
             drawLeftArrow(canvas, leftStripe + offset);
-        if (offset + hsv.getWidth() != getWidth())
-            drawRightArrow(canvas, hsv.getScrollX() + hsv.getWidth());
+        if (-offset + wBox != realW)
+            drawRightArrow(canvas, -offset + wBox);
     }
 
     // Remove multiplication
@@ -566,7 +567,6 @@ public class UnoGraphView extends View implements InterfaceGraph {
         drawHorizontalLines(canvas);
     }
 
-    @Override
     protected void drawTextLabelsUnderStripes(Canvas canvas) {
         for (int i = 0; i < months.length; ++i) {
             if (i == stripeId && curTime / segmentDuration >= stripeId) {
@@ -583,8 +583,8 @@ public class UnoGraphView extends View implements InterfaceGraph {
 
     private void drawHighlightedStripe(Canvas canvas) {
         if (stripeId != -1 && curTime / segmentDuration >= stripeId) {
-            float xPos1 = leftStripe + stripeWidth * (stripeId - bigCircleRatio);
-            float xPos2 = leftStripe + stripeWidth * (stripeId + 1 + bigCircleRatio);
+            float xPos1 = offset + leftStripe + stripeWidth * (stripeId - bigCircleRatio);
+            float xPos2 = offset + leftStripe + stripeWidth * (stripeId + 1 + bigCircleRatio);
 
             mHighlightPath.reset();
             mHighlightPath.moveTo(xPos1, topIndent);
@@ -595,8 +595,8 @@ public class UnoGraphView extends View implements InterfaceGraph {
 
             canvas.drawPath(mHighlightPath, mHighlightPathPaint);
 
-            mHighRectF.set(leftStripe + stripeWidth * stripeId, topIndent,
-                    leftStripe + stripeWidth * (stripeId + 1), canvas.getHeight() - belowIndent);
+            mHighRectF.set(offset + leftStripe + stripeWidth * stripeId, topIndent,
+                    offset + leftStripe + stripeWidth * (stripeId + 1), canvas.getHeight() - belowIndent);
             mHighlightStripePaint.setColor(Color.WHITE);
 
             canvas.drawRect(mHighRectF, mHighlightStripePaint);
@@ -651,6 +651,22 @@ public class UnoGraphView extends View implements InterfaceGraph {
 
         canvas.drawPath(mGradPath, mGradPaint);
         canvas.drawPath(mGraphPath, mGraphPaint);
+    }
+
+    protected void drawGoalLine(Canvas canvas) {
+        if (mGoal != 0) {
+            float value = convertValuetoHeight(mGoal, canvas.getHeight());
+
+            // Draw line
+            mGoalPath.reset();
+            mGoalPath.moveTo(0, value);
+            mGoalPath.lineTo(canvas.getWidth(), value);
+            canvas.drawPath(mGoalPath, mGoalPaint);
+
+            // Count constraints
+            goalStart = value - 3 * mTextSize / 2;
+            goalEnd = value;
+        }
     }
 
     protected void drawGoalLineLimited(Canvas canvas, float limit) {
@@ -774,9 +790,9 @@ public class UnoGraphView extends View implements InterfaceGraph {
         float indent = marginRatio * canvas.getHeight();
         float belowIndent = footerRatio * canvas.getHeight();
         mArrowPath.reset();
-        mArrowPath.moveTo(globalIndent + 3 * indent, canvas.getHeight() - belowIndent - 3 * indent);
-        mArrowPath.lineTo(globalIndent + 2 * indent, canvas.getHeight() - belowIndent - 2 * indent);
-        mArrowPath.lineTo(globalIndent + 3 * indent, canvas.getHeight() - belowIndent - indent);
+        mArrowPath.moveTo(3 * indent, canvas.getHeight() - belowIndent - 3 * indent);
+        mArrowPath.lineTo(2 * indent, canvas.getHeight() - belowIndent - 2 * indent);
+        mArrowPath.lineTo(3 * indent, canvas.getHeight() - belowIndent - indent);
         canvas.drawPath(mArrowPath, mArrowPaint);
     }
 
@@ -842,7 +858,6 @@ public class UnoGraphView extends View implements InterfaceGraph {
     }
 
 
-
     @Override
     public void setData(ModelDataGraph modelDataGraph) {
         this.values = new double[modelDataGraph.getArrayListGraph1().size()];
@@ -853,19 +868,19 @@ public class UnoGraphView extends View implements InterfaceGraph {
 
     @Override
     public void updateOfsset(float v, Canvas canvas) {
-
+        offset = -v;
+        draw(canvas);
     }
 
     @Override
     public void click(int n, Canvas canvas) {
         stripeId = n;
-
+        draw(canvas);
     }
 
     @Override
     public void setCallback(CallbackDrawGraph callbackDrawGrapg) {
-        measure(w, h);
+        measure(wBox, hBox);
         callbackDrawGrapg.updateDrawByQ(mDesiredWidth, months.length, leftStripe);
-        }
     }
 }
