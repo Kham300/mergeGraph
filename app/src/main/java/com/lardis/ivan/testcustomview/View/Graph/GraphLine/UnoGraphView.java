@@ -18,10 +18,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.lardis.ivan.testcustomview.Model.ModelDataGraph;
 import com.lardis.ivan.testcustomview.R;
-import com.lardis.ivan.testcustomview.merge.CallbackDrawGraph;
-import com.lardis.ivan.testcustomview.merge.InterfaceGraph;
-import com.lardis.ivan.testcustomview.merge.ModelDataGraph;
+import com.lardis.ivan.testcustomview.View.Graph.CallbackDrawGraph;
+import com.lardis.ivan.testcustomview.View.Graph.InterfaceGraph;
 
 /**
  * Created by aleksey.ivanov on 21.03.2016.

@@ -1,4 +1,6 @@
-package com.lardis.ivan.testcustomview.merge;
+package com.lardis.ivan.testcustomview.Model;
+
+import com.lardis.ivan.testcustomview.View.Graph.EnumTypeViewGraph;
 
 import java.util.ArrayList;
 

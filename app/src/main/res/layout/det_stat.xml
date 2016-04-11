@@ -7,7 +7,7 @@
     android:background="#E7E9EB"
 
 
-    tools:context=".View.MainActivity">
+    tools:context=".OLD.MainActivity">
 
 
 
@@ -182,7 +182,7 @@ android:textColor="@color/det_stat_text_color_value"
 
         </LinearLayout>
 
-        <com.lardis.ivan.testcustomview.View.ViewGraph.myGroopView_Zoom_Info_Graph
+        <com.lardis.ivan.testcustomview.OLD.ViewGraph.myGroopView_Zoom_Info_Graph
             android:id="@+id/mygroop"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
