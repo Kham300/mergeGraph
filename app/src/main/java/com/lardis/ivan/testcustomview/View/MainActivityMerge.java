@@ -2,6 +2,8 @@ package com.lardis.ivan.testcustomview.View;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
 
 import com.lardis.ivan.testcustomview.Model.ModelDataGraph;
 import com.lardis.ivan.testcustomview.R;
@@ -19,6 +21,8 @@ public class MainActivityMerge extends AppCompatActivity {
 
 
     NewBackround backround;
+    Button button1;
+    Button button2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,11 +30,28 @@ public class MainActivityMerge extends AppCompatActivity {
         setContentView(R.layout.merge_main_activity);
 
         backround = (NewBackround) findViewById(R.id.mygroop);
+        button1 = (Button) findViewById(R.id.button1);
+        button2 = (Button) findViewById(R.id.button2);
 
-        ModelDataGraph modelDataGraph = new ModelDataGraph(1, 1, 1, new ArrayList<>(Arrays.asList(
+        final ModelDataGraph modelDataGraph = new ModelDataGraph(1, 1, 1, new ArrayList<>(Arrays.asList(
                 95, 86, 70, 65, 59, 49, 45, 65, 59, 49, 65, 59)), new ArrayList<>(Arrays.asList(
                 95, 86, 70, 65, 59, 49, 45, 65, 59, 49, 65, 59)), EnumTypeViewGraph.MESH_MONTH_ITEM_MONTH);
 
-        backround.setDataGraph(modelDataGraph, TypeGraph.GraphLine);
+        button1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                backround.setDataGraph(modelDataGraph, TypeGraph.GraphLine);
+            }
+        });
+
+
+        button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                backround.setDataGraph(modelDataGraph, TypeGraph.GraphPunct);
+            }
+        });
+
+
     }
 }

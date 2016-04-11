@@ -11,6 +11,7 @@ import android.view.View;
 import com.lardis.ivan.testcustomview.R;
 import com.lardis.ivan.testcustomview.Model.ModelDataGraph;
 import com.lardis.ivan.testcustomview.View.Graph.GraphLine.UnoGraphView;
+import com.lardis.ivan.testcustomview.View.Graph.GraphPunct.GraphPunct;
 
 import java.util.ArrayList;
 
@@ -97,7 +98,6 @@ public class NewBackround extends View {
         super.onSizeChanged(w, h, oldw, oldh);
         canvasWidht = getWidth();
         canvasHeight = getHeight();
-        testdata();
     }
 
     InterfaceGraph graph;
@@ -106,28 +106,30 @@ public class NewBackround extends View {
         switch (typeGraph) {
             case GraphLine: {
                 graph = new UnoGraphView(getContext(), attributeSet, 50);
-
                 break;
             }
             case GraphPunct: {
-
-
+                graph = new GraphPunct(getContext(), attributeSet);
                 break;
             }
 
 
         }
+        graph.setData(modelDataGraph);
+
         graph.setCallback(new CallbackDrawGraph() {
             @Override
             public void updateDrawByQ(float widthBlock, int n, float ofssetBorder) {
                 widthBlockBackround = widthBlock;
                 ofssetborderBackround = ofssetBorder;
                 sizeBackroundPunct = n;
+                invalidate();
             }
 
             @Override
             public void updateDrawByArrayList(ArrayList<?> arrayList, float ofssetBorder) {
                 ofssetborderBackround = ofssetBorder;
+                invalidate();
             }
         });
 
