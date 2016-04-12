@@ -119,9 +119,9 @@ public class NewBackground extends View {
 
         graph.setCallback(new CallbackDrawGraph() {
             @Override
-            public void updateDrawByQ(float widthBlock, int n, float ofssetBorder) {
+            public void updateDrawByQ(float widthBlock, int n, float offsetBorder) {
                 widthBlockBackround = widthBlock;
-                ofssetborderBackround = ofssetBorder;
+                ofssetborderBackround = offsetBorder;
                 sizeBackroundPunct = n;
                 invalidate();
             }
@@ -216,6 +216,8 @@ public class NewBackground extends View {
         if (isTouch()) drawMesh(canvas, nSelectedTouch, mPaintSelectedColumn);
 
         graph.updateOfsset(offsetX, canvas);
+        if (isTouch())
+            graph.click(nSelectedTouch, canvas);
 
     }
 

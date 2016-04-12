@@ -40,7 +40,7 @@ public class UnoGraphView extends BaseGraph {
     int mDesiredWidth;
     boolean mFillNa;
     double mGoal;
-    String[] months;
+    String[] labels;
     double[] values;
 
     // Rects
@@ -154,10 +154,6 @@ public class UnoGraphView extends BaseGraph {
     public String goalLineText = "goal";
     String[] weightsText;
 
-    // Event handling
-
-    protected static final int MAX_CLICK_DURATION = 200;
-    protected long startClickTime = 0;
 
     // Saved data
     Context context;
@@ -300,11 +296,11 @@ public class UnoGraphView extends BaseGraph {
     }
 
 
-    public void onMeasure(int w, int h) {
+    public void measure(int w, int h) {
         // Assuming that w and h is resolved
         if (w != 0 && h != 0) {
-            if (months == null)
-            // If data or months are not provided
+            if (labels == null)
+            // If data or labels are not provided
             {
                 mErrRectF.set(0, 0, w, h);
             } else {
@@ -313,7 +309,7 @@ public class UnoGraphView extends BaseGraph {
                 belowIndent = (int) (h * footerRatio);
 
                 // Counting stripeWidth and indents
-                stripeWidth = w / (months.length + 1);
+                stripeWidth = w / (labels.length + 1);
 
                 findMinAndMax();
 
@@ -322,38 +318,38 @@ public class UnoGraphView extends BaseGraph {
                 // we will increase width of graph to required minimum
                 if (stripeWidth < HelperLayoutClass.dpToPixels(context.getResources(), minStripeDp)) {
                     stripeWidth = (int) HelperLayoutClass.dpToPixels(context.getResources(), minStripeDp);
-                    w = (int) (stripeWidth * (months.length + 1));
+                    w = (int) (stripeWidth * (labels.length + 1));
                 }
 
-                // Calculating textSize for labels under stripes months
-                HelperLayoutClass.calculateOKTextSize(mTextPaint, textRatio * stripeWidth, months,
+                // Calculating textSize for labels under stripes labels
+                HelperLayoutClass.calculateOKTextSize(mTextPaint, textRatio * stripeWidth, labels,
                         belowIndent * textBorder);
                 mTextSize = (int) mTextPaint.getTextSize();
                 leftStripe = mTextPaint.measureText(testText) + mTextSize / 2;
-                stripeWidth = (w - leftStripe) / months.length;
+                stripeWidth = (w - leftStripe) / labels.length;
                 graphStrokeWidth = h / 100;
                 mLinePaint.setStrokeWidth(graphStrokeWidth / 4);
                 mArrowPaint.setStrokeWidth(h * lineRatio);
 
                 // Precalc textSizes
-                monthsMeasured = new float[months.length];
-                for (int i = 0; i < months.length; ++i) {
-                    monthsMeasured[i] = mTextPaint.measureText(months[i]);
+                monthsMeasured = new float[labels.length];
+                for (int i = 0; i < labels.length; ++i) {
+                    monthsMeasured[i] = mTextPaint.measureText(labels[i]);
                 }
 
                 // Precalculating data for text
-                labelsUnderX = new float[months.length];
-                labelsUnderY = new float[months.length];
-                for (int i = 0; i < months.length; ++i) {
+                labelsUnderX = new float[labels.length];
+                labelsUnderY = new float[labels.length];
+                for (int i = 0; i < labels.length; ++i) {
                     labelsUnderX[i] = offset + leftStripe + stripeWidth * i
-                            + 0.5f * (stripeWidth - mTextPaint.measureText(months[i]));
+                            + 0.5f * (stripeWidth - mTextPaint.measureText(labels[i]));
                     labelsUnderY[i] = h - belowIndent;
                 }
 
                 // Calculating static layouts
-                textUnderStripes = new StaticLayout[months.length];
-                for (int i = 0; i < months.length; ++i)
-                    textUnderStripes[i] = new StaticLayout(months[i], mTextPaint,
+                textUnderStripes = new StaticLayout[labels.length];
+                for (int i = 0; i < labels.length; ++i)
+                    textUnderStripes[i] = new StaticLayout(labels[i], mTextPaint,
                             (int) (textRatio * stripeWidth),
                             Layout.Alignment.ALIGN_NORMAL, 1, 1, true);
                 mGoalPaint.setStrokeWidth(graphStrokeWidth / 2);
@@ -361,7 +357,7 @@ public class UnoGraphView extends BaseGraph {
             }
 
             // Changing width of lines with corrections after measurement
-            if (months != null && values != null) {
+            if (labels != null && values != null) {
                 mGraphPaint.setStrokeWidth(graphStrokeWidth);
                 mGradPaint.setStrokeWidth(graphStrokeWidth);
 
@@ -372,13 +368,16 @@ public class UnoGraphView extends BaseGraph {
                                 Color.blue(mGraphLineColor)), Shader.TileMode.MIRROR));
 
                 // Animation
-                animationDuration = segmentDuration * (months.length - 1);
+                animationDuration = segmentDuration * (labels.length - 1);
 
                 precalculateLayoutArrays(h);
                 calculateTriangles(h);
 
 
             }
+
+            // Set left stripe coordinates
+            mLeftRect.set(0, 0, leftStripe, h);
         }
     }
 
@@ -410,14 +409,14 @@ public class UnoGraphView extends BaseGraph {
     private void precalculateLayoutArrays(int h) {
         // Precalculating data for circles
         // TODO refactoring needed
-        float[] valuesRealHeightCount = new float[months.length];
-        float[] circleCentresXCount = new float[months.length];
-        long[] tempAnim = new long[months.length];
+        float[] valuesRealHeightCount = new float[labels.length];
+        float[] circleCentresXCount = new float[labels.length];
+        long[] tempAnim = new long[labels.length];
 
         int last = 0;
 
-        originalX = new float[months.length];
-        originalY = new float[months.length];
+        originalX = new float[labels.length];
+        originalY = new float[labels.length];
 
         long curAnimDur = 0;
         for (int i = 0; i < values.length; ++i) {
@@ -449,7 +448,7 @@ public class UnoGraphView extends BaseGraph {
 
 
         if (stripeId != -1) {
-            goalUnderStripes = new StaticLayout(months[stripeId], mGoalTextPaint,
+            goalUnderStripes = new StaticLayout(labels[stripeId], mGoalTextPaint,
                     (int) (textRatio * stripeWidth),
                     Layout.Alignment.ALIGN_NORMAL, 1, 1, true);
         }
@@ -524,8 +523,9 @@ public class UnoGraphView extends BaseGraph {
         return min;
     }
 
-    public void onDraw(Canvas canvas) {
-        if (months != null && values != null) {
+    public void draw(Canvas canvas) {
+        if (labels != null && values != null) {
+            drawBackground(canvas);
             drawAdditionalBackground(canvas);
 
             // Measure animation time
@@ -563,8 +563,8 @@ public class UnoGraphView extends BaseGraph {
 //                        if (x >= leftStripe) {
 //                            stripeId = (int) ((x - leftStripe) / stripeWidth);
 //
-//                            if (months != null && stripeId >= months.length)
-//                                stripeId = months.length - 1;
+//                            if (labels != null && stripeId >= labels.length)
+//                                stripeId = labels.length - 1;
 //                        }
 //                    }
 //                    invalidate();
@@ -575,22 +575,62 @@ public class UnoGraphView extends BaseGraph {
 //        return false;
 //    }
 
+
+    protected void drawBackground(Canvas canvas) {
+        //drawStripes(canvas);
+
+        drawBorderLines(canvas);
+        drawRectsTopAndBelow(canvas);
+        drawTextLabelsUnderStripes(canvas);
+    }
+
+    private void drawStripes(Canvas canvas) {
+        mStripeRectF.set(0, topIndent, leftStripe, canvas.getHeight() - belowIndent);
+        mStripePaint.setColor(mBackColor2);
+        canvas.drawRect(mStripeRectF, mStripePaint);
+
+        for (int i = 0; i < labels.length; ++i) {
+            mStripeRectF.set(leftStripe + stripeWidth * i, topIndent,
+                    leftStripe + stripeWidth * (i + 1), canvas.getHeight() - belowIndent);
+            int curColorRes = (i % 2 == 0) ? mBackColor1 : mBackColor2;
+            mStripePaint.setColor(curColorRes);
+
+            canvas.drawRect(mStripeRectF, mStripePaint);
+        }
+    }
+
+    private void drawBorderLines(Canvas canvas) {
+        canvas.drawLine(0, topIndent, canvas.getWidth(), topIndent, mLinePaint);
+        canvas.drawLine(0, canvas.getHeight() - belowIndent, canvas.getWidth(),
+                canvas.getHeight() - belowIndent, mLinePaint);
+    }
+
+    protected void drawRectsTopAndBelow(Canvas canvas) {
+        mStripeRectF.set(0, 0, canvas.getWidth(), topIndent);
+        mStripePaint.setColor(mBackColor2);
+        canvas.drawRect(mStripeRectF, mStripePaint);
+
+        mStripeRectF.set(0, canvas.getHeight() - belowIndent, canvas.getWidth(), canvas.getHeight());
+        mStripePaint.setColor(mBackColor2);
+        canvas.drawRect(mStripeRectF, mStripePaint);
+    }
+
     protected void drawArrows(Canvas canvas) {
-        if (-offset != 0)
-            drawLeftArrow(canvas, leftStripe + offset);
-        if (-offset + w != realW)
-            drawRightArrow(canvas, -offset + w);
+        if (offset != 0)
+            drawLeftArrow(canvas, leftStripe);
+        if (offset + w != realW)
+            drawRightArrow(canvas, w);
     }
 
     // Remove multiplication
     protected void drawAdditionalBackground(Canvas canvas) {
-        drawHighlightedStripe(canvas);
+        // drawHighlightedStripe(canvas);
         drawGoalLine(canvas);
         drawHorizontalLines(canvas);
     }
 
     protected void drawTextLabelsUnderStripes(Canvas canvas) {
-        for (int i = 0; i < months.length; ++i) {
+        for (int i = 0; i < labels.length; ++i) {
             if (i == stripeId && curTime / segmentDuration >= stripeId) {
                 canvas.translate(labelsUnderX[stripeId], labelsUnderY[stripeId]);
                 goalUnderStripes.draw(canvas);
@@ -812,9 +852,9 @@ public class UnoGraphView extends BaseGraph {
         float indent = marginRatio * canvas.getHeight();
         float belowIndent = footerRatio * canvas.getHeight();
         mArrowPath.reset();
-        mArrowPath.moveTo(3 * indent, canvas.getHeight() - belowIndent - 3 * indent);
-        mArrowPath.lineTo(2 * indent, canvas.getHeight() - belowIndent - 2 * indent);
-        mArrowPath.lineTo(3 * indent, canvas.getHeight() - belowIndent - indent);
+        mArrowPath.moveTo(globalIndent + 3 * indent, canvas.getHeight() - belowIndent - 3 * indent);
+        mArrowPath.lineTo(globalIndent + 2 * indent, canvas.getHeight() - belowIndent - 2 * indent);
+        mArrowPath.lineTo(globalIndent + 3 * indent, canvas.getHeight() - belowIndent - indent);
         canvas.drawPath(mArrowPath, mArrowPaint);
     }
 
@@ -887,9 +927,9 @@ public class UnoGraphView extends BaseGraph {
             values[i] = modelDataGraph.getArrayListGraph1().get(i);
         }
 
-        this.months = new String[modelDataGraph.getLabels().size()];
-        for (int i = 0; i < months.length; ++i) {
-            months[i] = modelDataGraph.getLabels().get(i);
+        this.labels = new String[modelDataGraph.getLabels().size()];
+        for (int i = 0; i < labels.length; ++i) {
+            labels[i] = modelDataGraph.getLabels().get(i);
         }
 
     }
@@ -897,20 +937,20 @@ public class UnoGraphView extends BaseGraph {
     @Override
     public void updateOfsset(float v, Canvas canvas) {
         offset = v;
-        onMeasure(w, h);
-        onDraw(canvas);
+        measure(w, h);
+        draw(canvas);
     }
 
     @Override
     public void click(int n, Canvas canvas) {
         stripeId = n;
-        onMeasure(w, h);
-        onDraw(canvas);
+        measure(w, h);
+        draw(canvas);
     }
 
     @Override
     public void setCallback(CallbackDrawGraph callbackDrawGrapg) {
-        onMeasure(w, h);
-        callbackDrawGrapg.updateDrawByQ(mDesiredWidth, values.length, leftStripe);
+        measure(w, h);
+        callbackDrawGrapg.updateDrawByQ(stripeWidth, values.length, leftStripe);
     }
 }
