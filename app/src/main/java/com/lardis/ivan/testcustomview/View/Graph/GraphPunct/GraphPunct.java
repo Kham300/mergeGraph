@@ -21,17 +21,22 @@ public class GraphPunct extends BaseGraph {
     }
 
     @Override
-    protected void updateOfsset(float v, Canvas canvas) {
+    protected void updateOffset(float v) {
 
     }
 
     @Override
-    protected void click(int n, Canvas canvas) {
+    protected void click(int n) {
 
     }
 
     @Override
     protected void setCallback(CallbackDrawGraph callbackDrawGrapg) {
+
+    }
+
+    @Override
+    protected void draw(Canvas canvas) {
 
     }
 }

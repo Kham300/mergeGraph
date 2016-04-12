@@ -12,9 +12,10 @@ public abstract class BaseGraph {
     protected int w;
 
     protected abstract void setData(ModelDataGraph modelDataGraph);
-    protected abstract void updateOfsset(float v, Canvas canvas);
-    protected abstract void click(int n, Canvas canvas);
+    protected abstract void updateOffset(float v);
+    protected abstract void click(int n);
     protected abstract void setCallback(CallbackDrawGraph callbackDrawGrapg);
+    protected abstract void draw(Canvas canvas);
 
     void setWH(int w, int h) {
         this.w = w;

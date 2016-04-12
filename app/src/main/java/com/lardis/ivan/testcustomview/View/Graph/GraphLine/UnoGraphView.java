@@ -158,6 +158,9 @@ public class UnoGraphView extends BaseGraph {
     // Saved data
     Context context;
 
+    // Callback to backgroundView
+    CallbackDrawGraph callbackToBack;
+
     public UnoGraphView(Context context, AttributeSet attrs) {
         TypedArray a = context.getTheme().obtainStyledAttributes(
                 attrs,
@@ -523,7 +526,7 @@ public class UnoGraphView extends BaseGraph {
         return min;
     }
 
-    public void draw(Canvas canvas) {
+    public void drawGraph(Canvas canvas) {
         if (labels != null && values != null) {
             drawBackground(canvas);
             drawAdditionalBackground(canvas);
@@ -540,40 +543,12 @@ public class UnoGraphView extends BaseGraph {
             drawArrows(canvas);
 
             // Hidden feature of scrolling
-//            if (curTime < animationDuration) {
-//                postInvalidateDelayed(1000 / framesPerSecond);
-//                hsv.scrollTo((int) (curX - hsv.getWidth() / 2), 0);
-//            }
-//            hsv.setAnimationFinished(!(curTime < animationDuration));
-
+            if (curTime < animationDuration) {
+                callbackToBack.sendPostInvalidate(1000 / framesPerSecond);
+                //callbackToBack.scrollTo((int) (curX + w / 2));
+            }
         }
     }
-
-//
-//    public boolean onTouchEvent(MotionEvent event) {
-//        switch (event.getAction()) {
-//            case MotionEvent.ACTION_DOWN:
-//                startClickTime = System.currentTimeMillis();
-//                return true;
-//            case MotionEvent.ACTION_UP:
-//                if (System.currentTimeMillis() - startTime > animationDuration) {
-//                    long clickDuration = System.currentTimeMillis() - startClickTime;
-//                    if (clickDuration < MAX_CLICK_DURATION) {
-//                        int x = (int) event.getX();
-//                        if (x >= leftStripe) {
-//                            stripeId = (int) ((x - leftStripe) / stripeWidth);
-//
-//                            if (labels != null && stripeId >= labels.length)
-//                                stripeId = labels.length - 1;
-//                        }
-//                    }
-//                    invalidate();
-//                    requestLayout();
-//                }
-//                return true;
-//        }
-//        return false;
-//    }
 
 
     protected void drawBackground(Canvas canvas) {
@@ -582,21 +557,6 @@ public class UnoGraphView extends BaseGraph {
         drawBorderLines(canvas);
         drawRectsTopAndBelow(canvas);
         drawTextLabelsUnderStripes(canvas);
-    }
-
-    private void drawStripes(Canvas canvas) {
-        mStripeRectF.set(0, topIndent, leftStripe, canvas.getHeight() - belowIndent);
-        mStripePaint.setColor(mBackColor2);
-        canvas.drawRect(mStripeRectF, mStripePaint);
-
-        for (int i = 0; i < labels.length; ++i) {
-            mStripeRectF.set(leftStripe + stripeWidth * i, topIndent,
-                    leftStripe + stripeWidth * (i + 1), canvas.getHeight() - belowIndent);
-            int curColorRes = (i % 2 == 0) ? mBackColor1 : mBackColor2;
-            mStripePaint.setColor(curColorRes);
-
-            canvas.drawRect(mStripeRectF, mStripePaint);
-        }
     }
 
     private void drawBorderLines(Canvas canvas) {
@@ -935,22 +895,25 @@ public class UnoGraphView extends BaseGraph {
     }
 
     @Override
-    public void updateOfsset(float v, Canvas canvas) {
+    public void updateOffset(float v) {
         offset = v;
-        measure(w, h);
-        draw(canvas);
     }
 
     @Override
-    public void click(int n, Canvas canvas) {
+    public void click(int n) {
         stripeId = n;
-        measure(w, h);
-        draw(canvas);
     }
 
     @Override
     public void setCallback(CallbackDrawGraph callbackDrawGrapg) {
         measure(w, h);
-        callbackDrawGrapg.updateDrawByQ(stripeWidth, values.length, leftStripe);
+        callbackToBack = callbackDrawGrapg;
+        callbackToBack.updateDrawByQ(stripeWidth, values.length, leftStripe);
+    }
+
+    @Override
+    protected void draw(Canvas canvas) {
+        measure(w, h);
+        drawGraph(canvas);
     }
 }

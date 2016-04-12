@@ -21,7 +21,7 @@ import java.util.ArrayList;
 public class NewBackground extends View {
     float canvasWidht;
     float canvasHeight;
-    float ofssetborderBackround;
+    float offsetborderBackround;
     int sizeBackroundPunct;
     float widthBlockBackround;
     /**
@@ -119,16 +119,26 @@ public class NewBackground extends View {
 
         graph.setCallback(new CallbackDrawGraph() {
             @Override
+            public void sendPostInvalidate(long delay) {
+                postInvalidateDelayed(delay);
+            }
+
+            @Override
+            public void scrollTo(int scrollX) {
+                offsetX = scrollX;
+            }
+
+            @Override
             public void updateDrawByQ(float widthBlock, int n, float offsetBorder) {
                 widthBlockBackround = widthBlock;
-                ofssetborderBackround = offsetBorder;
+                offsetborderBackround = offsetBorder;
                 sizeBackroundPunct = n;
                 invalidate();
             }
 
             @Override
-            public void updateDrawByArrayList(ArrayList<?> arrayList, float ofssetBorder) {
-                ofssetborderBackround = ofssetBorder;
+            public void updateDrawByArrayList(ArrayList<?> arrayList, float offsetBorder) {
+                offsetborderBackround = offsetBorder;
                 invalidate();
             }
         });
@@ -158,17 +168,23 @@ public class NewBackground extends View {
             }
 
             @Override
-            public void updateOfsset(float v, Canvas canvas) {
+            protected void updateOffset(float v) {
 
             }
 
             @Override
-            public void click(int n, Canvas canvas) {
+            protected void click(int n) {
 
             }
+
 
             @Override
             public void setCallback(CallbackDrawGraph callbackDrawGrapg) {
+
+            }
+
+            @Override
+            protected void draw(Canvas canvas) {
 
             }
         };
@@ -190,7 +206,7 @@ public class NewBackground extends View {
 
 
     void testdata() {
-        ofssetborderBackround = 51;
+        offsetborderBackround = 51;
         sizeBackroundPunct = 52;
         widthBlockBackround = 231;
         updateMaxX();
@@ -215,16 +231,17 @@ public class NewBackground extends View {
         if (isTouch()) drawMesh(canvas, nSelectedTouch, new Paint());
         if (isTouch()) drawMesh(canvas, nSelectedTouch, mPaintSelectedColumn);
 
-        graph.updateOfsset(offsetX, canvas);
+        graph.updateOffset(offsetX);
         if (isTouch())
-            graph.click(nSelectedTouch, canvas);
+            graph.click(nSelectedTouch);
+        graph.draw(canvas);
 
     }
 
     private void drawMesh(Canvas canvas, int i, Paint paint) {
-        canvas.drawRect(ofssetborderBackround + offsetX + widthBlockBackround * (i),
+        canvas.drawRect(offsetborderBackround + offsetX + widthBlockBackround * (i),
                 0,
-                ofssetborderBackround + offsetX + widthBlockBackround * (i + 1),
+                offsetborderBackround + offsetX + widthBlockBackround * (i + 1),
                 getHeight(), paint);
     }
 
@@ -271,14 +288,12 @@ public class NewBackground extends View {
     }
 
     private void updateMaxX() {
-        maxX = ofssetborderBackround * 2 + widthBlockBackround * sizeBackroundPunct - canvasWidht;
+        maxX = offsetborderBackround * 2 + widthBlockBackround * sizeBackroundPunct - canvasWidht;
 
     }
 
     private void updateNSelectedTouch(Float X) {
-        nSelectedTouch = (int) ((X - bufOffsetX - ofssetborderBackround) / (widthBlockBackround));
-
-
+        nSelectedTouch = (int) ((X - bufOffsetX - offsetborderBackround) / (widthBlockBackround));
     }
 
 }
