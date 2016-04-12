@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Path;
@@ -14,18 +15,16 @@ import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
-import android.view.View;
 
 import com.lardis.ivan.testcustomview.Model.ModelDataGraph;
 import com.lardis.ivan.testcustomview.R;
 import com.lardis.ivan.testcustomview.View.Graph.CallbackDrawGraph;
-import com.lardis.ivan.testcustomview.View.Graph.InterfaceGraph;
+import com.lardis.ivan.testcustomview.View.Graph.BaseGraph;
 
 /**
  * Created by aleksey.ivanov on 21.03.2016.
  */
-public class UnoGraphView extends View implements InterfaceGraph {
+public class UnoGraphView extends BaseGraph {
 
     // Animation
     long startTime;
@@ -116,7 +115,6 @@ public class UnoGraphView extends View implements InterfaceGraph {
 
 
     // Layout data
-    int wBox, hBox;
     int realW;
     float topIndent;
     float belowIndent;
@@ -165,7 +163,6 @@ public class UnoGraphView extends View implements InterfaceGraph {
     Context context;
 
     public UnoGraphView(Context context, AttributeSet attrs) {
-        super(context, attrs);
         TypedArray a = context.getTheme().obtainStyledAttributes(
                 attrs,
                 R.styleable.UnoGraphView,
@@ -191,7 +188,6 @@ public class UnoGraphView extends View implements InterfaceGraph {
 
         this.context = context;
 
-        this.values = values;
         init();
     }
 
@@ -233,7 +229,37 @@ public class UnoGraphView extends View implements InterfaceGraph {
     }
 
     private void initPaints() {
+        mErrRectPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mErrRectPaint.setColor(Color.RED);
 
+        mErrTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+        mErrTextPaint.setTextSize(30);
+        mErrTextPaint.setColor(Color.BLACK);
+
+        mStripePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+        mTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+        mTextPaint.setColor(mTextColor);
+
+        mLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mLinePaint.setColor(mBackLineColor);
+
+        mGoalPaint = new Paint();
+        mGoalPaint.setAntiAlias(false);
+        mGoalPaint.setStyle(Paint.Style.STROKE);
+        intervals = new float[]{stripLength, stripLength};
+        mGoalPaint.setPathEffect(new DashPathEffect(intervals, 0));
+
+        mGoalTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+
+        mRectPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mRectPaint.setColor(mBackColor2);
+
+
+        mArrowPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mArrowPaint.setColor(Color.BLACK);
+        mArrowPaint.setStyle(Paint.Style.STROKE);
+        mArrowPath = new Path();
 
         mGraphPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mGraphPaint.setColor(mGraphLineColor);
@@ -244,7 +270,6 @@ public class UnoGraphView extends View implements InterfaceGraph {
         mGraphPaint.setAntiAlias(true);
 
         mGradPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-
 
         mBigCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mBigCirclePaint.setColor(mGraphLineColor);
@@ -277,82 +302,83 @@ public class UnoGraphView extends View implements InterfaceGraph {
 
     public void onMeasure(int w, int h) {
         // Assuming that w and h is resolved
+        if (w != 0 && h != 0) {
+            if (months == null)
+            // If data or months are not provided
+            {
+                mErrRectF.set(0, 0, w, h);
+            } else {
+                // Calculating indents
+                topIndent = (int) (h * headerRatio);
+                belowIndent = (int) (h * footerRatio);
 
-        if (months == null)
-        // If data or months are not provided
-        {
-            mErrRectF.set(0, 0, w, h);
-        } else {
-            // Calculating indents
-            topIndent = (int) (h * headerRatio);
-            belowIndent = (int) (h * footerRatio);
+                // Counting stripeWidth and indents
+                stripeWidth = w / (months.length + 1);
 
-            // Counting stripeWidth and indents
-            stripeWidth = w / (months.length + 1);
-
-            findMinAndMax();
+                findMinAndMax();
 
 
-            // If stripe is too narrow, then
-            // we will increase width of graph to required minimum
-            if (stripeWidth < HelperLayoutClass.dpToPixels(context.getResources(), minStripeDp)) {
-                stripeWidth = (int) HelperLayoutClass.dpToPixels(context.getResources(), minStripeDp);
-                w = (int) (stripeWidth * (months.length + 1));
+                // If stripe is too narrow, then
+                // we will increase width of graph to required minimum
+                if (stripeWidth < HelperLayoutClass.dpToPixels(context.getResources(), minStripeDp)) {
+                    stripeWidth = (int) HelperLayoutClass.dpToPixels(context.getResources(), minStripeDp);
+                    w = (int) (stripeWidth * (months.length + 1));
+                }
+
+                // Calculating textSize for labels under stripes months
+                HelperLayoutClass.calculateOKTextSize(mTextPaint, textRatio * stripeWidth, months,
+                        belowIndent * textBorder);
+                mTextSize = (int) mTextPaint.getTextSize();
+                leftStripe = mTextPaint.measureText(testText) + mTextSize / 2;
+                stripeWidth = (w - leftStripe) / months.length;
+                graphStrokeWidth = h / 100;
+                mLinePaint.setStrokeWidth(graphStrokeWidth / 4);
+                mArrowPaint.setStrokeWidth(h * lineRatio);
+
+                // Precalc textSizes
+                monthsMeasured = new float[months.length];
+                for (int i = 0; i < months.length; ++i) {
+                    monthsMeasured[i] = mTextPaint.measureText(months[i]);
+                }
+
+                // Precalculating data for text
+                labelsUnderX = new float[months.length];
+                labelsUnderY = new float[months.length];
+                for (int i = 0; i < months.length; ++i) {
+                    labelsUnderX[i] = offset + leftStripe + stripeWidth * i
+                            + 0.5f * (stripeWidth - mTextPaint.measureText(months[i]));
+                    labelsUnderY[i] = h - belowIndent;
+                }
+
+                // Calculating static layouts
+                textUnderStripes = new StaticLayout[months.length];
+                for (int i = 0; i < months.length; ++i)
+                    textUnderStripes[i] = new StaticLayout(months[i], mTextPaint,
+                            (int) (textRatio * stripeWidth),
+                            Layout.Alignment.ALIGN_NORMAL, 1, 1, true);
+                mGoalPaint.setStrokeWidth(graphStrokeWidth / 2);
+
             }
 
-            // Calculating textSize for labels under stripes months
-            HelperLayoutClass.calculateOKTextSize(mTextPaint, textRatio * stripeWidth, months,
-                    belowIndent * textBorder);
-            mTextSize = (int) mTextPaint.getTextSize();
-            leftStripe = mTextPaint.measureText(testText) + mTextSize / 2;
-            stripeWidth = (w - leftStripe) / months.length;
-            graphStrokeWidth = h / 100;
-            mLinePaint.setStrokeWidth(graphStrokeWidth / 4);
-            mArrowPaint.setStrokeWidth(h * lineRatio);
+            // Changing width of lines with corrections after measurement
+            if (months != null && values != null) {
+                mGraphPaint.setStrokeWidth(graphStrokeWidth);
+                mGradPaint.setStrokeWidth(graphStrokeWidth);
 
-            // Precalc textSizes
-            monthsMeasured = new float[months.length];
-            for (int i = 0; i < months.length; ++i) {
-                monthsMeasured[i] = mTextPaint.measureText(months[i]);
+                mGradPaint.setShader(new LinearGradient(0, 0, 0, h,
+                        Color.argb(160, Color.red(mGraphLineColor), Color.green(mGraphLineColor),
+                                Color.blue(mGraphLineColor)),
+                        Color.argb(8, Color.red(mGraphLineColor), Color.green(mGraphLineColor),
+                                Color.blue(mGraphLineColor)), Shader.TileMode.MIRROR));
+
+                // Animation
+                animationDuration = segmentDuration * (months.length - 1);
+
+                precalculateLayoutArrays(h);
+                calculateTriangles(h);
+
+
             }
-
-            // Precalculating data for text
-            labelsUnderX = new float[months.length];
-            labelsUnderY = new float[months.length];
-            for (int i = 0; i < months.length; ++i) {
-                labelsUnderX[i] = offset + leftStripe + stripeWidth * i
-                        + 0.5f * (stripeWidth - mTextPaint.measureText(months[i]));
-                labelsUnderY[i] = h - belowIndent;
-            }
-
-            // Calculating static layouts
-            textUnderStripes = new StaticLayout[months.length];
-            for (int i = 0; i < months.length; ++i)
-                textUnderStripes[i] = new StaticLayout(months[i], mTextPaint,
-                        (int) (textRatio * stripeWidth),
-                        Layout.Alignment.ALIGN_NORMAL, 1, 1, true);
-            mGoalPaint.setStrokeWidth(graphStrokeWidth / 2);
-
-        }
-
-        // Changing width of lines with corrections after measurement
-        if (months != null && values != null) {
-            mGraphPaint.setStrokeWidth(graphStrokeWidth);
-            mGradPaint.setStrokeWidth(graphStrokeWidth);
-
-            mGradPaint.setShader(new LinearGradient(0, 0, 0, h,
-                    Color.argb(160, Color.red(mGraphLineColor), Color.green(mGraphLineColor),
-                            Color.blue(mGraphLineColor)),
-                    Color.argb(8, Color.red(mGraphLineColor), Color.green(mGraphLineColor),
-                            Color.blue(mGraphLineColor)), Shader.TileMode.MIRROR));
-
-            // Animation
-            animationDuration = segmentDuration * (months.length - 1);
-
-            precalculateLayoutArrays(h);
-            calculateTriangles(h);
-
-
         }
     }
 
@@ -498,9 +524,7 @@ public class UnoGraphView extends View implements InterfaceGraph {
         return min;
     }
 
-    @Override
     public void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
         if (months != null && values != null) {
             drawAdditionalBackground(canvas);
 
@@ -509,10 +533,10 @@ public class UnoGraphView extends View implements InterfaceGraph {
             drawGraphLines(canvas);
 
             canvas.drawRect(mLeftRect, mRectPaint);
-            drawHorizontalText(canvas, -offset);
-            drawGoalText(canvas, -offset);
-            drawLimitedHorizontalLines(canvas, -offset + leftStripe);
-            drawGoalLineLimited(canvas, -offset + leftStripe);
+            drawHorizontalText(canvas, 0);
+            drawGoalText(canvas, 0);
+            drawLimitedHorizontalLines(canvas, leftStripe);
+            drawGoalLineLimited(canvas, leftStripe);
             drawArrows(canvas);
 
             // Hidden feature of scrolling
@@ -522,41 +546,40 @@ public class UnoGraphView extends View implements InterfaceGraph {
 //            }
 //            hsv.setAnimationFinished(!(curTime < animationDuration));
 
-            invalidate();
         }
     }
 
-
-    public boolean onTouchEvent(MotionEvent event) {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                startClickTime = System.currentTimeMillis();
-                return true;
-            case MotionEvent.ACTION_UP:
-                if (System.currentTimeMillis() - startTime > animationDuration) {
-                    long clickDuration = System.currentTimeMillis() - startClickTime;
-                    if (clickDuration < MAX_CLICK_DURATION) {
-                        int x = (int) event.getX();
-                        if (x >= leftStripe) {
-                            stripeId = (int) ((x - leftStripe) / stripeWidth);
-
-                            if (months != null && stripeId >= months.length)
-                                stripeId = months.length - 1;
-                        }
-                    }
-                    invalidate();
-                    requestLayout();
-                }
-                return true;
-        }
-        return false;
-    }
+//
+//    public boolean onTouchEvent(MotionEvent event) {
+//        switch (event.getAction()) {
+//            case MotionEvent.ACTION_DOWN:
+//                startClickTime = System.currentTimeMillis();
+//                return true;
+//            case MotionEvent.ACTION_UP:
+//                if (System.currentTimeMillis() - startTime > animationDuration) {
+//                    long clickDuration = System.currentTimeMillis() - startClickTime;
+//                    if (clickDuration < MAX_CLICK_DURATION) {
+//                        int x = (int) event.getX();
+//                        if (x >= leftStripe) {
+//                            stripeId = (int) ((x - leftStripe) / stripeWidth);
+//
+//                            if (months != null && stripeId >= months.length)
+//                                stripeId = months.length - 1;
+//                        }
+//                    }
+//                    invalidate();
+//                    requestLayout();
+//                }
+//                return true;
+//        }
+//        return false;
+//    }
 
     protected void drawArrows(Canvas canvas) {
         if (-offset != 0)
             drawLeftArrow(canvas, leftStripe + offset);
-        if (-offset + wBox != realW)
-            drawRightArrow(canvas, -offset + wBox);
+        if (-offset + w != realW)
+            drawRightArrow(canvas, -offset + w);
     }
 
     // Remove multiplication
@@ -873,19 +896,21 @@ public class UnoGraphView extends View implements InterfaceGraph {
 
     @Override
     public void updateOfsset(float v, Canvas canvas) {
-        offset = -v;
-        draw(canvas);
+        offset = v;
+        onMeasure(w, h);
+        onDraw(canvas);
     }
 
     @Override
     public void click(int n, Canvas canvas) {
         stripeId = n;
-        draw(canvas);
+        onMeasure(w, h);
+        onDraw(canvas);
     }
 
     @Override
     public void setCallback(CallbackDrawGraph callbackDrawGrapg) {
-        measure(wBox, hBox);
+        onMeasure(w, h);
         callbackDrawGrapg.updateDrawByQ(mDesiredWidth, values.length, leftStripe);
     }
 }

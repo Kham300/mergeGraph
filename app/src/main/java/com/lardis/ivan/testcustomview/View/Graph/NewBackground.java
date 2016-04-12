@@ -18,7 +18,7 @@ import java.util.ArrayList;
 /**
  * Created by i.larin on 11.04.2016.
  */
-public class NewBackround extends View {
+public class NewBackground extends View {
     float canvasWidht;
     float canvasHeight;
     float ofssetborderBackround;
@@ -78,17 +78,17 @@ public class NewBackround extends View {
 
     private AttributeSet attributeSet;
 
-    public NewBackround(Context context) {
+    public NewBackground(Context context) {
         super(context);
         init(null, 1);
     }
 
-    public NewBackround(Context context, AttributeSet attrs) {
+    public NewBackground(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(attrs, 1);
     }
 
-    public NewBackround(Context context, AttributeSet attrs, int defStyleAttr) {
+    public NewBackground(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(attrs, defStyleAttr);
     }
@@ -98,23 +98,23 @@ public class NewBackround extends View {
         super.onSizeChanged(w, h, oldw, oldh);
         canvasWidht = getWidth();
         canvasHeight = getHeight();
+        graph.setWH(w, h);
     }
 
-    InterfaceGraph graph;
+    BaseGraph graph;
 
     public void setDataGraph(ModelDataGraph modelDataGraph, TypeGraph typeGraph) {
+        int old_w = graph.getW(), old_h = graph.getH();
         switch (typeGraph) {
-            case GraphLine: {
+            case GraphLine:
                 graph = new UnoGraphView(getContext(), attributeSet, 50);
                 break;
-            }
-            case GraphPunct: {
+
+            case GraphPunct:
                 graph = new GraphPunct(getContext(), attributeSet);
                 break;
-            }
-
-
         }
+        graph.setWH(old_w, old_h);
         graph.setData(modelDataGraph);
 
         graph.setCallback(new CallbackDrawGraph() {
@@ -151,7 +151,7 @@ public class NewBackround extends View {
         mPaintMesh = new Paint();
         mPaintSelectedColumn.setShadowLayer(10.0f, 0.0f, 0.0f, colorSelectedItemShadowLayer);
 
-        graph = new InterfaceGraph() {
+        graph = new BaseGraph() {
             @Override
             public void setData(ModelDataGraph modelDataGraph) {
 

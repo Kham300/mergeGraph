@@ -1,6 +1,7 @@
 package com.lardis.ivan.testcustomview.Model;
 
 import com.lardis.ivan.testcustomview.View.Graph.EnumTypeViewGraph;
+import com.lardis.ivan.testcustomview.View.Graph.Helper.HelperGraphInfo;
 
 import java.util.ArrayList;
 
@@ -14,8 +15,8 @@ public class ModelDataGraph {
         this.year = year;
         this.arrayListGraph1 = arrayListGraph1;
         this.arrayListGraph2 = arrayListGraph2;
-
         this.typeViewGraph = typeViewGraph;
+        this.labels = HelperGraphInfo.getLabel(this);
     }
 
 

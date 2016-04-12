@@ -8,7 +8,7 @@ import android.widget.Button;
 import com.lardis.ivan.testcustomview.Model.ModelDataGraph;
 import com.lardis.ivan.testcustomview.R;
 import com.lardis.ivan.testcustomview.View.Graph.EnumTypeViewGraph;
-import com.lardis.ivan.testcustomview.View.Graph.NewBackround;
+import com.lardis.ivan.testcustomview.View.Graph.NewBackground;
 import com.lardis.ivan.testcustomview.View.Graph.TypeGraph;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ import java.util.Arrays;
 public class MainActivityMerge extends AppCompatActivity {
 
 
-    NewBackround backround;
+    NewBackground backround;
     Button button1;
     Button button2;
 
@@ -29,7 +29,7 @@ public class MainActivityMerge extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.merge_main_activity);
 
-        backround = (NewBackround) findViewById(R.id.mygroop);
+        backround = (NewBackground) findViewById(R.id.mygroop);
         button1 = (Button) findViewById(R.id.button1);
         button2 = (Button) findViewById(R.id.button2);
 

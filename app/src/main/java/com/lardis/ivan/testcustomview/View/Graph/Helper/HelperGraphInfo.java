@@ -12,7 +12,7 @@ public class HelperGraphInfo {
 
     static   String[] shortMonthName = {"Янв", "Фев", "Мар", "Апр", "Май", "Июн", "Июл", "Авг", "Сен", "Окт", "Ноя", "Дек"};
 
-    public ArrayList<String> getLabel(ModelDataGraph modelDataGraph) {
+    public static ArrayList<String> getLabel(ModelDataGraph modelDataGraph) {
         int day = modelDataGraph.getDay();
         int month = modelDataGraph.getMonth();
         int year = modelDataGraph.getYear();
