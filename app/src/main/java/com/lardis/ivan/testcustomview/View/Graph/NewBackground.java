@@ -19,8 +19,8 @@ import java.util.ArrayList;
  * Created by i.larin on 11.04.2016.
  */
 public class NewBackground extends View implements CallbackDrawGraph {
-    float canvasWidht;
-    float canvasHeight;
+    int canvasWidht;
+    int canvasHeight;
     float offsetborderBackround;
     int sizeBackroundPunct;
     float widthBlockBackround;
@@ -120,7 +120,7 @@ public class NewBackground extends View implements CallbackDrawGraph {
     BaseGraph graph;
 
     public void setDataGraph(ModelDataGraph modelDataGraph, TypeGraph typeGraph) {
-        int old_w = graph.getW(), old_h = graph.getH();
+
         switch (typeGraph) {
             case GraphLine:
                 graph = new UnoGraphView(getContext(), this, attributeSet, 50);
@@ -130,7 +130,7 @@ public class NewBackground extends View implements CallbackDrawGraph {
                 graph = new GraphPunct(getContext(), this, attributeSet);
                 break;
         }
-        graph.setWH(old_w, old_h);
+        graph.setWH(canvasWidht,canvasHeight);
         graph.setData(modelDataGraph);
 
         graph.setCallback(this);

@@ -1,5 +1,7 @@
 package com.lardis.ivan.testcustomview.View.Graph.Helper;
 
+import android.util.Log;
+
 import com.lardis.ivan.testcustomview.Model.ModelDataGraph;
 
 import java.util.ArrayList;
@@ -20,20 +22,20 @@ public class HelperGraphInfo {
 
 
             case MESH_MONTH_ITEM_WEEK:
-                break;
+                return calculateValueMeshMonthItemWeek(modelDataGraph);
             case MESH_WEEK_ITEM_DAY:
-                break;
+                return calculateMeshWeekItemDay(modelDataGraph);
             case MESH_WEEK_ITEM_WEEK:
-                return      calculateMeshWeekItemWeek(modelDataGraph);
+                return calculateMeshWeekItemWeek(modelDataGraph);
 
 
             case MESH_DAY_ITEM_DAY:
 
-                return calculateMeshDayItemDay( modelDataGraph);
+                return calculateMeshDayItemDay(modelDataGraph);
 
 
             case MESH_MONTH_ITEM_MONTH:
-                return calculateMeshMonthItemMonth( modelDataGraph);
+                return calculateMeshMonthItemMonth(modelDataGraph);
 
         }
         return null;
@@ -43,23 +45,12 @@ public class HelperGraphInfo {
 
 
     private static ModelDataGraph calculateMeshDayItemDay(ModelDataGraph modelDataGraph) {
-        Calendar myCalendar = (Calendar) Calendar.getInstance();
-        int day = modelDataGraph.getDay();
-        int month = modelDataGraph.getMonth();
-        int year = modelDataGraph.getYear();
-        int max_date = myCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+        Calendar myCalendar = Calendar.getInstance();
+        myCalendar.set(modelDataGraph.getYear(), modelDataGraph.getMonth(), modelDataGraph.getDay());
         ArrayList<String> arrayList = new ArrayList<>();
         for (int i = 0; i < modelDataGraph.getArrayListGraph1().size(); i++) {
-            arrayList.add(day + " " + shortMonthName[month]);
-            if (day == max_date) {
-                day = 1;
-
-                if (month == 11) month = 0;
-                else month++;
-
-                myCalendar.set(year, month, day);
-                max_date = myCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-            } else day++;
+            arrayList.add(myCalendar.get(Calendar.DATE) + " " + shortMonthName[myCalendar.get(Calendar.MONTH)]);
+            myCalendar.add(Calendar.DATE, 1);
         }
         modelDataGraph.setLabels1(arrayList);
         return modelDataGraph;
@@ -67,149 +58,97 @@ public class HelperGraphInfo {
     }
 
     private static ModelDataGraph calculateMeshMonthItemMonth(ModelDataGraph modelDataGraph) {
-        int month = modelDataGraph.getMonth();
+
+        Calendar myCalendar = Calendar.getInstance();
+        myCalendar.set(modelDataGraph.getYear(), modelDataGraph.getMonth(), 1);
         ArrayList<String> arrayList = new ArrayList<>();
+
         for (int i = 0; i < modelDataGraph.getArrayListGraph1().size(); i++) {
-            arrayList.add(shortMonthName[month]);
 
-            if (month == 11) {
-                month = 0;
+            arrayList.add(shortMonthName[myCalendar.get(Calendar.MONTH)]);
+            myCalendar.add(Calendar.MONTH, 1);
 
-
-            } else month++;
         }
         modelDataGraph.setLabels1(arrayList);
         return modelDataGraph;
     }
 
-//    private void calculateValueMeshMonthItemWeek(int day, int month, int year, ArrayList<Integer> arrayListMetodDrawGraph1, ArrayList<Integer> arrayListMetodDrawGraph2) {
-//        Calendar myCalendar = (Calendar) Calendar.getInstance();
-//        int days;
-//        int DAY_OF_WEEK = myCalendar.get(Calendar.DAY_OF_WEEK);
-//        days = arrayListMetodDrawGraph1.size() * 7;
-//        if (DAY_OF_WEEK != 1) day = day + 2 - DAY_OF_WEEK;
-//        else {
-//            day = day - 6;
-//        }
-//        if (day <= 0) {
-//            month--;
-//            myCalendar.set(2016, month, 1);
-//            day = myCalendar.getActualMaximum(Calendar.DATE) + day;
-//        }
-//        int bufMonth = month;
-//        myCalendar.set(year, bufMonth, day);
-//        days = days - (myCalendar.getActualMaximum(Calendar.DATE) - day + 1);
-//        daysInPunctArrayList.add(myCalendar.getActualMaximum(Calendar.DATE) - day + 1);
-//        arrayListName.add(shortMonthName[bufMonth] + "");
-//        bufMonth++;
-//        while (days > 0) {
-//            myCalendar.set(year, bufMonth, day);
-//            arrayListName.add(shortMonthName[bufMonth] + "");
-//            if (days < myCalendar.getActualMaximum(Calendar.DATE)) {
-//                daysInPunctArrayList.add(days);
-//                days = 0;
-//            } else {
-//                daysInPunctArrayList.add(myCalendar.getActualMaximum(Calendar.DATE));
-//                days = days - myCalendar.getActualMaximum(Calendar.DATE);
-//            }
-//            if (bufMonth == 11) {
-//                year++;
-//                bufMonth = 0;
-//            } else
-//                bufMonth++;
-//        }
-//        nBlock = daysInPunctArrayList.size();
-//        if (daysInPunctArrayList.get(0) < 14) {
-//            daysInPunctArrayList.set(0, daysInPunctArrayList.get(0) + 14);
-//            if (twoGraph) {
-//                arrayListMetodDrawGraph2.add(0, 0);
-//                arrayListMetodDrawGraph2.add(0, 0);
-//            }
-//            arrayListMetodDrawGraph1.add(0, 0);
-//            arrayListMetodDrawGraph1.add(0, 0);
-//        }
-//        if (daysInPunctArrayList.get(daysInPunctArrayList.size() - 1) < 14) {
-//            daysInPunctArrayList.set(daysInPunctArrayList.size() - 1, daysInPunctArrayList.get(daysInPunctArrayList.size() - 1) + 14);
-//
-//            arrayListMetodDrawGraph1.add(0);
-//            arrayListMetodDrawGraph1.add(0);
-//            if (twoGraph) {
-//                arrayListMetodDrawGraph2.add(0);
-//                arrayListMetodDrawGraph2.add(0);
-//            }
-//        }
-//    }
-
-//    private void calculateMeshWeekItemDay(int month, int year, ArrayList<Integer> arrayListMetodDrawGraph1) {
-//        Calendar myCalendar = (Calendar) Calendar.getInstance();
-//        myCalendar.set(year, month, 1);
-//        int nNepolWeek;
-//        int monday = (1 - myCalendar.get(Calendar.DAY_OF_WEEK) + 7 + 2) % 7;
-//
-//
-//        for (int i = 0; i < arrayListMetodDrawGraph1.size(); i++) {
-//            if ((i + 1) % 7 == monday) arrayListName.add(i + 1 + "");
-//            else arrayListName.add("");
-//        }
-//
-//        nNepolWeek = myCalendar.getActualMaximum(Calendar.DAY_OF_MONTH) / 7;
-//        if (monday != 1) nNepolWeek++;
-//        if (myCalendar.getActualMaximum(Calendar.DAY_OF_MONTH) % 7 + 1 - monday > 0)
-//            nNepolWeek++;
-//        if (monday == 0) monday = 7;
-//        if (monday == 1) shiftPuctInValueDay = 0;
-//        else shiftPuctInValueDay = (8f - monday) / 7f;
-//        nBlock = nNepolWeek;
-//    }
-
     private static ModelDataGraph calculateMeshWeekItemWeek(ModelDataGraph modelDataGraph) {
-        Calendar myCalendar =   Calendar.getInstance();
-        int day =modelDataGraph.getDay();
-        int month=modelDataGraph.getMonth();
-        int year=modelDataGraph.getYear();
-        ArrayList<String> arrayListLabel1=new ArrayList<>();
-        ArrayList<String> arrayListLabel2=new ArrayList<>();
-        int DAY_OF_WEEK;
-        DAY_OF_WEEK = myCalendar.get(Calendar.DAY_OF_WEEK);
-        if (DAY_OF_WEEK != 1) day = day + 2 - DAY_OF_WEEK;
-        else {
-            day = day - 6;
-        }
-        if (day <= 0) {
-            month--;
-            myCalendar.set(year, month, 1);
-            day = myCalendar.getActualMaximum(Calendar.DATE) + day;
-        }
-        //day понедельник
-        int daySunday;
-        int monthSunday;
 
+        Calendar myCalendar = Calendar.getInstance();
+        myCalendar.set(modelDataGraph.getYear(), modelDataGraph.getMonth(), modelDataGraph.getDay());
+        ArrayList<String> arrayListLabel1 = new ArrayList<>();
+        ArrayList<String> arrayListLabel2 = new ArrayList<>();
+
+        if (myCalendar.get(Calendar.DAY_OF_WEEK) == 1) myCalendar.add(Calendar.DATE, -6);
+        else myCalendar.add(Calendar.DATE, (2 - myCalendar.get(Calendar.DAY_OF_WEEK)));
+
+
+        for (int i = 0; i < modelDataGraph.getArrayListGraph1().size(); i++)
+
+
+        {
+            arrayListLabel1.add(myCalendar.get(Calendar.DATE) + " " + shortMonthName[myCalendar.get(Calendar.MONTH)]);
+            myCalendar.add(Calendar.DATE, 6);
+
+            arrayListLabel2.add(myCalendar.get(Calendar.DATE) + " " + shortMonthName[myCalendar.get(Calendar.MONTH)]);
+
+            myCalendar.add(Calendar.DATE, 1);
+
+
+        }
+        modelDataGraph.setLabels1(arrayListLabel1);
+        modelDataGraph.setLabels2(arrayListLabel2);
+
+
+        return modelDataGraph;
+    }
+
+    private static ModelDataGraph calculateValueMeshMonthItemWeek(ModelDataGraph modelDataGraph) {
+        Calendar myCalendar = Calendar.getInstance();
+        myCalendar.set(modelDataGraph.getYear(), modelDataGraph.getMonth(), modelDataGraph.getDay());
+        ArrayList<String> arrayListLabel1 = new ArrayList<>();
+
+        if (myCalendar.get(Calendar.DAY_OF_WEEK) == 1) myCalendar.add(Calendar.DATE, -6);
+        else myCalendar.add(Calendar.DATE, (2 - myCalendar.get(Calendar.DAY_OF_WEEK)));
+        arrayListLabel1.add(shortMonthName[myCalendar.get(Calendar.MONTH)]);
+        int k = myCalendar.get(Calendar.MONTH);
         for (int i = 0; i < modelDataGraph.getArrayListGraph1().size(); i++) {
-            myCalendar.set(year, month, day);
-            if (day + 6 > myCalendar.getActualMaximum(Calendar.DATE)) {
-                daySunday = day + 6 - myCalendar.getActualMaximum(Calendar.DATE);
-                if (month == 11) monthSunday = 0;
-                else
-                    monthSunday = month + 1;
-            } else {
-                monthSunday = month;
-                daySunday = day + 6;
-            }
-            arrayListLabel1.add(day + shortMonthName[month] + "");
-            arrayListLabel2.add(daySunday + shortMonthName[monthSunday] + "");
-            if (day + 7 > myCalendar.getActualMaximum(Calendar.DATE)) {
-                day = day + 7 - myCalendar.getActualMaximum(Calendar.DATE);
+            myCalendar.add(Calendar.DATE, 7);
+            if (k != myCalendar.get(Calendar.MONTH))
 
-                if (month == 11) {
-                    month = 0;
-                    year++;
-                } else
-                    month++;
-            } else {
-                day = day + 7;
+            {
+                arrayListLabel1.add(shortMonthName[myCalendar.get(Calendar.MONTH)]);
+                k = myCalendar.get(Calendar.MONTH);
             }
+
         }
-   return modelDataGraph;
+        modelDataGraph.setLabels1(arrayListLabel1);
+        return modelDataGraph;
+    }
+
+    private static ModelDataGraph calculateMeshWeekItemDay(ModelDataGraph modelDataGraph) {
+
+        Calendar myCalendar = Calendar.getInstance();
+        myCalendar.set(modelDataGraph.getYear(), modelDataGraph.getMonth(), modelDataGraph.getDay());
+        if (myCalendar.getActualMaximum(Calendar.DATE) != modelDataGraph.getArrayListGraph1().size())
+            return null;
+
+        ArrayList<String> arrayListLabel = new ArrayList<>();
+        int monday = (-myCalendar.get(Calendar.DAY_OF_WEEK) + 7 + 2) % 7 + 1;
+        for (int i = 0; i < modelDataGraph.getArrayListGraph1().size(); i++)
+
+        {
+            if ((i + 1) % 7 == monday)
+                arrayListLabel.add(i + 1 + "");//для каждого понедельника месяца - записываем его число (DAY_OF_MONTH)
+            else arrayListLabel.add("");// иначе пустую строку
+
+        }
+
+        modelDataGraph.setLabels1(arrayListLabel);
+//        int daysMonth= myCalendar.getActualMaximum(Calendar.DATE);
+
+        return modelDataGraph;
     }
 
 

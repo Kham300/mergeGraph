@@ -2,17 +2,21 @@ package com.lardis.ivan.testcustomview.View;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
 import com.lardis.ivan.testcustomview.Model.ModelDataGraph;
 import com.lardis.ivan.testcustomview.R;
 import com.lardis.ivan.testcustomview.View.Graph.EnumTypeViewGraph;
+import com.lardis.ivan.testcustomview.View.Graph.Helper.HelperGraphInfo;
 import com.lardis.ivan.testcustomview.View.Graph.NewBackground;
 import com.lardis.ivan.testcustomview.View.Graph.TypeGraph;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by i.larin on 11.04.2016.
@@ -48,9 +52,26 @@ public class MainActivityMerge extends AppCompatActivity {
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                backround.setDataGraph(modelDataGraph, TypeGraph.GraphPunct);
+
+                ModelDataGraph modelDataGraph = new ModelDataGraph(1, 1, 2016, new ArrayList<>(Arrays.asList(
+                        95, 86, 70, 65, 59, 49, 45, 65, 59, 49,
+                        65)),
+                        null, EnumTypeViewGraph.MESH_MONTH_ITEM_WEEK);
+
+                ModelDataGraph modelDataGraph1 = HelperGraphInfo.getLabel(modelDataGraph);
+                for (int i = 0; i < modelDataGraph1.getLabels1().size(); i++) {
+                    Log.d("Mylog", "date=" + modelDataGraph1.getLabels1().get(i) + " "  );
+//                            Log.d("Mylog","getLabels2"+ modelDataGraph1.getLabels2().get(i));
+
+                }
             }
+
+
         });
+
+
+
+
 
 
     }
