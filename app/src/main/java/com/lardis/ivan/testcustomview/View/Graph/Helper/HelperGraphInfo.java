@@ -9,7 +9,7 @@ import java.util.Calendar;
  * Created by i.larin on 11.04.2016.
  */
 public class HelperGraphInfo {
-
+    public static Calendar myCalendar = (Calendar) Calendar.getInstance();
     static   String[] shortMonthName = {"Янв", "Фев", "Мар", "Апр", "Май", "Июн", "Июл", "Авг", "Сен", "Окт", "Ноя", "Дек"};
 
     public static ArrayList<String> getLabel(ModelDataGraph modelDataGraph) {
@@ -21,6 +21,8 @@ public class HelperGraphInfo {
         switch (modelDataGraph.getTypeViewGraph())
 
         {
+
+
 
 
             case MESH_DAY_ITEM_DAY:
@@ -39,9 +41,9 @@ public class HelperGraphInfo {
     }
 
 
-    private static ArrayList<String> calculateMeshDayItemDay(int day, int month, int year, ArrayList<Integer> arrayListMetodDrawGraph1) {
+    private  static ArrayList<String> calculateMeshDayItemDay(int day, int month, int year, ArrayList<Integer> arrayListMetodDrawGraph1) {
 
-        Calendar myCalendar = (Calendar) Calendar.getInstance();
+
         int max_date = myCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
         ArrayList<String> arrayList = new ArrayList<>();
         for (int i = 0; i < arrayListMetodDrawGraph1.size(); i++) {
@@ -65,7 +67,7 @@ public class HelperGraphInfo {
 
     private static ArrayList<String> calculateMeshMonthItemMonth(int day, int month, int year, ArrayList<Integer> arrayListMetodDrawGraph1) {
         ArrayList<String> arrayList = new ArrayList<>();
-        Calendar myCalendar = (Calendar) Calendar.getInstance();
+
         int max_date = myCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
 
         for (int i = 0; i < arrayListMetodDrawGraph1.size(); i++) {

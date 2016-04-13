@@ -24,6 +24,21 @@ public class NewBackground extends View {
     float offsetborderBackround;
     int sizeBackroundPunct;
     float widthBlockBackround;
+
+    public boolean draw() {
+        return isdraw;
+    }
+
+    public void hide() {
+        isdraw=false;
+    }
+    public void show() {
+        isdraw=true;
+    }
+
+
+    private boolean isdraw=false;
+
     /**
      * левая граница скрола для расчета скролинга
      */
@@ -133,7 +148,10 @@ public class NewBackground extends View {
                 widthBlockBackround = widthBlock;
                 offsetborderBackround = offsetBorder;
                 sizeBackroundPunct = n;
+                updateMaxX();
+                show();
                 invalidate();
+
             }
 
             @Override
@@ -189,7 +207,7 @@ public class NewBackground extends View {
             }
         };
 
-        testdata();
+
     }
 
     private void initColor(TypedArray a) {
@@ -205,19 +223,11 @@ public class NewBackground extends View {
     }
 
 
-    void testdata() {
-        offsetborderBackround = 51;
-        sizeBackroundPunct = 52;
-        widthBlockBackround = 231;
-        updateMaxX();
 
-
-        invalidate();
-    }
 
     @Override
     protected void onDraw(Canvas canvas) {
-
+if(!draw()) return;
         canvas.drawRect(0, 0, getWidth(), getHeight(), new Paint());
         for (int i = 0; i < sizeBackroundPunct; i++) {
             if (i % 2 == 0) mPaintMesh.setColor(colorMeshOne);
@@ -235,6 +245,10 @@ public class NewBackground extends View {
         if (isTouch())
             graph.click(nSelectedTouch);
         graph.draw(canvas);
+
+
+
+
 
     }
 
