@@ -30,14 +30,15 @@ public class NewBackground extends View implements CallbackDrawGraph {
     }
 
     public void hide() {
-        isdraw=false;
+        isdraw = false;
     }
+
     public void show() {
-        isdraw=true;
+        isdraw = true;
     }
 
 
-    private boolean isdraw=false;
+    private boolean isdraw = false;
 
     /**
      * левая граница скрола для расчета скролинга
@@ -122,11 +123,11 @@ public class NewBackground extends View implements CallbackDrawGraph {
         int old_w = graph.getW(), old_h = graph.getH();
         switch (typeGraph) {
             case GraphLine:
-                graph = new UnoGraphView(getContext(),this, attributeSet, 50);
+                graph = new UnoGraphView(getContext(), this, attributeSet, 50);
                 break;
 
             case GraphPunct:
-                graph = new GraphPunct(getContext(),this, attributeSet);
+                graph = new GraphPunct(getContext(), this, attributeSet);
                 break;
         }
         graph.setWH(old_w, old_h);
@@ -182,6 +183,7 @@ public class NewBackground extends View implements CallbackDrawGraph {
 
 
     }
+
     @Override
     public void sendPostInvalidate(long delay) {
         postInvalidateDelayed(delay);
@@ -223,12 +225,9 @@ public class NewBackground extends View implements CallbackDrawGraph {
     }
 
 
-
-
     @Override
     protected void onDraw(Canvas canvas) {
-if(!draw()) return;
-        canvas.drawRect(0, 0, getWidth(), getHeight(), new Paint());
+        if (!draw()) return;
         for (int i = 0; i < sizeBackroundPunct; i++) {
             if (i % 2 == 0) mPaintMesh.setColor(colorMeshOne);
             else mPaintMesh.setColor(colorMeshTwo);
@@ -242,12 +241,11 @@ if(!draw()) return;
         if (isTouch()) drawMesh(canvas, nSelectedTouch, mPaintSelectedColumn);
 
         graph.updateOffset(offsetX);
-        if (isTouch())
-            graph.click(nSelectedTouch);
+        if (isTouch()) graph.click(nSelectedTouch);
+
+
+
         graph.draw(canvas);
-
-
-
 
 
     }

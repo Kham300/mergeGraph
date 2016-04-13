@@ -887,9 +887,9 @@ public class UnoGraphView extends BaseGraph {
             values[i] = modelDataGraph.getArrayListGraph1().get(i);
         }
 
-        this.labels = new String[modelDataGraph.getLabels().size()];
+        this.labels = new String[modelDataGraph.getLabels1().size()];
         for (int i = 0; i < labels.length; ++i) {
-            labels[i] = modelDataGraph.getLabels().get(i);
+            labels[i] = modelDataGraph.getLabels1().get(i);
         }
 
     }
