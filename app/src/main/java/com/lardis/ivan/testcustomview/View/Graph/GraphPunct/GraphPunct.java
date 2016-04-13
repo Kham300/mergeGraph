@@ -12,7 +12,7 @@ import com.lardis.ivan.testcustomview.View.Graph.BaseGraph;
  * Created by aleksey.ivanov on 11.04.2016.
  */
 public class GraphPunct extends BaseGraph {
-    public GraphPunct(Context context,CallbackDrawGraph callbackDrawGraph, AttributeSet attrs) {
+    public GraphPunct(Context context, AttributeSet attrs) {
     }
 
     @Override
@@ -37,6 +37,16 @@ public class GraphPunct extends BaseGraph {
 
     @Override
     protected void draw(Canvas canvas) {
+
+    }
+
+    @Override
+    protected void sendRect(float left, float top, float right, float bottom) {
+
+    }
+
+    @Override
+    protected void sendBlockWidth(float blockWidth) {
 
     }
 }

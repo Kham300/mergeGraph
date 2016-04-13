@@ -34,14 +34,11 @@ public class UnoGraphView extends BaseGraph {
     // Public data
     int mBackColor1;
     int mBackColor2;
-    int mTextColor;
-    int mBackLineColor;
-    int mGraphLineColor;
     int mDesiredWidth;
-    boolean mFillNa;
-    double mGoal;
     String[] labels;
     double[] values;
+    int mGraphLineColor;
+
 
     // Rects
     RectF mHighRectF;
@@ -67,6 +64,8 @@ public class UnoGraphView extends BaseGraph {
 
     // Layout
     float curX;
+    double linesMin;
+    double linesMax;
 
     // Layout arrays
     float[] valuesRealHeight;
@@ -74,7 +73,6 @@ public class UnoGraphView extends BaseGraph {
     long[] timeAnim;
     float[] originalX;
     float[] originalY;
-    StaticLayout goalUnderStripes;
 
     // Constants
     public static final float bigCircleRatio = 0.025f;
@@ -82,71 +80,36 @@ public class UnoGraphView extends BaseGraph {
     public static int framesPerSecond = 60;
     public static long segmentDuration = 250;
 
-    // Strings from context
-    // Former base class
-    // Rects
-    RectF mErrRectF;
-    RectF mStripeRectF;
-    RectF mLeftRect;
+
 
     // Paints
     Paint mErrRectPaint;
     TextPaint mErrTextPaint;
-    Paint mStripePaint;
-    TextPaint mTextPaint;
-    Paint mLinePaint;
-    Paint mGoalPaint;
     TextPaint mGoalTextPaint;
-    Paint mRectPaint;
-    Paint mArrowPaint;
-
-    float[] intervals;
-
-    // Paths
-    Path mGoalPath;
-    Path mArrowPath;
 
 
     // Layout sizes
-    float goalStart;
-    float goalEnd;
     float offset;
+    float belowIndent;
+    float topIndent;
     double firstLineHeight;
 
 
     // Layout data
     int realW;
-    float topIndent;
-    float belowIndent;
-    float stripeWidth;
     int mTextSize;
+    float stripeWidth;
     float graphStrokeWidth;
-    double linesMin;
-    double linesMax;
+
 
     // Layout arrays
-    float[] monthsMeasured;
-    float[] labelsUnderX;
-    float[] labelsUnderY;
-    StaticLayout[] textUnderStripes;
-    float[] horizontalLinesH;
     StaticLayout[] weightsTextLayout;
 
     // Constants
-    public float textBorder = 0.5f;
-    public float footerRatio = 0.1f;
     public static float leftStripe;
-    public static final float headerRatio = 0.05f;
-    public static final float borderRatio = 0.1f;
-    public static final float stripLength = 5f;
-    public static final float lineRatio = 0.01f;
-    public static final float marginRatio = 0.025f;
     public static int graphStep = 10;
-    public final double graphRatio = (float) 1 - headerRatio - footerRatio - 2 * borderRatio;
     public static final int minStripeDp = 50;
-    public static final float textRatio = 0.62f;
     public static final int preferredNumLines = 5;
-    public String testText;
 
     // String constants
     public String graphErrorText;
@@ -161,7 +124,8 @@ public class UnoGraphView extends BaseGraph {
     // Callback to backgroundView
     CallbackDrawGraph callbackToBack;
 
-    public UnoGraphView(Context context,CallbackDrawGraph callbackDrawGraph, AttributeSet attrs) {
+    public UnoGraphView(Context context, AttributeSet attrs, int mGraphLineColor,
+                        int mTextSize) {
         TypedArray a = context.getTheme().obtainStyledAttributes(
                 attrs,
                 R.styleable.UnoGraphView,
@@ -169,23 +133,13 @@ public class UnoGraphView extends BaseGraph {
         );
         mBackColor1 = a.getInteger(R.styleable.UnoGraphView_back_color1, Color.parseColor("#f0f1f2"));
         mBackColor2 = a.getInteger(R.styleable.UnoGraphView_back_color2, Color.parseColor("#e7e9eb"));
-        mBackLineColor = a.getInteger(R.styleable.UnoGraphView_back_line_color, Color.parseColor("#cdd1d6"));
-        mTextColor = a.getInteger(R.styleable.UnoGraphView_text_color, Color.parseColor("#2a2a2a"));
-        mGraphLineColor = a.getInteger(R.styleable.UnoGraphView_graph_line_color, Color.parseColor("#a58143"));
         mDesiredWidth = a.getInteger(R.styleable.UnoGraphView_real_width, 0);
-        mFillNa = a.getBoolean(R.styleable.UnoGraphView_fill_na, false);
         a.recycle();
 
-    }
-
-    public UnoGraphView(Context context,CallbackDrawGraph callbackDrawGraph, AttributeSet attrs, double mGoal) {
-        this(context,  callbackDrawGraph, attrs);
-        this.mGoal = mGoal;
-        this.localMeasurementSystem = context.getString(R.string.localMeasurementSystem);
-        this.testText = "705 " + localMeasurementSystem;
-        this.graphErrorText = context.getString(R.string.graphError);
-
         this.context = context;
+        this.graphErrorText = context.getString(R.string.graphError);
+        this.mGraphLineColor = mGraphLineColor;
+        this.mTextSize = mTextSize;
 
         init();
     }
@@ -193,10 +147,7 @@ public class UnoGraphView extends BaseGraph {
 
     protected void init() {
 
-        mErrRectF = new RectF();
-        mStripeRectF = new RectF();
-        mGoalPath = new Path();
-        mLeftRect = new RectF();
+
 
         initPaints();
 
@@ -204,7 +155,6 @@ public class UnoGraphView extends BaseGraph {
         mHighRectF = new RectF();
 
         mGraphPath = new Path();
-        mGoalPath = new Path();
         mGradPath = new Path();
         mHighlightPath = new Path();
 
@@ -235,19 +185,9 @@ public class UnoGraphView extends BaseGraph {
         mErrTextPaint.setTextSize(30);
         mErrTextPaint.setColor(Color.BLACK);
 
-        mStripePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-        mTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
-        mTextPaint.setColor(mTextColor);
 
-        mLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mLinePaint.setColor(mBackLineColor);
 
-        mGoalPaint = new Paint();
-        mGoalPaint.setAntiAlias(false);
-        mGoalPaint.setStyle(Paint.Style.STROKE);
-        intervals = new float[]{stripLength, stripLength};
-        mGoalPaint.setPathEffect(new DashPathEffect(intervals, 0));
 
         mGoalTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
 
@@ -255,10 +195,7 @@ public class UnoGraphView extends BaseGraph {
         mRectPaint.setColor(mBackColor2);
 
 
-        mArrowPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mArrowPaint.setColor(Color.BLACK);
-        mArrowPaint.setStyle(Paint.Style.STROKE);
-        mArrowPath = new Path();
+
 
         mGraphPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mGraphPaint.setColor(mGraphLineColor);
@@ -282,19 +219,7 @@ public class UnoGraphView extends BaseGraph {
         mTrianglePaint.setColor(mGraphLineColor);
         mTrianglePaint.setStyle(Paint.Style.FILL_AND_STROKE);
 
-        mHighlightStripePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mHighlightStripePaint.setStyle(Paint.Style.FILL_AND_STROKE);
 
-        mHighlightPathPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mHighlightPathPaint.setColor(mBackLineColor);
-        mHighlightPathPaint.setStyle(Paint.Style.STROKE);
-        mHighlightPathPaint.setShadowLayer(10f, 0.0f, 0.0f, Color.BLACK);
-
-        mArrowPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mArrowPaint.setColor(Color.BLACK);
-        mArrowPaint.setStyle(Paint.Style.STROKE);
-
-        mGoalPaint.setColor(mGraphLineColor);
         mGoalTextPaint.setColor(mGraphLineColor);
     }
 
@@ -302,62 +227,6 @@ public class UnoGraphView extends BaseGraph {
     public void measure(int w, int h) {
         // Assuming that w and h is resolved
         if (w != 0 && h != 0) {
-            if (labels == null)
-            // If data or labels are not provided
-            {
-                mErrRectF.set(0, 0, w, h);
-            } else {
-                // Calculating indents
-                topIndent = (int) (h * headerRatio);
-                belowIndent = (int) (h * footerRatio);
-
-                // Counting stripeWidth and indents
-                stripeWidth = w / (labels.length + 1);
-
-                findMinAndMax();
-
-
-                // If stripe is too narrow, then
-                // we will increase width of graph to required minimum
-                if (stripeWidth < HelperLayoutClass.dpToPixels(context.getResources(), minStripeDp)) {
-                    stripeWidth = (int) HelperLayoutClass.dpToPixels(context.getResources(), minStripeDp);
-                    w = (int) (stripeWidth * (labels.length + 1));
-                }
-
-                // Calculating textSize for labels under stripes labels
-                HelperLayoutClass.calculateOKTextSize(mTextPaint, textRatio * stripeWidth, labels,
-                        belowIndent * textBorder);
-                mTextSize = (int) mTextPaint.getTextSize();
-                leftStripe = mTextPaint.measureText(testText) + mTextSize / 2;
-                stripeWidth = (w - leftStripe) / labels.length;
-                graphStrokeWidth = h / 100;
-                mLinePaint.setStrokeWidth(graphStrokeWidth / 4);
-                mArrowPaint.setStrokeWidth(h * lineRatio);
-
-                // Precalc textSizes
-                monthsMeasured = new float[labels.length];
-                for (int i = 0; i < labels.length; ++i) {
-                    monthsMeasured[i] = mTextPaint.measureText(labels[i]);
-                }
-
-                // Precalculating data for text
-                labelsUnderX = new float[labels.length];
-                labelsUnderY = new float[labels.length];
-                for (int i = 0; i < labels.length; ++i) {
-                    labelsUnderX[i] = offset + leftStripe + stripeWidth * i
-                            + 0.5f * (stripeWidth - mTextPaint.measureText(labels[i]));
-                    labelsUnderY[i] = h - belowIndent;
-                }
-
-                // Calculating static layouts
-                textUnderStripes = new StaticLayout[labels.length];
-                for (int i = 0; i < labels.length; ++i)
-                    textUnderStripes[i] = new StaticLayout(labels[i], mTextPaint,
-                            (int) (textRatio * stripeWidth),
-                            Layout.Alignment.ALIGN_NORMAL, 1, 1, true);
-                mGoalPaint.setStrokeWidth(graphStrokeWidth / 2);
-
-            }
 
             // Changing width of lines with corrections after measurement
             if (labels != null && values != null) {
@@ -379,8 +248,7 @@ public class UnoGraphView extends BaseGraph {
 
             }
 
-            // Set left stripe coordinates
-            mLeftRect.set(0, 0, leftStripe, h);
+
         }
     }
 
@@ -491,56 +359,15 @@ public class UnoGraphView extends BaseGraph {
         return indentValue + scaledValue;
     }
 
-
-    protected void findMinAndMax() {
-        // Precalculate data for lines
-        double localMax = -1;
-        double localMin = -1;
-        for (int i = 0; i < values.length; ++i) {
-            if (localMax == -1 || values[i] > localMax)
-                localMax = values[i];
-            if (localMin == -1 || localMin > values[i])
-                localMin = values[i];
-        }
-
-        if (localMax < mGoal)
-            localMax = mGoal;
-        if (localMin > mGoal)
-            localMin = mGoal;
-
-        linesMax = localMax;
-
-        // If we need to fill zeros, we will recount minimum
-        linesMin = mFillNa ? countMinFNa(values, linesMax, mGoal) : localMin;
-    }
-
-
-    protected double countMinFNa(double[] valuesAndGoal, double max, double mGoal) {
-        double min = max;
-        for (int i = 0; i < valuesAndGoal.length; ++i)
-            if (valuesAndGoal[i] != 0 && valuesAndGoal[i] < min)
-                min = valuesAndGoal[i];
-
-        if (mGoal < min)
-            min = mGoal;
-        return min;
-    }
-
     public void drawGraph(Canvas canvas) {
         if (labels != null && values != null) {
-            drawBackground(canvas);
             drawAdditionalBackground(canvas);
 
             // Measure animation time
             curTime = System.currentTimeMillis() - startTime;
             drawGraphLines(canvas);
 
-            canvas.drawRect(mLeftRect, mRectPaint);
-            drawHorizontalText(canvas, 0);
-            drawGoalText(canvas, 0);
-            drawLimitedHorizontalLines(canvas, leftStripe);
-            drawGoalLineLimited(canvas, leftStripe);
-            drawArrows(canvas);
+
 
             // Hidden feature of scrolling
             if (curTime < animationDuration) {
@@ -551,29 +378,8 @@ public class UnoGraphView extends BaseGraph {
     }
 
 
-    protected void drawBackground(Canvas canvas) {
-        //drawStripes(canvas);
 
-        drawBorderLines(canvas);
-        drawRectsTopAndBelow(canvas);
-        drawTextLabelsUnderStripes(canvas);
-    }
 
-    private void drawBorderLines(Canvas canvas) {
-        canvas.drawLine(0, topIndent, canvas.getWidth(), topIndent, mLinePaint);
-        canvas.drawLine(0, canvas.getHeight() - belowIndent, canvas.getWidth(),
-                canvas.getHeight() - belowIndent, mLinePaint);
-    }
-
-    protected void drawRectsTopAndBelow(Canvas canvas) {
-        mStripeRectF.set(0, 0, canvas.getWidth(), topIndent);
-        mStripePaint.setColor(mBackColor2);
-        canvas.drawRect(mStripeRectF, mStripePaint);
-
-        mStripeRectF.set(0, canvas.getHeight() - belowIndent, canvas.getWidth(), canvas.getHeight());
-        mStripePaint.setColor(mBackColor2);
-        canvas.drawRect(mStripeRectF, mStripePaint);
-    }
 
     protected void drawArrows(Canvas canvas) {
         if (offset != 0)
@@ -582,26 +388,6 @@ public class UnoGraphView extends BaseGraph {
             drawRightArrow(canvas, w);
     }
 
-    // Remove multiplication
-    protected void drawAdditionalBackground(Canvas canvas) {
-        // drawHighlightedStripe(canvas);
-        drawGoalLine(canvas);
-        drawHorizontalLines(canvas);
-    }
-
-    protected void drawTextLabelsUnderStripes(Canvas canvas) {
-        for (int i = 0; i < labels.length; ++i) {
-            if (i == stripeId && curTime / segmentDuration >= stripeId) {
-                canvas.translate(labelsUnderX[stripeId], labelsUnderY[stripeId]);
-                goalUnderStripes.draw(canvas);
-                canvas.translate(-labelsUnderX[stripeId], -labelsUnderY[stripeId]);
-            } else {
-                canvas.translate(labelsUnderX[i], labelsUnderY[i]);
-                textUnderStripes[i].draw(canvas);
-                canvas.translate(-labelsUnderX[i], -labelsUnderY[i]);
-            }
-        }
-    }
 
     private void drawHighlightedStripe(Canvas canvas) {
         if (stripeId != -1 && curTime / segmentDuration >= stripeId) {
@@ -675,37 +461,8 @@ public class UnoGraphView extends BaseGraph {
         canvas.drawPath(mGraphPath, mGraphPaint);
     }
 
-    protected void drawGoalLine(Canvas canvas) {
-        if (mGoal != 0) {
-            float value = convertValuetoHeight(mGoal, canvas.getHeight());
 
-            // Draw line
-            mGoalPath.reset();
-            mGoalPath.moveTo(0, value);
-            mGoalPath.lineTo(canvas.getWidth(), value);
-            canvas.drawPath(mGoalPath, mGoalPaint);
 
-            // Count constraints
-            goalStart = value - 3 * mTextSize / 2;
-            goalEnd = value;
-        }
-    }
-
-    protected void drawGoalLineLimited(Canvas canvas, float limit) {
-        if (mGoal != 0) {
-            float value = convertValuetoHeight(mGoal, canvas.getHeight());
-
-            // Draw line
-            mGoalPath.reset();
-            mGoalPath.moveTo(limit - leftStripe, value);
-            mGoalPath.lineTo(limit, value);
-            canvas.drawPath(mGoalPath, mGoalPaint);
-
-            // Count constraints
-            goalStart = value - 3 * mTextSize / 2;
-            goalEnd = value;
-        }
-    }
 
     private void drawAnimatedCircles(Canvas canvas) {
         // TODO do not draw is value is null
@@ -750,16 +507,7 @@ public class UnoGraphView extends BaseGraph {
         }
     }
 
-    public void drawHorizontalLines(Canvas canvas) {
-        for (int i = 0; i < horizontalLinesH.length; ++i) {
-            if (horizontalLinesH[i] < goalStart
-                    || horizontalLinesH[i] > goalEnd + 5 * mTextSize / 4) {
-                canvas.drawLine(0, horizontalLinesH[i], canvas.getWidth(),
-                        horizontalLinesH[i], mLinePaint);
 
-            }
-        }
-    }
 
     public void drawLimitedHorizontalLines(Canvas canvas, float limit) {
         for (int i = 0; i < horizontalLinesH.length; ++i) {
@@ -806,26 +554,6 @@ public class UnoGraphView extends BaseGraph {
         trianglePath.close();
         canvas.drawPath(trianglePath, trianglePaint);
 
-    }
-
-    private void drawLeftArrow(Canvas canvas, float globalIndent) {
-        float indent = marginRatio * canvas.getHeight();
-        float belowIndent = footerRatio * canvas.getHeight();
-        mArrowPath.reset();
-        mArrowPath.moveTo(globalIndent + 3 * indent, canvas.getHeight() - belowIndent - 3 * indent);
-        mArrowPath.lineTo(globalIndent + 2 * indent, canvas.getHeight() - belowIndent - 2 * indent);
-        mArrowPath.lineTo(globalIndent + 3 * indent, canvas.getHeight() - belowIndent - indent);
-        canvas.drawPath(mArrowPath, mArrowPaint);
-    }
-
-    private void drawRightArrow(Canvas canvas, float globalIndent) {
-        float indent = marginRatio * canvas.getHeight();
-        float belowIndent = footerRatio * canvas.getHeight();
-        mArrowPath.reset();
-        mArrowPath.moveTo(globalIndent - 3 * indent, canvas.getHeight() - belowIndent - 3 * indent);
-        mArrowPath.lineTo(globalIndent - 2 * indent, canvas.getHeight() - belowIndent - 2 * indent);
-        mArrowPath.lineTo(globalIndent - 3 * indent, canvas.getHeight() - belowIndent - indent);
-        canvas.drawPath(mArrowPath, mArrowPaint);
     }
 
 
@@ -908,12 +636,22 @@ public class UnoGraphView extends BaseGraph {
     public void setCallback(CallbackDrawGraph callbackDrawGrapg) {
         measure(w, h);
         callbackToBack = callbackDrawGrapg;
-        callbackToBack.updateDrawByQ(stripeWidth, values.length, leftStripe);
     }
 
     @Override
     protected void draw(Canvas canvas) {
         measure(w, h);
         drawGraph(canvas);
+    }
+
+    @Override
+    protected void sendRect(float left, float top, float right, float bottom) {
+        belowIndent = bottom;
+        topIndent = top;
+    }
+
+    @Override
+    protected void sendBlockWidth(float blockWidth) {
+
     }
 }

@@ -7,12 +7,9 @@ import java.util.ArrayList;
  */
 public interface CallbackDrawGraph {
     void sendPostInvalidate(long delay);
-
+    void updateColorTriangle(int color);
+    void updateLineColor(int color);
     void scrollTo(int scrollX);
-
-    void updateDrawByQ(float mywidth, int n, float ofssetborder);
-
-    void updateDrawByArrayList(ArrayList<?> arrayList, float ofssetborder);
 
 }
 

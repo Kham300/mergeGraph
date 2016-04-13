@@ -46,5 +46,6 @@
         <attr name="text_color" format="integer"/>
         <attr name="real_width" format="integer"/>
         <attr name="fill_na" format="boolean"/>
+        <attr name="minDp" format="integer"/>
     </declare-styleable>
 </resources>

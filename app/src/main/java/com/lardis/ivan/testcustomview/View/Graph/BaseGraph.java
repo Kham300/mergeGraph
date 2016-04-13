@@ -16,6 +16,8 @@ public abstract class BaseGraph {
     protected abstract void click(int n);
     protected abstract void setCallback(CallbackDrawGraph callbackDrawGrapg);
     protected abstract void draw(Canvas canvas);
+    protected abstract void sendRect(float left, float top, float right, float bottom);
+    protected abstract void sendBlockWidth(float blockWidth);
 
     void setWH(int w, int h) {
         this.w = w;
