@@ -161,7 +161,7 @@ public class UnoGraphView extends BaseGraph {
     // Callback to backgroundView
     CallbackDrawGraph callbackToBack;
 
-    public UnoGraphView(Context context, AttributeSet attrs) {
+    public UnoGraphView(Context context,CallbackDrawGraph callbackDrawGraph, AttributeSet attrs) {
         TypedArray a = context.getTheme().obtainStyledAttributes(
                 attrs,
                 R.styleable.UnoGraphView,
@@ -178,8 +178,8 @@ public class UnoGraphView extends BaseGraph {
 
     }
 
-    public UnoGraphView(Context context, AttributeSet attrs, double mGoal) {
-        this(context, attrs);
+    public UnoGraphView(Context context,CallbackDrawGraph callbackDrawGraph, AttributeSet attrs, double mGoal) {
+        this(context,  callbackDrawGraph, attrs);
         this.mGoal = mGoal;
         this.localMeasurementSystem = context.getString(R.string.localMeasurementSystem);
         this.testText = "705 " + localMeasurementSystem;
@@ -545,7 +545,7 @@ public class UnoGraphView extends BaseGraph {
             // Hidden feature of scrolling
             if (curTime < animationDuration) {
                 callbackToBack.sendPostInvalidate(1000 / framesPerSecond);
-                //callbackToBack.scrollTo((int) (curX + w / 2));
+                callbackToBack.scrollTo((int) (curX + w / 2));
             }
         }
     }

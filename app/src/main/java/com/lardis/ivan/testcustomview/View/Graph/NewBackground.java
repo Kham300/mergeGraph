@@ -18,7 +18,7 @@ import java.util.ArrayList;
 /**
  * Created by i.larin on 11.04.2016.
  */
-public class NewBackground extends View {
+public class NewBackground extends View implements CallbackDrawGraph {
     float canvasWidht;
     float canvasHeight;
     float offsetborderBackround;
@@ -122,44 +122,17 @@ public class NewBackground extends View {
         int old_w = graph.getW(), old_h = graph.getH();
         switch (typeGraph) {
             case GraphLine:
-                graph = new UnoGraphView(getContext(), attributeSet, 50);
+                graph = new UnoGraphView(getContext(),this, attributeSet, 50);
                 break;
 
             case GraphPunct:
-                graph = new GraphPunct(getContext(), attributeSet);
+                graph = new GraphPunct(getContext(),this, attributeSet);
                 break;
         }
         graph.setWH(old_w, old_h);
         graph.setData(modelDataGraph);
 
-        graph.setCallback(new CallbackDrawGraph() {
-            @Override
-            public void sendPostInvalidate(long delay) {
-                postInvalidateDelayed(delay);
-            }
-
-            @Override
-            public void scrollTo(int scrollX) {
-                offsetX = scrollX;
-            }
-
-            @Override
-            public void updateDrawByQ(float widthBlock, int n, float offsetBorder) {
-                widthBlockBackround = widthBlock;
-                offsetborderBackround = offsetBorder;
-                sizeBackroundPunct = n;
-                updateMaxX();
-                show();
-                invalidate();
-
-            }
-
-            @Override
-            public void updateDrawByArrayList(ArrayList<?> arrayList, float offsetBorder) {
-                offsetborderBackround = offsetBorder;
-                invalidate();
-            }
-        });
+        graph.setCallback(this);
 
 
     }
@@ -208,6 +181,33 @@ public class NewBackground extends View {
         };
 
 
+    }
+    @Override
+    public void sendPostInvalidate(long delay) {
+        postInvalidateDelayed(delay);
+    }
+
+    @Override
+    public void scrollTo(int scrollX) {
+        offsetX = scrollX;
+        invalidate();
+    }
+
+    @Override
+    public void updateDrawByQ(float widthBlock, int n, float offsetBorder) {
+        widthBlockBackround = widthBlock;
+        offsetborderBackround = offsetBorder;
+        sizeBackroundPunct = n;
+        updateMaxX();
+        show();
+        invalidate();
+
+    }
+
+    @Override
+    public void updateDrawByArrayList(ArrayList<?> arrayList, float offsetBorder) {
+        offsetborderBackround = offsetBorder;
+        invalidate();
     }
 
     private void initColor(TypedArray a) {

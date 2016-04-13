@@ -13,5 +13,6 @@ public interface CallbackDrawGraph {
     void updateDrawByQ(float mywidth, int n, float ofssetborder);
 
     void updateDrawByArrayList(ArrayList<?> arrayList, float ofssetborder);
+
 }
 
