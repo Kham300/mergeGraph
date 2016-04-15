@@ -38,5 +38,7 @@ public class GraphPunct extends BaseGraph {
     @Override
     protected void draw(Canvas canvas) {
 
+
+
     }
 }

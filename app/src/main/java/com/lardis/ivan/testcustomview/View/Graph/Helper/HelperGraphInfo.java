@@ -154,18 +154,18 @@ public class HelperGraphInfo {
         return modelDataGraph;
     }
 
-    public static ArrayList<Float> getArrayWidthCoefficientMeshWeekItemDay(ModelDataGraph modelDataGraph) {
+    public static ArrayList<Float> getArrayWidthCoefficientMeshWeekItemDayPeriodMonth(ModelDataGraph modelDataGraph) {
 
         ArrayList<Float> arrayList = new ArrayList<Float>();
         Calendar myCalendar = Calendar.getInstance();
         myCalendar.set(modelDataGraph.getYear(), modelDataGraph.getMonth(), modelDataGraph.getDay());
 
         int monday = (-myCalendar.get(Calendar.DAY_OF_WEEK) + 7 + 2) % 7 + 1;
-        if (monday > 1) arrayList.add((((float) monday - 1) / 7));
+        if (monday > 1) arrayList.add((((float) monday - 1)  ));
         int n = (myCalendar.getActualMaximum(Calendar.DATE) - (monday - 1)) / 7;
-        for (int i = 0; i < n; i++) arrayList.add((float) 1);
+        for (int i = 0; i < n; i++) arrayList.add((float)7);
         n = (myCalendar.getActualMaximum(Calendar.DATE) - (monday - 1)) % 7;
-        arrayList.add((float) n / 7);
+        arrayList.add((float) n  );
 
         return arrayList;
 
@@ -178,7 +178,7 @@ public class HelperGraphInfo {
 
         if (myCalendar.get(Calendar.DAY_OF_WEEK) == 1) myCalendar.add(Calendar.DATE, -6);
         else myCalendar.add(Calendar.DATE, (2 - myCalendar.get(Calendar.DAY_OF_WEEK)));
-        arrayList.add((float) myCalendar.getActualMaximum(Calendar.DATE) + 1 - myCalendar.get(Calendar.DATE));
+        arrayList.add(((float) myCalendar.getActualMaximum(Calendar.DATE) + 1 - myCalendar.get(Calendar.DATE))/7);
         int k = myCalendar.get(Calendar.MONTH);
 
         myCalendar.add(Calendar.DATE, 6);
@@ -187,12 +187,12 @@ public class HelperGraphInfo {
             if (k != myCalendar.get(Calendar.MONTH))
 
             {
-                arrayList.add((float) myCalendar.getActualMaximum(Calendar.DATE));
+                arrayList.add((float) myCalendar.getActualMaximum(Calendar.DATE)/7);
                 k = myCalendar.get(Calendar.MONTH);
             }
 
         }
-        arrayList.set(arrayList.size() - 1, (float) myCalendar.get(Calendar.DATE));
+        arrayList.set(arrayList.size() - 1, (float) myCalendar.get(Calendar.DATE)/7);
 
         return arrayList;
     }
@@ -207,7 +207,7 @@ public class HelperGraphInfo {
             case MESH_MONTH_ITEM_WEEK:
                 return getArrayWidthCoefficientMeshMonthItemWeek(modelDataGraph);
             case MESH_WEEK_ITEM_DAY_PERIOD_MONTH:
-                return getArrayWidthCoefficientMeshWeekItemDay(modelDataGraph);
+                return getArrayWidthCoefficientMeshWeekItemDayPeriodMonth(modelDataGraph);
            default:
                return new ArrayList<>();
 
