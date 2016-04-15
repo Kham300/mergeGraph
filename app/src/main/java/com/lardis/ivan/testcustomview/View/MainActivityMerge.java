@@ -15,8 +15,6 @@ import com.lardis.ivan.testcustomview.View.Graph.TypeGraph;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 
 /**
  * Created by i.larin on 11.04.2016.
@@ -53,15 +51,19 @@ public class MainActivityMerge extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                ModelDataGraph modelDataGraph = new ModelDataGraph(1, 1, 2016, new ArrayList<>(Arrays.asList(
+                ModelDataGraph modelDataGraph = new ModelDataGraph(1, 3, 2016, new ArrayList<>(Arrays.asList(
                         95, 86, 70, 65, 59, 49, 45, 65, 59, 49,
                         65)),
-                        null, EnumTypeViewGraph.MESH_MONTH_ITEM_WEEK);
+                        null, EnumTypeViewGraph.MESH_WEEK_ITEM_DAY_PERIOD_MONTH);
 
-                ModelDataGraph modelDataGraph1 = HelperGraphInfo.getLabel(modelDataGraph);
+                ModelDataGraph modelDataGraph1 = HelperGraphInfo.getLabel(getApplicationContext(),modelDataGraph);
+               ArrayList<Float> arrayList= HelperGraphInfo.getArrayWidthCoefficient(modelDataGraph1);
+                for (int i = 0; i <arrayList.size(); i++) {
+                    Log.d("Mylog", "arrayList=" + arrayList.get(i) + " "  );
+
+                }
                 for (int i = 0; i < modelDataGraph1.getLabels1().size(); i++) {
                     Log.d("Mylog", "date=" + modelDataGraph1.getLabels1().get(i) + " "  );
-//                            Log.d("Mylog","getLabels2"+ modelDataGraph1.getLabels2().get(i));
 
                 }
             }
