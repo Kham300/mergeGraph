@@ -13,7 +13,46 @@ import java.util.Calendar;
  */
 public class HelperGraphInfo {
 
+public static boolean isGraph(ModelDataGraph modelDataGraph)
 
+{
+    switch (modelDataGraph.getTypeViewGraph())
+
+    {
+
+
+        case MESH_MONTH_ITEM_WEEK:
+            return true;
+
+        case MESH_WEEK_ITEM_DAY_PERIOD_MONTH:
+            Calendar calendar=Calendar.getInstance();
+            calendar.set(modelDataGraph.getYear(), modelDataGraph.getMonth(), modelDataGraph.getDay());
+        if (modelDataGraph.getArrayListGraph1().size()!=calendar.getActualMaximum(Calendar.DATE))
+            return false;
+
+
+            return true;
+        case MESH_WEEK_ITEM_WEEK:
+            return true;
+
+
+        case MESH_DAY_ITEM_DAY:
+
+            return true;
+
+
+        case MESH_MONTH_ITEM_MONTH:
+            return true;
+
+        default:return false;
+
+
+
+    }
+
+
+
+}
 
     public static ModelDataGraph getLabel(Context context,ModelDataGraph modelDataGraph) {
 
@@ -202,8 +241,6 @@ public class HelperGraphInfo {
         switch (modelDataGraph.getTypeViewGraph())
 
         {
-
-
             case MESH_MONTH_ITEM_WEEK:
                 return getArrayWidthCoefficientMeshMonthItemWeek(modelDataGraph);
             case MESH_WEEK_ITEM_DAY_PERIOD_MONTH:

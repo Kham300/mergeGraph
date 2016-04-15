@@ -12,6 +12,7 @@ import com.lardis.ivan.testcustomview.R;
 import com.lardis.ivan.testcustomview.Model.ModelDataGraph;
 import com.lardis.ivan.testcustomview.View.Graph.GraphLine.UnoGraphView;
 import com.lardis.ivan.testcustomview.View.Graph.GraphPunct.GraphPunct;
+import com.lardis.ivan.testcustomview.View.Graph.Helper.HelperGraphInfo;
 
 import java.util.ArrayList;
 
@@ -24,7 +25,8 @@ public class NewBackground extends View implements CallbackDrawGraph {
     float offsetborderBackround;
     int sizeBackroundPunct;
     float widthBlockBackround;
-
+    ModelDataGraph modelDataGraph;
+    ArrayList<Float> arrayList;
     public boolean draw() {
         return isdraw;
     }
@@ -57,10 +59,10 @@ public class NewBackground extends View implements CallbackDrawGraph {
      */
     private float bufX2 = 0;
 
-    int nSelectedTouch = -1;
+    int nSelected = -1;
 
     private boolean isTouch() {
-        if (nSelectedTouch < 0 || nSelectedTouch >= sizeBackroundPunct) return false;
+        if (nSelected < 0 || nSelected >= sizeBackroundPunct) return false;
         else return true;
 
 
@@ -115,12 +117,13 @@ public class NewBackground extends View implements CallbackDrawGraph {
         canvasWidht = getWidth();
         canvasHeight = getHeight();
         graph.setWH(w, h);
+
     }
 
     BaseGraph graph;
 
     public void setDataGraph(ModelDataGraph modelDataGraph, TypeGraph typeGraph) {
-
+if(!HelperGraphInfo.isGraph(modelDataGraph))return;
         switch (typeGraph) {
             case GraphLine:
                 graph = new UnoGraphView(getContext(), this, attributeSet, 50);
@@ -129,12 +132,19 @@ public class NewBackground extends View implements CallbackDrawGraph {
             case GraphPunct:
                 graph = new GraphPunct(getContext(), this, attributeSet);
                 break;
+            default:
+                hide();
+                return;
         }
-        graph.setWH(canvasWidht,canvasHeight);
+        arrayList= HelperGraphInfo.getArrayWidthCoefficient(modelDataGraph);
+        this.modelDataGraph = modelDataGraph;
+        this.sizeBackroundPunct=modelDataGraph.getArrayListGraph1().size();
+        graph.setWH(canvasWidht, canvasHeight);
         graph.setData(modelDataGraph);
 
         graph.setCallback(this);
-
+      testData();
+invalidate();
 
     }
 
@@ -184,6 +194,13 @@ public class NewBackground extends View implements CallbackDrawGraph {
 
     }
 
+    /**
+     * удалить потом для тестовых данных
+     */
+    private void testData() {
+        updateWidthBlockandOffsesBorder(100,  35);
+    }
+
     @Override
     public void sendPostInvalidate(long delay) {
         postInvalidateDelayed(delay);
@@ -197,13 +214,17 @@ public class NewBackground extends View implements CallbackDrawGraph {
 
     @Override
     public void updateDrawByQ(float widthBlock, int n, float offsetBorder) {
+        updateWidthBlockandOffsesBorder(widthBlock,  offsetBorder);
+
+    }
+
+    private void updateWidthBlockandOffsesBorder(float widthBlock,  float offsetBorder) {
         widthBlockBackround = widthBlock;
         offsetborderBackround = offsetBorder;
-        sizeBackroundPunct = n;
+
         updateMaxX();
         show();
         invalidate();
-
     }
 
     @Override
@@ -228,34 +249,61 @@ public class NewBackground extends View implements CallbackDrawGraph {
     @Override
     protected void onDraw(Canvas canvas) {
         if (!draw()) return;
-        for (int i = 0; i < sizeBackroundPunct; i++) {
-            if (i % 2 == 0) mPaintMesh.setColor(colorMeshOne);
-            else mPaintMesh.setColor(colorMeshTwo);
-            drawMesh(canvas, i, mPaintMesh);
-        }
-        if (nSelectedTouch % 2 == 0)
+        drawMeshAllNoSelected(canvas);
+
+
+        if (nSelected % 2 == 0)
             mPaintSelectedColumn.setColor(colorMeshOne);
-        if (nSelectedTouch % 2 == 1)
+        if (nSelected % 2 == 1)
             mPaintSelectedColumn.setColor(colorMeshTwo);
-        if (isTouch()) drawMesh(canvas, nSelectedTouch, new Paint());
-        if (isTouch()) drawMesh(canvas, nSelectedTouch, mPaintSelectedColumn);
-
-        graph.updateOffset(offsetX);
-        if (isTouch()) graph.click(nSelectedTouch);
-
+        if (isTouch()) drawMesh(canvas, nSelected, mPaintSelectedColumn, widthBlockBackround,1);
 
 
         graph.draw(canvas);
 
+    }
+
+    private void drawMeshAllNoSelected(Canvas canvas) {
+if(modelDataGraph==null)return;
+        switch (modelDataGraph.getTypeViewGraph()) {
+
+
+            case MESH_MONTH_ITEM_WEEK:
+
+            case MESH_WEEK_ITEM_DAY_PERIOD_MONTH:
+
+                float j=0;
+                for (int i = 0; i < arrayList.size(); i++) {
+                    if (i % 2 == 0) mPaintMesh.setColor(colorMeshOne);
+                    else mPaintMesh.setColor(colorMeshTwo);
+                    drawMesh(canvas, j, mPaintMesh, widthBlockBackround,arrayList.get(i));
+                    j=j+arrayList.get(i);
+                }
+
+                break;
+
+            case MESH_WEEK_ITEM_WEEK:
+            case MESH_DAY_ITEM_DAY:
+            case MESH_MONTH_ITEM_MONTH:
+                for (int i = 0; i < sizeBackroundPunct; i++) {
+                    if (i % 2 == 0) mPaintMesh.setColor(colorMeshOne);
+                    else mPaintMesh.setColor(colorMeshTwo);
+                    drawMesh(canvas, i, mPaintMesh, widthBlockBackround,1);
+                }
+                break;
+
+
+        }
 
     }
 
-    private void drawMesh(Canvas canvas, int i, Paint paint) {
+    private void drawMesh(Canvas canvas, float i, Paint paint, float widthBlockBackround,float coficient) {
         canvas.drawRect(offsetborderBackround + offsetX + widthBlockBackround * (i),
                 0,
-                offsetborderBackround + offsetX + widthBlockBackround * (i + 1),
+                offsetborderBackround + offsetX + widthBlockBackround * (i +  coficient),
                 getHeight(), paint);
     }
+
 
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
@@ -281,7 +329,7 @@ public class NewBackground extends View implements CallbackDrawGraph {
             case (MotionEvent.ACTION_UP):
 
                 updateOffsetX();
-                if (Math.abs(offsetX - bufOffsetX) < 4) updateNSelectedTouch(X);
+                if (Math.abs(offsetX - bufOffsetX) < 4) updateNSelected(X);
 
                 break;
         }
@@ -296,7 +344,7 @@ public class NewBackground extends View implements CallbackDrawGraph {
         offsetX = bufOffsetX - (bufX2 - X);
         if (offsetX < -maxX) offsetX = -maxX;
         if (offsetX > minX) offsetX = minX;
-
+        graph.updateOffset(offsetX);
     }
 
     private void updateMaxX() {
@@ -304,8 +352,9 @@ public class NewBackground extends View implements CallbackDrawGraph {
 
     }
 
-    private void updateNSelectedTouch(Float X) {
-        nSelectedTouch = (int) ((X - bufOffsetX - offsetborderBackround) / (widthBlockBackround));
+    private void updateNSelected(Float X) {
+        nSelected = (int) ((X - bufOffsetX - offsetborderBackround) / (widthBlockBackround));
+        graph.click(nSelected);
     }
 
 }

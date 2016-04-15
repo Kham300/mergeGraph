@@ -53,6 +53,8 @@ public class MainActivityMerge extends AppCompatActivity {
 
                 ModelDataGraph modelDataGraph = new ModelDataGraph(1, 3, 2016, new ArrayList<>(Arrays.asList(
                         95, 86, 70, 65, 59, 49, 45, 65, 59, 49,
+                        95, 86, 70, 65, 59, 49, 45, 65, 59, 49,
+                        95, 86, 70, 65, 59, 49, 45, 65, 59,
                         65)),
                         null, EnumTypeViewGraph.MESH_WEEK_ITEM_DAY_PERIOD_MONTH);
 
@@ -66,6 +68,7 @@ public class MainActivityMerge extends AppCompatActivity {
                     Log.d("Mylog", "date=" + modelDataGraph1.getLabels1().get(i) + " "  );
 
                 }
+                backround.setDataGraph(modelDataGraph, TypeGraph.GraphPunct);
             }
 
 
