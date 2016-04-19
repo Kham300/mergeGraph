@@ -7,12 +7,16 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.support.v4.content.ContextCompat;
+import android.text.Layout;
+import android.text.StaticLayout;
+import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
 import com.lardis.ivan.testcustomview.R;
 import com.lardis.ivan.testcustomview.Model.ModelDataGraph;
+import com.lardis.ivan.testcustomview.View.Graph.GraphLine.HelperLayoutClass;
 import com.lardis.ivan.testcustomview.View.Graph.GraphLine.UnoGraphView;
 import com.lardis.ivan.testcustomview.View.Graph.GraphPunct.GraphPunct;
 
@@ -25,7 +29,6 @@ public class NewBackground extends View implements CallbackDrawGraph {
     int w;
     int h;
     float leftStripe;
-    int meshWidth;
     float itemWidth;
     float topIndent;
     float belowIndent;
@@ -65,10 +68,7 @@ public class NewBackground extends View implements CallbackDrawGraph {
     int nSelectedTouch = -1;
 
     private boolean isTouch() {
-        if (nSelectedTouch < 0 || nSelectedTouch >= meshWidth) return false;
-        else return true;
-
-
+        return !(nSelectedTouch < 0 || (labels != null && nSelectedTouch >= labels.length));
     }
 
     float X;
@@ -96,6 +96,9 @@ public class NewBackground extends View implements CallbackDrawGraph {
     private int colorSelectedItemShadowLayer;
     private int mBackLineColor;
     private int colorMeshTwo;
+    private int mTextColor;
+    int mGraphLineColor;
+
 
     private AttributeSet attributeSet;
 
@@ -108,13 +111,27 @@ public class NewBackground extends View implements CallbackDrawGraph {
     Paint mStripePaint;
     Paint mRectPaint;
     Paint mLinePaint;
+    TextPaint mTextPaint;
+    TextPaint mGoalTextPaint;
 
+
+    // Layout
+    float[] labelsUnderX;
+    float[] labelsUnderY;
+    StaticLayout goalUnderStripes;
+    StaticLayout[] textUnderStripes;
+
+
+    BaseGraph graph;
+    ModelDataGraph modelDataGraph;
+    String[] labels;
 
     // Constants
     public float footerRatio = 0.1f;
     public static final float headerRatio = 0.05f;
+    public static final float textRatio = 0.62f;
+    public float textBorder = 0.5f;
 
-    BaseGraph graph;
 
     public NewBackground(Context context) {
         super(context);
@@ -155,6 +172,11 @@ public class NewBackground extends View implements CallbackDrawGraph {
         graph.setWH(oldW, oldH, realW);
         graph.setData(modelDataGraph);
         graph.updateOffset(0);
+
+        this.modelDataGraph = modelDataGraph;
+        ArrayList<String> labels1 = modelDataGraph.getLabels1();
+        labels = labels1.toArray(new String[labels1.size()]);
+
         graph.setCallback(this);
 
         requestLayout();
@@ -235,6 +257,13 @@ public class NewBackground extends View implements CallbackDrawGraph {
 
         mLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mLinePaint.setColor(mBackLineColor);
+
+        mTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+        mTextPaint.setColor(mTextColor);
+
+        mGoalTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+        mGoalTextPaint.setColor(mGraphLineColor);
+
     }
 
     @Override
@@ -247,7 +276,7 @@ public class NewBackground extends View implements CallbackDrawGraph {
         if (scrollX < 0) {
             if (scrollX <= -maxX)
                 offsetX = -maxX;
-            else if (offsetX != -maxX)
+            else
                 offsetX = scrollX;
         }
     }
@@ -255,10 +284,14 @@ public class NewBackground extends View implements CallbackDrawGraph {
     @Override
     public void updateDrawByQ(float widthBlock, int n, float offsetBorder) {
         itemWidth = widthBlock;
-        meshWidth = n;
         leftStripe = offsetBorder;
 
         updateMaxX();
+
+        // Set itemWidth
+        HelperLayoutClass.calculateOKTextSize(mTextPaint, textRatio * itemWidth, labels,
+                belowIndent * textBorder);
+
         show();
 
         invalidate();
@@ -266,10 +299,8 @@ public class NewBackground extends View implements CallbackDrawGraph {
     }
 
     @Override
-    public void updateDrawByArrayList(ArrayList<?> arrayList, float offsetBorder) {
-        leftStripe = offsetBorder;
-        invalidate();
-        requestLayout();
+    public float getTextSize() {
+        return mTextPaint.getTextSize();
     }
 
     private void initColor(TypedArray a) {
@@ -280,9 +311,14 @@ public class NewBackground extends View implements CallbackDrawGraph {
                 R.styleable.Myview_meshTwoColor,
                 ContextCompat.getColor(getContext(), R.color.meshTwoColorExample));
         mBackLineColor = a.getInteger(R.styleable.Myview_back_line_color, Color.parseColor("#cdd1d6"));
+
         colorSelectedItemShadowLayer = a.getColor(
                 R.styleable.Myview_selectedColumnShadowLayerColor,
                 ContextCompat.getColor(getContext(), R.color.selectedColumnShadowLayerColorExample));
+
+        mTextColor = a.getInteger(R.styleable.UnoGraphView_text_color, Color.parseColor("#2a2a2a"));
+        mGraphLineColor = a.getInteger(R.styleable.UnoGraphView_graph_line_color, Color.parseColor("#a58143"));
+
     }
 
     @Override
@@ -294,8 +330,36 @@ public class NewBackground extends View implements CallbackDrawGraph {
         graph.measure();
         mLeftRect.set(0, 0, leftStripe, h);
 
-
         setMeasuredDimension(widthMeasureSpec, heightMeasureSpec);
+    }
+
+    private void measureText() {
+        if (labels != null) {
+            mGoalTextPaint.setTextSize(mTextPaint.getTextSize());
+
+            // Precalculating data for text
+            labelsUnderX = new float[labels.length];
+            labelsUnderY = new float[labels.length];
+            for (int i = 0; i < labels.length; ++i) {
+                labelsUnderX[i] = offsetX + leftStripe + itemWidth * i
+                        + 0.5f * (itemWidth - mTextPaint.measureText(labels[i]));
+                labelsUnderY[i] = h - belowIndent;
+            }
+
+            if (nSelectedTouch != -1) {
+                goalUnderStripes = new StaticLayout(labels[nSelectedTouch], mGoalTextPaint,
+                        (int) (textRatio * itemWidth),
+                        Layout.Alignment.ALIGN_NORMAL, 1, 1, true);
+            }
+
+            // Calculating static layouts
+            textUnderStripes = new StaticLayout[labels.length];
+            for (int i = 0; i < labels.length; ++i)
+                textUnderStripes[i] = new StaticLayout(labels[i], mTextPaint,
+                        (int) (textRatio * itemWidth),
+                        Layout.Alignment.ALIGN_NORMAL, 1, 1, true);
+        }
+
     }
 
     @Override
@@ -306,8 +370,10 @@ public class NewBackground extends View implements CallbackDrawGraph {
         drawRectsTopAndBelow(canvas);
         drawBorderLines(canvas);
 
-
         graph.updateOffset(offsetX);
+        measureText();
+
+        drawTextLabelsUnderStripes(canvas);
 
         if (isTouch())
             graph.click(nSelectedTouch);
@@ -320,17 +386,23 @@ public class NewBackground extends View implements CallbackDrawGraph {
     }
 
     private void drawStripes(Canvas canvas) {
-        for (int i = 0; i < meshWidth; i++) {
-            if (i % 2 == 0) mPaintMesh.setColor(colorMeshOne);
-            else mPaintMesh.setColor(colorMeshTwo);
-            drawMesh(canvas, i, mPaintMesh);
+        if (labels != null) {
+            for (int i = 0; i < labels.length; i++) {
+                if (i % 2 == 0)
+                    mPaintMesh.setColor(colorMeshOne);
+                else
+                    mPaintMesh.setColor(colorMeshTwo);
+
+                drawMesh(canvas, i, mPaintMesh);
+            }
+            if (nSelectedTouch % 2 == 0)
+                mPaintSelectedColumn.setColor(colorMeshOne);
+            if (nSelectedTouch % 2 == 1)
+                mPaintSelectedColumn.setColor(colorMeshTwo);
+
+            if (isTouch()) drawMesh(canvas, nSelectedTouch, new Paint());
+            if (isTouch()) drawMesh(canvas, nSelectedTouch, mPaintSelectedColumn);
         }
-        if (nSelectedTouch % 2 == 0)
-            mPaintSelectedColumn.setColor(colorMeshOne);
-        if (nSelectedTouch % 2 == 1)
-            mPaintSelectedColumn.setColor(colorMeshTwo);
-        if (isTouch()) drawMesh(canvas, nSelectedTouch, new Paint());
-        if (isTouch()) drawMesh(canvas, nSelectedTouch, mPaintSelectedColumn);
     }
 
     private void drawMesh(Canvas canvas, int i, Paint paint) {
@@ -354,6 +426,24 @@ public class NewBackground extends View implements CallbackDrawGraph {
         canvas.drawLine(0, topIndent, canvas.getWidth(), topIndent, mLinePaint);
         canvas.drawLine(0, canvas.getHeight() - belowIndent, canvas.getWidth(),
                 canvas.getHeight() - belowIndent, mLinePaint);
+    }
+
+    private void drawTextLabelsUnderStripes(Canvas canvas) {
+        if (modelDataGraph.getLabels1() != null) {
+            ArrayList<String> labels1 = modelDataGraph.getLabels1();
+            String[] labels = labels1.toArray(new String[labels1.size()]);
+            for (int i = 0; i < labels.length; ++i) {
+                if (i == nSelectedTouch) {
+                    canvas.translate(labelsUnderX[nSelectedTouch], labelsUnderY[nSelectedTouch]);
+                    goalUnderStripes.draw(canvas);
+                    canvas.translate(-labelsUnderX[nSelectedTouch], -labelsUnderY[nSelectedTouch]);
+                } else {
+                    canvas.translate(labelsUnderX[i], labelsUnderY[i]);
+                    textUnderStripes[i].draw(canvas);
+                    canvas.translate(-labelsUnderX[i], -labelsUnderY[i]);
+                }
+            }
+        }
     }
 
     @Override
@@ -401,7 +491,8 @@ public class NewBackground extends View implements CallbackDrawGraph {
     }
 
     private void updateMaxX() {
-        maxX = leftStripe * 2 + itemWidth * meshWidth - w;
+        if (labels != null)
+            maxX = leftStripe * 2 + itemWidth * labels.length - w;
 
     }
 
@@ -409,5 +500,6 @@ public class NewBackground extends View implements CallbackDrawGraph {
         if (graph.isAnimationFinished)
             nSelectedTouch = (int) ((X - bufOffsetX - leftStripe) / (itemWidth));
     }
+
 
 }

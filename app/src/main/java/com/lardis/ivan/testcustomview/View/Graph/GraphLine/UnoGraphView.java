@@ -76,7 +76,6 @@ public class UnoGraphView extends BaseGraph {
     long[] timeAnim;
     float[] originalX;
     float[] originalY;
-    StaticLayout goalUnderStripes;
 
     // Constants
     public static final float bigCircleRatio = 0.025f;
@@ -124,14 +123,11 @@ public class UnoGraphView extends BaseGraph {
 
     // Layout arrays
     float[] monthsMeasured;
-    float[] labelsUnderX;
-    float[] labelsUnderY;
-    StaticLayout[] textUnderStripes;
+
     float[] horizontalLinesH;
     StaticLayout[] weightsTextLayout;
 
     // Constants
-    public float textBorder = 0.5f;
     public float footerRatio = 0.1f;
     public static float cornerStripe;
     public static final float headerRatio = 0.05f;
@@ -142,8 +138,9 @@ public class UnoGraphView extends BaseGraph {
     public static int graphStep = 10;
     public final double graphRatio = (float) 1 - headerRatio - footerRatio - 2 * borderRatio;
     public static final int minStripeDp = 50;
-    public static final float textRatio = 0.62f;
     public static final int preferredNumLines = 5;
+    public static final float textRatio = 0.62f;
+
     public String testText;
 
     // String constants
@@ -295,7 +292,7 @@ public class UnoGraphView extends BaseGraph {
     public void measure() {
         // Assuming that w and h is resolved
         if (w != 0 && h != 0) {
-            if (labels == null)
+            if (labels == null || callbackToBack == null)
             // If data or labels are not provided
             {
                 mErrRectF.set(0, 0, w, h);
@@ -318,14 +315,17 @@ public class UnoGraphView extends BaseGraph {
                 }
 
                 // Calculating textSize for labels under stripes labels
-                HelperLayoutClass.calculateOKTextSize(mTextPaint, textRatio * stripeWidth, labels,
-                        belowIndent * textBorder);
-                mTextSize = (int) mTextPaint.getTextSize();
+
+                mTextSize = (int) callbackToBack.getTextSize();
+                mTextPaint.setTextSize(mTextSize);
                 cornerStripe = mTextPaint.measureText(testText) + mTextSize / 2;
                 stripeWidth = (realW - cornerStripe) / labels.length;
                 graphStrokeWidth = h / 100;
                 mLinePaint.setStrokeWidth(graphStrokeWidth / 4);
+                mGoalPaint.setStrokeWidth(graphStrokeWidth / 2);
                 mArrowPaint.setStrokeWidth(h * lineRatio);
+
+                callbackToBack.updateDrawByQ(stripeWidth, values.length, cornerStripe);
 
                 // Precalc textSizes
                 monthsMeasured = new float[labels.length];
@@ -338,24 +338,6 @@ public class UnoGraphView extends BaseGraph {
 
     @Override
     public void measureWithOffset() {
-        // Precalculating data for text
-        labelsUnderX = new float[labels.length];
-        labelsUnderY = new float[labels.length];
-        for (int i = 0; i < labels.length; ++i) {
-            labelsUnderX[i] = offset + cornerStripe + stripeWidth * i
-                    + 0.5f * (stripeWidth - mTextPaint.measureText(labels[i]));
-            labelsUnderY[i] = h - belowIndent;
-        }
-
-        // Calculating static layouts
-        textUnderStripes = new StaticLayout[labels.length];
-        for (int i = 0; i < labels.length; ++i)
-            textUnderStripes[i] = new StaticLayout(labels[i], mTextPaint,
-                    (int) (textRatio * stripeWidth),
-                    Layout.Alignment.ALIGN_NORMAL, 1, 1, true);
-        mGoalPaint.setStrokeWidth(graphStrokeWidth / 2);
-
-
         // Changing width of lines with corrections after measurement
         if (labels != null && values != null) {
             mGraphPaint.setStrokeWidth(graphStrokeWidth);
@@ -372,11 +354,7 @@ public class UnoGraphView extends BaseGraph {
 
             precalculateLayoutArrays(h);
             calculateTriangles(h);
-
-
         }
-
-        // Set left stripe coordinates
     }
 
 
@@ -388,7 +366,7 @@ public class UnoGraphView extends BaseGraph {
 
         if (stripeId != -1 && curTime / segmentDuration >= stripeId) {
             lowerTrianglePoints[0].set((int) (offset + cornerStripe + stripeId * stripeWidth + stripeWidth / 2),
-                    (int) (labelsUnderY[stripeId] + mTextSize + lowerTrianglePadding));
+                    (int) (h - belowIndent + mTextSize + lowerTrianglePadding));
             lowerTrianglePoints[1].set((int) (offset + cornerStripe + stripeId * stripeWidth + 3 * stripeWidth / 4),
                     (int) (h - lowerTriangleBound));
             lowerTrianglePoints[2].set((int) (offset + cornerStripe + stripeId * stripeWidth + stripeWidth / 4),
@@ -445,12 +423,6 @@ public class UnoGraphView extends BaseGraph {
             timeAnim[i] = tempAnim[i];
         }
 
-
-        if (stripeId != -1) {
-            goalUnderStripes = new StaticLayout(labels[stripeId], mGoalTextPaint,
-                    (int) (textRatio * stripeWidth),
-                    Layout.Alignment.ALIGN_NORMAL, 1, 1, true);
-        }
 
         calculateLinesHeights(h);
 
@@ -553,9 +525,8 @@ public class UnoGraphView extends BaseGraph {
 
 
     protected void drawBackground(Canvas canvas) {
-        drawTextLabelsUnderStripes(canvas);
+        drawGoalText(canvas);
     }
-
 
 
     protected void drawArrows(Canvas canvas) {
@@ -572,18 +543,8 @@ public class UnoGraphView extends BaseGraph {
         drawHorizontalLines(canvas);
     }
 
-    protected void drawTextLabelsUnderStripes(Canvas canvas) {
-        for (int i = 0; i < labels.length; ++i) {
-            if (i == stripeId && curTime / segmentDuration >= stripeId) {
-                canvas.translate(labelsUnderX[stripeId], labelsUnderY[stripeId]);
-                goalUnderStripes.draw(canvas);
-                canvas.translate(-labelsUnderX[stripeId], -labelsUnderY[stripeId]);
-            } else {
-                canvas.translate(labelsUnderX[i], labelsUnderY[i]);
-                textUnderStripes[i].draw(canvas);
-                canvas.translate(-labelsUnderX[i], -labelsUnderY[i]);
-            }
-        }
+    protected void drawGoalText(Canvas canvas) {
+
     }
 
     private void drawHighlightedStripe(Canvas canvas) {
@@ -887,9 +848,8 @@ public class UnoGraphView extends BaseGraph {
 
     @Override
     public void setCallback(CallbackDrawGraph callbackDrawGrapg) {
-        measure();
         callbackToBack = callbackDrawGrapg;
-        callbackToBack.updateDrawByQ(stripeWidth, values.length, cornerStripe);
+        measure();
     }
 
 
