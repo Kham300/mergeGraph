@@ -36,7 +36,25 @@ public class GraphPunct extends BaseGraph {
     }
 
     @Override
-    protected void draw(Canvas canvas) {
+    protected void drawGraph(Canvas canvas) {
 
     }
+
+    @Override
+    protected void drawTopLines(Canvas canvas) {
+
+    }
+
+
+    @Override
+    protected void measure() {
+
+    }
+
+    @Override
+    protected void measureWithOffset() {
+
+    }
+
+
 }

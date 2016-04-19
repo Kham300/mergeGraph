@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * Created by i.larin on 11.04.2016.
  */
 public interface CallbackDrawGraph {
-    void sendPostInvalidate(long delay);
+    void sendInvalidate();
 
     void scrollTo(int scrollX);
 

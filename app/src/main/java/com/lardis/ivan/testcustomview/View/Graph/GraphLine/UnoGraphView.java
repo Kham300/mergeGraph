@@ -1,3 +1,4 @@
+
 package com.lardis.ivan.testcustomview.View.Graph.GraphLine;
 
 import android.content.Context;
@@ -66,7 +67,8 @@ public class UnoGraphView extends BaseGraph {
     int stripeId;
 
     // Layout
-    float curX;
+    public float curX;
+    public float oldCurX;
 
     // Layout arrays
     float[] valuesRealHeight;
@@ -86,8 +88,6 @@ public class UnoGraphView extends BaseGraph {
     // Former base class
     // Rects
     RectF mErrRectF;
-    RectF mStripeRectF;
-    RectF mLeftRect;
 
     // Paints
     Paint mErrRectPaint;
@@ -97,7 +97,6 @@ public class UnoGraphView extends BaseGraph {
     Paint mLinePaint;
     Paint mGoalPaint;
     TextPaint mGoalTextPaint;
-    Paint mRectPaint;
     Paint mArrowPaint;
 
     float[] intervals;
@@ -115,7 +114,6 @@ public class UnoGraphView extends BaseGraph {
 
 
     // Layout data
-    int realW;
     float topIndent;
     float belowIndent;
     float stripeWidth;
@@ -135,7 +133,7 @@ public class UnoGraphView extends BaseGraph {
     // Constants
     public float textBorder = 0.5f;
     public float footerRatio = 0.1f;
-    public static float leftStripe;
+    public static float cornerStripe;
     public static final float headerRatio = 0.05f;
     public static final float borderRatio = 0.1f;
     public static final float stripLength = 5f;
@@ -161,7 +159,7 @@ public class UnoGraphView extends BaseGraph {
     // Callback to backgroundView
     CallbackDrawGraph callbackToBack;
 
-    public UnoGraphView(Context context,CallbackDrawGraph callbackDrawGraph, AttributeSet attrs) {
+    public UnoGraphView(Context context, AttributeSet attrs) {
         TypedArray a = context.getTheme().obtainStyledAttributes(
                 attrs,
                 R.styleable.UnoGraphView,
@@ -169,7 +167,7 @@ public class UnoGraphView extends BaseGraph {
         );
         mBackColor1 = a.getInteger(R.styleable.UnoGraphView_back_color1, Color.parseColor("#f0f1f2"));
         mBackColor2 = a.getInteger(R.styleable.UnoGraphView_back_color2, Color.parseColor("#e7e9eb"));
-        mBackLineColor = a.getInteger(R.styleable.UnoGraphView_back_line_color, Color.parseColor("#cdd1d6"));
+        mBackLineColor = a.getInteger(R.styleable.UnoGraphView_hor_line_color, Color.parseColor("#cdd1d6"));
         mTextColor = a.getInteger(R.styleable.UnoGraphView_text_color, Color.parseColor("#2a2a2a"));
         mGraphLineColor = a.getInteger(R.styleable.UnoGraphView_graph_line_color, Color.parseColor("#a58143"));
         mDesiredWidth = a.getInteger(R.styleable.UnoGraphView_real_width, 0);
@@ -178,8 +176,8 @@ public class UnoGraphView extends BaseGraph {
 
     }
 
-    public UnoGraphView(Context context,CallbackDrawGraph callbackDrawGraph, AttributeSet attrs, double mGoal) {
-        this(context,  callbackDrawGraph, attrs);
+    public UnoGraphView(Context context, AttributeSet attrs, double mGoal) {
+        this(context, attrs);
         this.mGoal = mGoal;
         this.localMeasurementSystem = context.getString(R.string.localMeasurementSystem);
         this.testText = "705 " + localMeasurementSystem;
@@ -188,15 +186,14 @@ public class UnoGraphView extends BaseGraph {
         this.context = context;
 
         init();
+        isAnimationFinished = false;
     }
 
 
     protected void init() {
 
         mErrRectF = new RectF();
-        mStripeRectF = new RectF();
         mGoalPath = new Path();
-        mLeftRect = new RectF();
 
         initPaints();
 
@@ -251,10 +248,6 @@ public class UnoGraphView extends BaseGraph {
 
         mGoalTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
 
-        mRectPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mRectPaint.setColor(mBackColor2);
-
-
         mArrowPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mArrowPaint.setColor(Color.BLACK);
         mArrowPaint.setStyle(Paint.Style.STROKE);
@@ -299,7 +292,7 @@ public class UnoGraphView extends BaseGraph {
     }
 
 
-    public void measure(int w, int h) {
+    public void measure() {
         // Assuming that w and h is resolved
         if (w != 0 && h != 0) {
             if (labels == null)
@@ -321,15 +314,15 @@ public class UnoGraphView extends BaseGraph {
                 // we will increase width of graph to required minimum
                 if (stripeWidth < HelperLayoutClass.dpToPixels(context.getResources(), minStripeDp)) {
                     stripeWidth = (int) HelperLayoutClass.dpToPixels(context.getResources(), minStripeDp);
-                    w = (int) (stripeWidth * (labels.length + 1));
+                    realW = (int) (stripeWidth * (labels.length + 1));
                 }
 
                 // Calculating textSize for labels under stripes labels
                 HelperLayoutClass.calculateOKTextSize(mTextPaint, textRatio * stripeWidth, labels,
                         belowIndent * textBorder);
                 mTextSize = (int) mTextPaint.getTextSize();
-                leftStripe = mTextPaint.measureText(testText) + mTextSize / 2;
-                stripeWidth = (w - leftStripe) / labels.length;
+                cornerStripe = mTextPaint.measureText(testText) + mTextSize / 2;
+                stripeWidth = (realW - cornerStripe) / labels.length;
                 graphStrokeWidth = h / 100;
                 mLinePaint.setStrokeWidth(graphStrokeWidth / 4);
                 mArrowPaint.setStrokeWidth(h * lineRatio);
@@ -339,50 +332,53 @@ public class UnoGraphView extends BaseGraph {
                 for (int i = 0; i < labels.length; ++i) {
                     monthsMeasured[i] = mTextPaint.measureText(labels[i]);
                 }
-
-                // Precalculating data for text
-                labelsUnderX = new float[labels.length];
-                labelsUnderY = new float[labels.length];
-                for (int i = 0; i < labels.length; ++i) {
-                    labelsUnderX[i] = offset + leftStripe + stripeWidth * i
-                            + 0.5f * (stripeWidth - mTextPaint.measureText(labels[i]));
-                    labelsUnderY[i] = h - belowIndent;
-                }
-
-                // Calculating static layouts
-                textUnderStripes = new StaticLayout[labels.length];
-                for (int i = 0; i < labels.length; ++i)
-                    textUnderStripes[i] = new StaticLayout(labels[i], mTextPaint,
-                            (int) (textRatio * stripeWidth),
-                            Layout.Alignment.ALIGN_NORMAL, 1, 1, true);
-                mGoalPaint.setStrokeWidth(graphStrokeWidth / 2);
-
             }
-
-            // Changing width of lines with corrections after measurement
-            if (labels != null && values != null) {
-                mGraphPaint.setStrokeWidth(graphStrokeWidth);
-                mGradPaint.setStrokeWidth(graphStrokeWidth);
-
-                mGradPaint.setShader(new LinearGradient(0, 0, 0, h,
-                        Color.argb(160, Color.red(mGraphLineColor), Color.green(mGraphLineColor),
-                                Color.blue(mGraphLineColor)),
-                        Color.argb(8, Color.red(mGraphLineColor), Color.green(mGraphLineColor),
-                                Color.blue(mGraphLineColor)), Shader.TileMode.MIRROR));
-
-                // Animation
-                animationDuration = segmentDuration * (labels.length - 1);
-
-                precalculateLayoutArrays(h);
-                calculateTriangles(h);
-
-
-            }
-
-            // Set left stripe coordinates
-            mLeftRect.set(0, 0, leftStripe, h);
         }
     }
+
+    @Override
+    public void measureWithOffset() {
+        // Precalculating data for text
+        labelsUnderX = new float[labels.length];
+        labelsUnderY = new float[labels.length];
+        for (int i = 0; i < labels.length; ++i) {
+            labelsUnderX[i] = offset + cornerStripe + stripeWidth * i
+                    + 0.5f * (stripeWidth - mTextPaint.measureText(labels[i]));
+            labelsUnderY[i] = h - belowIndent;
+        }
+
+        // Calculating static layouts
+        textUnderStripes = new StaticLayout[labels.length];
+        for (int i = 0; i < labels.length; ++i)
+            textUnderStripes[i] = new StaticLayout(labels[i], mTextPaint,
+                    (int) (textRatio * stripeWidth),
+                    Layout.Alignment.ALIGN_NORMAL, 1, 1, true);
+        mGoalPaint.setStrokeWidth(graphStrokeWidth / 2);
+
+
+        // Changing width of lines with corrections after measurement
+        if (labels != null && values != null) {
+            mGraphPaint.setStrokeWidth(graphStrokeWidth);
+            mGradPaint.setStrokeWidth(graphStrokeWidth);
+
+            mGradPaint.setShader(new LinearGradient(0, 0, 0, h,
+                    Color.argb(160, Color.red(mGraphLineColor), Color.green(mGraphLineColor),
+                            Color.blue(mGraphLineColor)),
+                    Color.argb(8, Color.red(mGraphLineColor), Color.green(mGraphLineColor),
+                            Color.blue(mGraphLineColor)), Shader.TileMode.MIRROR));
+
+            // Animation
+            animationDuration = segmentDuration * (labels.length - 1);
+
+            precalculateLayoutArrays(h);
+            calculateTriangles(h);
+
+
+        }
+
+        // Set left stripe coordinates
+    }
+
 
     private void calculateTriangles(int h) {
         float lowerTrianglePadding = mTextSize / 2;
@@ -391,20 +387,20 @@ public class UnoGraphView extends BaseGraph {
 
 
         if (stripeId != -1 && curTime / segmentDuration >= stripeId) {
-            lowerTrianglePoints[0].set((int) (offset + leftStripe + stripeId * stripeWidth + stripeWidth / 2),
+            lowerTrianglePoints[0].set((int) (offset + cornerStripe + stripeId * stripeWidth + stripeWidth / 2),
                     (int) (labelsUnderY[stripeId] + mTextSize + lowerTrianglePadding));
-            lowerTrianglePoints[1].set((int) (offset + leftStripe + stripeId * stripeWidth + 3 * stripeWidth / 4),
+            lowerTrianglePoints[1].set((int) (offset + cornerStripe + stripeId * stripeWidth + 3 * stripeWidth / 4),
                     (int) (h - lowerTriangleBound));
-            lowerTrianglePoints[2].set((int) (offset + leftStripe + stripeId * stripeWidth + stripeWidth / 4),
+            lowerTrianglePoints[2].set((int) (offset + cornerStripe + stripeId * stripeWidth + stripeWidth / 4),
                     (int) (h - lowerTriangleBound));
 
             float lowerTrHeight = lowerTrianglePoints[1].y - lowerTrianglePoints[0].y;
 
-            upperTrianglePoints[0].set((int) (offset + leftStripe + stripeId * stripeWidth + stripeWidth / 2),
+            upperTrianglePoints[0].set((int) (offset + cornerStripe + stripeId * stripeWidth + stripeWidth / 2),
                     (int) (topIndent + upperTrianglePadding + lowerTrHeight));
-            upperTrianglePoints[1].set((int) (offset + leftStripe + stripeId * stripeWidth + 3 * stripeWidth / 4),
+            upperTrianglePoints[1].set((int) (offset + cornerStripe + stripeId * stripeWidth + 3 * stripeWidth / 4),
                     (int) (topIndent + upperTrianglePadding));
-            upperTrianglePoints[2].set((int) (offset + leftStripe + stripeId * stripeWidth + stripeWidth / 4),
+            upperTrianglePoints[2].set((int) (offset + cornerStripe + stripeId * stripeWidth + stripeWidth / 4),
                     (int) (topIndent + upperTrianglePadding));
         }
     }
@@ -423,7 +419,7 @@ public class UnoGraphView extends BaseGraph {
 
         long curAnimDur = 0;
         for (int i = 0; i < values.length; ++i) {
-            float valueX = offset + leftStripe + stripeWidth * ((float) i + 0.5f);
+            float valueX = offset + cornerStripe + stripeWidth * ((float) i + 0.5f);
             float valueY = convertValuetoHeight(values[i], h);
 
             if ((mFillNa && values[i] != 0) || !mFillNa) {
@@ -481,7 +477,7 @@ public class UnoGraphView extends BaseGraph {
             weightsText[i] = Integer.toString((int) curHeight) + " "
                     + localMeasurementSystem;
             weightsTextLayout[i] = new StaticLayout(weightsText[i], mTextPaint,
-                    (int) (leftStripe), Layout.Alignment.ALIGN_NORMAL, 1, 1, true);
+                    (int) (cornerStripe), Layout.Alignment.ALIGN_NORMAL, 1, 1, true);
         }
     }
 
@@ -526,6 +522,7 @@ public class UnoGraphView extends BaseGraph {
         return min;
     }
 
+    @Override
     public void drawGraph(Canvas canvas) {
         if (labels != null && values != null) {
             drawBackground(canvas);
@@ -534,51 +531,37 @@ public class UnoGraphView extends BaseGraph {
             // Measure animation time
             curTime = System.currentTimeMillis() - startTime;
             drawGraphLines(canvas);
-
-            canvas.drawRect(mLeftRect, mRectPaint);
-            drawHorizontalText(canvas, 0);
-            drawGoalText(canvas, 0);
-            drawLimitedHorizontalLines(canvas, leftStripe);
-            drawGoalLineLimited(canvas, leftStripe);
-            drawArrows(canvas);
-
-            // Hidden feature of scrolling
-            if (curTime < animationDuration) {
-                callbackToBack.sendPostInvalidate(1000 / framesPerSecond);
-                callbackToBack.scrollTo((int) (curX + w / 2));
-            }
         }
+    }
+
+    @Override
+    public void drawTopLines(Canvas canvas) {
+        drawHorizontalText(canvas, 0);
+        drawGoalText(canvas, 0);
+        drawLimitedHorizontalLines(canvas, cornerStripe);
+        drawGoalLineLimited(canvas, cornerStripe);
+        drawArrows(canvas);
+
+        // Hidden feature of scrolling
+        if (curTime < animationDuration) {
+            offset = -(realW - w / 2 - cornerStripe) * ((float) curTime / animationDuration);
+            callbackToBack.scrollTo((int) offset);
+            callbackToBack.sendInvalidate();
+        } else
+            isAnimationFinished = true;
     }
 
 
     protected void drawBackground(Canvas canvas) {
-        //drawStripes(canvas);
-
-        drawBorderLines(canvas);
-        drawRectsTopAndBelow(canvas);
         drawTextLabelsUnderStripes(canvas);
     }
 
-    private void drawBorderLines(Canvas canvas) {
-        canvas.drawLine(0, topIndent, canvas.getWidth(), topIndent, mLinePaint);
-        canvas.drawLine(0, canvas.getHeight() - belowIndent, canvas.getWidth(),
-                canvas.getHeight() - belowIndent, mLinePaint);
-    }
 
-    protected void drawRectsTopAndBelow(Canvas canvas) {
-        mStripeRectF.set(0, 0, canvas.getWidth(), topIndent);
-        mStripePaint.setColor(mBackColor2);
-        canvas.drawRect(mStripeRectF, mStripePaint);
-
-        mStripeRectF.set(0, canvas.getHeight() - belowIndent, canvas.getWidth(), canvas.getHeight());
-        mStripePaint.setColor(mBackColor2);
-        canvas.drawRect(mStripeRectF, mStripePaint);
-    }
 
     protected void drawArrows(Canvas canvas) {
         if (offset != 0)
-            drawLeftArrow(canvas, leftStripe);
-        if (offset + w != realW)
+            drawLeftArrow(canvas, cornerStripe);
+        if (offset + realW + cornerStripe != w)
             drawRightArrow(canvas, w);
     }
 
@@ -605,8 +588,8 @@ public class UnoGraphView extends BaseGraph {
 
     private void drawHighlightedStripe(Canvas canvas) {
         if (stripeId != -1 && curTime / segmentDuration >= stripeId) {
-            float xPos1 = offset + leftStripe + stripeWidth * (stripeId - bigCircleRatio);
-            float xPos2 = offset + leftStripe + stripeWidth * (stripeId + 1 + bigCircleRatio);
+            float xPos1 = offset + cornerStripe + stripeWidth * (stripeId - bigCircleRatio);
+            float xPos2 = offset + cornerStripe + stripeWidth * (stripeId + 1 + bigCircleRatio);
 
             mHighlightPath.reset();
             mHighlightPath.moveTo(xPos1, topIndent);
@@ -617,8 +600,8 @@ public class UnoGraphView extends BaseGraph {
 
             canvas.drawPath(mHighlightPath, mHighlightPathPaint);
 
-            mHighRectF.set(offset + leftStripe + stripeWidth * stripeId, topIndent,
-                    offset + leftStripe + stripeWidth * (stripeId + 1), canvas.getHeight() - belowIndent);
+            mHighRectF.set(offset + cornerStripe + stripeWidth * stripeId, topIndent,
+                    offset + cornerStripe + stripeWidth * (stripeId + 1), canvas.getHeight() - belowIndent);
             mHighlightStripePaint.setColor(Color.WHITE);
 
             canvas.drawRect(mHighRectF, mHighlightStripePaint);
@@ -660,8 +643,6 @@ public class UnoGraphView extends BaseGraph {
                     mGradPath.lineTo(curPosX, canvas.getHeight() - belowIndent);
                     mGraphPath.lineTo(curPosX, curPosY);
 
-                    curX = curPosX;
-
                     break;
                 }
             }
@@ -697,7 +678,7 @@ public class UnoGraphView extends BaseGraph {
 
             // Draw line
             mGoalPath.reset();
-            mGoalPath.moveTo(limit - leftStripe, value);
+            mGoalPath.moveTo(limit - cornerStripe, value);
             mGoalPath.lineTo(limit, value);
             canvas.drawPath(mGoalPath, mGoalPaint);
 
@@ -906,14 +887,10 @@ public class UnoGraphView extends BaseGraph {
 
     @Override
     public void setCallback(CallbackDrawGraph callbackDrawGrapg) {
-        measure(w, h);
+        measure();
         callbackToBack = callbackDrawGrapg;
-        callbackToBack.updateDrawByQ(stripeWidth, values.length, leftStripe);
+        callbackToBack.updateDrawByQ(stripeWidth, values.length, cornerStripe);
     }
 
-    @Override
-    protected void draw(Canvas canvas) {
-        measure(w, h);
-        drawGraph(canvas);
-    }
+
 }

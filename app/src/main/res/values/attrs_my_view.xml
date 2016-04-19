@@ -29,8 +29,9 @@
         <attr name="selectedColumnShadowLayerColor" format="color" />
         <attr name="centerDelimeterColor" format="color" />
 
-
+        <attr name="back_line_color" format="integer"/>
     </declare-styleable>
+
     <declare-styleable name="MyView">
         <attr name="exampleString" format="string" />
         <attr name="exampleDimension" format="dimension" />
@@ -41,8 +42,8 @@
     <declare-styleable name="UnoGraphView">
         <attr name="back_color1" format="integer"/>
         <attr name="back_color2" format="integer"/>
-        <attr name="back_line_color" format="integer"/>
         <attr name="graph_line_color" format="integer"/>
+        <attr name="hor_line_color" format="integer"/>
         <attr name="text_color" format="integer"/>
         <attr name="real_width" format="integer"/>
         <attr name="fill_na" format="boolean"/>

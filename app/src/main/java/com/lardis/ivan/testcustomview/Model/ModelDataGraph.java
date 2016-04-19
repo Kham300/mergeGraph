@@ -16,6 +16,7 @@ public class ModelDataGraph {
         this.arrayListGraph1 = arrayListGraph1;
         this.arrayListGraph2 = arrayListGraph2;
         this.typeViewGraph = typeViewGraph;
+        labels1 = HelperGraphInfo.getLabel(this).getLabels1();
 
     }
 
@@ -23,9 +24,11 @@ public class ModelDataGraph {
     private int day;
     private int month;
     private int year;
-    private ArrayList<Integer> arrayListGraph1 = null;
-    private ArrayList<Integer> arrayListGraph2 = null;
-
+    private ArrayList<Integer> arrayListGraph1;
+    private ArrayList<Integer> arrayListGraph2;
+    private ArrayList<String> labels1;
+    private ArrayList<String> labels2;
+    private EnumTypeViewGraph typeViewGraph;
 
     public ArrayList<String> getLabels1() {
         return labels1;
@@ -43,9 +46,6 @@ public class ModelDataGraph {
         this.labels2 = labels2;
     }
 
-    private ArrayList<String> labels1 = null;
-    private ArrayList<String> labels2 = null;
-    private EnumTypeViewGraph typeViewGraph;
 
     public int getDay() {
         return day;
