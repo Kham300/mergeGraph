@@ -1,5 +1,5 @@
 
-package com.lardis.ivan.testcustomview.View.Graph.GraphLine;
+package com.lardis.ivan.testcustomview.graphview.lineg;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -17,10 +17,11 @@ import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 
-import com.lardis.ivan.testcustomview.Model.ModelDataGraph;
 import com.lardis.ivan.testcustomview.R;
-import com.lardis.ivan.testcustomview.View.Graph.CallbackDrawGraph;
-import com.lardis.ivan.testcustomview.View.Graph.BaseGraph;
+import com.lardis.ivan.testcustomview.graphview.base.BaseGraph;
+import com.lardis.ivan.testcustomview.graphview.base.CallbackDrawGraph;
+import com.lardis.ivan.testcustomview.graphview.base.ViewType;
+import com.lardis.ivan.testcustomview.model.ModelDataGraph;
 
 /**
  * Created by aleksey.ivanov on 21.03.2016.
@@ -83,14 +84,7 @@ public class UnoGraphView extends BaseGraph {
     public static int framesPerSecond = 60;
     public static long segmentDuration = 250;
 
-    // Strings from context
-    // Former base class
-    // Rects
-    RectF mErrRectF;
-
     // Paints
-    Paint mErrRectPaint;
-    TextPaint mErrTextPaint;
     Paint mStripePaint;
     TextPaint mTextPaint;
     Paint mLinePaint;
@@ -144,7 +138,6 @@ public class UnoGraphView extends BaseGraph {
     public String testText;
 
     // String constants
-    public String graphErrorText;
     public String localMeasurementSystem;
     public String goalLineText = "goal";
     String[] weightsText;
@@ -155,6 +148,8 @@ public class UnoGraphView extends BaseGraph {
 
     // Callback to backgroundView
     CallbackDrawGraph callbackToBack;
+
+    // Supported
 
     public UnoGraphView(Context context, AttributeSet attrs) {
         TypedArray a = context.getTheme().obtainStyledAttributes(
@@ -178,7 +173,6 @@ public class UnoGraphView extends BaseGraph {
         this.mGoal = mGoal;
         this.localMeasurementSystem = context.getString(R.string.localMeasurementSystem);
         this.testText = "705 " + localMeasurementSystem;
-        this.graphErrorText = context.getString(R.string.graphError);
 
         this.context = context;
 
@@ -189,7 +183,6 @@ public class UnoGraphView extends BaseGraph {
 
     protected void init() {
 
-        mErrRectF = new RectF();
         mGoalPath = new Path();
 
         initPaints();
@@ -222,13 +215,6 @@ public class UnoGraphView extends BaseGraph {
     }
 
     private void initPaints() {
-        mErrRectPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mErrRectPaint.setColor(Color.RED);
-
-        mErrTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
-        mErrTextPaint.setTextSize(30);
-        mErrTextPaint.setColor(Color.BLACK);
-
         mStripePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
         mTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
@@ -295,7 +281,7 @@ public class UnoGraphView extends BaseGraph {
             if (labels == null || callbackToBack == null)
             // If data or labels are not provided
             {
-                mErrRectF.set(0, 0, w, h);
+
             } else {
                 // Calculating indents
                 topIndent = (int) (h * headerRatio);
@@ -507,7 +493,7 @@ public class UnoGraphView extends BaseGraph {
     }
 
     @Override
-    public void drawTopLines(Canvas canvas) {
+    public void drawOnLeftPanel(Canvas canvas) {
         drawHorizontalText(canvas, 0);
         drawGoalText(canvas, 0);
         drawLimitedHorizontalLines(canvas, cornerStripe);
@@ -779,8 +765,6 @@ public class UnoGraphView extends BaseGraph {
         this.mGraphLineColor = mColor;
 
         init();
-        //invalidate();
-        //requestLayout();
     }
 
 
@@ -792,8 +776,6 @@ public class UnoGraphView extends BaseGraph {
         this.values = values;
 
         init();
-        //invalidate();
-        //requestLayout();
     }
 
     public int getmDesiredWidth() {
@@ -804,8 +786,6 @@ public class UnoGraphView extends BaseGraph {
         this.mDesiredWidth = mDesiredWidth;
 
         init();
-        //invalidate();
-        //requestLayout();
     }
 
 
@@ -817,8 +797,6 @@ public class UnoGraphView extends BaseGraph {
         this.mGraphLineColor = mGraphLineColor;
 
         init();
-        //invalidate();
-        //requestLayout();
     }
 
 
@@ -829,9 +807,9 @@ public class UnoGraphView extends BaseGraph {
             values[i] = modelDataGraph.getArrayListGraph1().get(i);
         }
 
-        this.labels = new String[modelDataGraph.getLabels1().size()];
+        this.labels = new String[modelDataGraph.getLabels().size()];
         for (int i = 0; i < labels.length; ++i) {
-            labels[i] = modelDataGraph.getLabels1().get(i);
+            labels[i] = modelDataGraph.getLabels().get(i);
         }
 
     }
@@ -850,6 +828,13 @@ public class UnoGraphView extends BaseGraph {
     public void setCallback(CallbackDrawGraph callbackDrawGrapg) {
         callbackToBack = callbackDrawGrapg;
         measure();
+    }
+
+    @Override
+    protected ViewType[] getSupportedGraphTypes() {
+        return new ViewType[]{ViewType.MESH_DAY_ITEM_DAY,
+                ViewType.MESH_WEEK_ITEM_WEEK,
+                ViewType.MESH_MONTH_ITEM_MONTH};
     }
 
 

@@ -28,7 +28,7 @@
 
     </LinearLayout>
 
-    <com.lardis.ivan.testcustomview.View.Graph.NewBackground
+    <com.lardis.ivan.testcustomview.View.Graph.base.NewBackground
         android:id="@+id/mygroop"
         android:layout_width="match_parent"
         android:layout_height="0px"

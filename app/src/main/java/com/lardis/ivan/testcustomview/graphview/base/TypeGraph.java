@@ -1,10 +1,9 @@
-package com.lardis.ivan.testcustomview.View.Graph;
+package com.lardis.ivan.testcustomview.graphview.base;
 
 /**
  * Created by i.larin on 11.04.2016.
  */
 public enum TypeGraph {
-
-    GraphLine,
+    CIRCLED_UNO,
     GraphPunct
 }

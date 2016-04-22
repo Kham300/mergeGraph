@@ -1,4 +1,4 @@
-package com.lardis.ivan.testcustomview.View.Graph;
+package com.lardis.ivan.testcustomview.graphview.base;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -15,12 +15,13 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.lardis.ivan.testcustomview.R;
-import com.lardis.ivan.testcustomview.Model.ModelDataGraph;
-import com.lardis.ivan.testcustomview.View.Graph.GraphLine.HelperLayoutClass;
-import com.lardis.ivan.testcustomview.View.Graph.GraphLine.UnoGraphView;
-import com.lardis.ivan.testcustomview.View.Graph.GraphPunct.GraphPunct;
+import com.lardis.ivan.testcustomview.graphview.columng.GraphPunct;
+import com.lardis.ivan.testcustomview.graphview.lineg.HelperLayoutClass;
+import com.lardis.ivan.testcustomview.graphview.lineg.UnoGraphView;
+import com.lardis.ivan.testcustomview.model.ModelDataGraph;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by i.larin on 11.04.2016.
@@ -32,19 +33,6 @@ public class NewBackground extends View implements CallbackDrawGraph {
     float itemWidth;
     float topIndent;
     float belowIndent;
-
-    public boolean draw() {
-        return isdraw;
-    }
-
-    public void hide() {
-        isdraw = false;
-    }
-
-    public void show() {
-        isdraw = true;
-    }
-
 
     private boolean isdraw = false;
 
@@ -106,7 +94,6 @@ public class NewBackground extends View implements CallbackDrawGraph {
     RectF mStripeRectF;
     RectF mLeftRect;
 
-
     // Paints
     Paint mStripePaint;
     Paint mRectPaint;
@@ -124,12 +111,15 @@ public class NewBackground extends View implements CallbackDrawGraph {
 
     BaseGraph graph;
     ModelDataGraph modelDataGraph;
-    String[] labels;
+
+    // Strings
+    private String[] labels;
 
     // Constants
     public float footerRatio = 0.1f;
+    private static String graphErrorText = "You should set data with setDataGraph method";
     public static final float headerRatio = 0.05f;
-    public static final float textRatio = 0.62f;
+    public static float textRatio = 0.62f;
     public float textBorder = 0.5f;
 
 
@@ -158,10 +148,16 @@ public class NewBackground extends View implements CallbackDrawGraph {
 
 
     public void setDataGraph(ModelDataGraph modelDataGraph, TypeGraph typeGraph) {
+        // Invalidate user inputs
         offsetX = 0;
+        nSelectedTouch = -1;
+
+        // Save old sizes
         int oldW = graph.getW(), oldH = graph.getH(), realW = graph.getRealW();
+
+        // Set appropriate graph class
         switch (typeGraph) {
-            case GraphLine:
+            case CIRCLED_UNO:
                 graph = new UnoGraphView(getContext(), attributeSet, 50);
                 break;
 
@@ -169,12 +165,20 @@ public class NewBackground extends View implements CallbackDrawGraph {
                 graph = new GraphPunct(getContext(), this, attributeSet);
                 break;
         }
+
+        // Check if graph supports current view type
+        if (!Arrays.asList(graph.getSupportedGraphTypes()).contains(modelDataGraph.getTypeViewGraph()))
+            throw new IllegalArgumentException(typeGraph
+                    + " graph type doesn't support " + modelDataGraph.getTypeViewGraph() + " yet.");
+
+
+        // Set various graph parameters
         graph.setWH(oldW, oldH, realW);
         graph.setData(modelDataGraph);
         graph.updateOffset(0);
 
         this.modelDataGraph = modelDataGraph;
-        ArrayList<String> labels1 = modelDataGraph.getLabels1();
+        ArrayList<String> labels1 = modelDataGraph.getLabels();
         labels = labels1.toArray(new String[labels1.size()]);
 
         graph.setCallback(this);
@@ -215,12 +219,17 @@ public class NewBackground extends View implements CallbackDrawGraph {
             }
 
             @Override
+            protected ViewType[] getSupportedGraphTypes() {
+                return new ViewType[0];
+            }
+
+            @Override
             protected void drawGraph(Canvas canvas) {
 
             }
 
             @Override
-            protected void drawTopLines(Canvas canvas) {
+            protected void drawOnLeftPanel(Canvas canvas) {
 
             }
 
@@ -244,16 +253,17 @@ public class NewBackground extends View implements CallbackDrawGraph {
         mPaintSelectedColumn.setTextSize(35.0f);
         mPaintSelectedColumn.setStrokeWidth(2.0f);
         mPaintSelectedColumn.setStyle(Paint.Style.FILL_AND_STROKE);
-        mPaintMesh = new Paint();
         mPaintSelectedColumn.setShadowLayer(10.0f, 0.0f, 0.0f, colorSelectedItemShadowLayer);
 
-        mStripeRectF = new RectF();
+        mPaintMesh = new Paint();
         mStripePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
         mRectPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mRectPaint.setColor(colorMeshTwo);
 
         mLeftRect = new RectF();
+        mStripeRectF = new RectF();
+
 
         mLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mLinePaint.setColor(mBackLineColor);
@@ -263,7 +273,6 @@ public class NewBackground extends View implements CallbackDrawGraph {
 
         mGoalTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
         mGoalTextPaint.setColor(mGraphLineColor);
-
     }
 
     @Override
@@ -288,11 +297,21 @@ public class NewBackground extends View implements CallbackDrawGraph {
 
         updateMaxX();
 
-        // Set itemWidth
+
+        // Count average text size
+        float lengthSum = 0;
+        for (String label : labels) {
+            lengthSum += label.length();
+        }
+        float averageLen = lengthSum / labels.length;
+
+        // If minimum length of text is to huge, we will increase textRatio for better layout
+        if (averageLen > 10)
+            textRatio = 0.9f;
+
+        // Calculate text size for labels
         HelperLayoutClass.calculateOKTextSize(mTextPaint, textRatio * itemWidth, labels,
                 belowIndent * textBorder);
-
-        show();
 
         invalidate();
         requestLayout();
@@ -364,24 +383,24 @@ public class NewBackground extends View implements CallbackDrawGraph {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (!draw()) return;
+        if (modelDataGraph != null) {
+            drawStripes(canvas);
+            drawRectsTopAndBelow(canvas);
+            drawBorderLines(canvas);
 
-        drawStripes(canvas);
-        drawRectsTopAndBelow(canvas);
-        drawBorderLines(canvas);
+            graph.updateOffset(offsetX);
+            measureText();
 
-        graph.updateOffset(offsetX);
-        measureText();
+            drawTextLabelsUnderStripes(canvas);
 
-        drawTextLabelsUnderStripes(canvas);
+            if (isTouch())
+                graph.click(nSelectedTouch);
 
-        if (isTouch())
-            graph.click(nSelectedTouch);
-
-        graph.measureWithOffset();
-        graph.drawGraph(canvas);
-        canvas.drawRect(mLeftRect, mRectPaint);
-        graph.drawTopLines(canvas);
+            graph.measureWithOffset();
+            graph.drawGraph(canvas);
+            canvas.drawRect(mLeftRect, mRectPaint);
+            graph.drawOnLeftPanel(canvas);
+        }
 
     }
 
@@ -429,8 +448,8 @@ public class NewBackground extends View implements CallbackDrawGraph {
     }
 
     private void drawTextLabelsUnderStripes(Canvas canvas) {
-        if (modelDataGraph.getLabels1() != null) {
-            ArrayList<String> labels1 = modelDataGraph.getLabels1();
+        if (modelDataGraph.getLabels() != null) {
+            ArrayList<String> labels1 = modelDataGraph.getLabels();
             String[] labels = labels1.toArray(new String[labels1.size()]);
             for (int i = 0; i < labels.length; ++i) {
                 if (i == nSelectedTouch) {

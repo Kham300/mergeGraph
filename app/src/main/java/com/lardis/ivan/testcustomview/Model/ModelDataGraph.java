@@ -1,7 +1,8 @@
-package com.lardis.ivan.testcustomview.Model;
+package com.lardis.ivan.testcustomview.model;
 
-import com.lardis.ivan.testcustomview.View.Graph.EnumTypeViewGraph;
-import com.lardis.ivan.testcustomview.View.Graph.Helper.HelperGraphInfo;
+
+import com.lardis.ivan.testcustomview.graphview.base.ViewType;
+import com.lardis.ivan.testcustomview.graphview.helper.HelperGraphInfo;
 
 import java.util.ArrayList;
 
@@ -9,14 +10,13 @@ import java.util.ArrayList;
  * Created by i.larin on 05.04.2016.
  */
 public class ModelDataGraph {
-    public ModelDataGraph(int day, int month, int year, ArrayList<Integer> arrayListGraph1, ArrayList<Integer> arrayListGraph2, EnumTypeViewGraph typeViewGraph) {
+    public ModelDataGraph(int day, int month, int year, ArrayList<Integer> arrayListGraph1, ArrayList<Integer> arrayListGraph2, ViewType typeViewGraph) {
         this.day = day;
         this.month = month;
         this.year = year;
         this.arrayListGraph1 = arrayListGraph1;
-        this.arrayListGraph2 = arrayListGraph2;
         this.typeViewGraph = typeViewGraph;
-        labels1 = HelperGraphInfo.getLabel(this).getLabels1();
+        labels = HelperGraphInfo.getLabel(this).getLabels();
 
     }
 
@@ -26,26 +26,16 @@ public class ModelDataGraph {
     private int year;
     private ArrayList<Integer> arrayListGraph1;
     private ArrayList<Integer> arrayListGraph2;
-    private ArrayList<String> labels1;
-    private ArrayList<String> labels2;
-    private EnumTypeViewGraph typeViewGraph;
+    private ArrayList<String> labels;
+    private ViewType typeViewGraph;
 
-    public ArrayList<String> getLabels1() {
-        return labels1;
+    public ArrayList<String> getLabels() {
+        return labels;
     }
 
-    public void setLabels1(ArrayList<String> labels1) {
-        this.labels1 = labels1;
+    public void setLabels(ArrayList<String> labels) {
+        this.labels = labels;
     }
-
-    public ArrayList<String> getLabels2() {
-        return labels2;
-    }
-
-    public void setLabels2(ArrayList<String> labels2) {
-        this.labels2 = labels2;
-    }
-
 
     public int getDay() {
         return day;
@@ -87,11 +77,11 @@ public class ModelDataGraph {
         this.arrayListGraph2 = arrayListGraph2;
     }
 
-    public EnumTypeViewGraph getTypeViewGraph() {
+    public ViewType getTypeViewGraph() {
         return typeViewGraph;
     }
 
-    public void setTypeViewGraph(EnumTypeViewGraph typeViewGraph) {
+    public void setTypeViewGraph(ViewType typeViewGraph) {
         this.typeViewGraph = typeViewGraph;
     }
 

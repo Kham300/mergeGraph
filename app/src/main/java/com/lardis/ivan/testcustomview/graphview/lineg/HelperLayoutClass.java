@@ -1,4 +1,4 @@
-package com.lardis.ivan.testcustomview.View.Graph.GraphLine;
+package com.lardis.ivan.testcustomview.graphview.lineg;
 
 import android.content.Context;
 import android.content.res.Resources;

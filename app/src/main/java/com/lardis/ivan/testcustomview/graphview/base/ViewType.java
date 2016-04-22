@@ -1,21 +1,19 @@
-package com.lardis.ivan.testcustomview.View.Graph;
+package com.lardis.ivan.testcustomview.graphview.base;
 
 /**
  * enum тип графика
-
- * столбцы графика дни, задняя сетка недели - MESH_WEEK_ITEM_DAY
+ * столбцы графика дни, задняя сетка недели - MESH_WEEK_ITEM_DAY_PERIOD_MONTH
  * столбцы графика недели, задняя сетка недели - MESH_WEEK_ITEM_WEEK
  * столбцы графика дни, задняя сетка дни - MESH_DAY_ITEM_DAY
  *  столбцы графика месяцы, задняя сетка месяцы - MESH_MONTH_ITEM_MONTH
  * столбцы графика месяцы, задняя сетка недели - MESH_MONTH_ITEM_WEEK
-
  */
 
-public enum EnumTypeViewGraph {
+public enum ViewType {
     /**
      * столбцы графика дни, задняя сетка недели
      */
-      MESH_WEEK_ITEM_DAY
+    MESH_WEEK_ITEM_DAY_PERIOD_MONTH
     ,
     /**
      * столбцы графика недели, задняя сетка недели
@@ -32,5 +30,5 @@ public enum EnumTypeViewGraph {
     /**
      * столбцы графика месяцы, задняя сетка недели
      */
-    MESH_MONTH_ITEM_WEEK;
+    MESH_MONTH_ITEM_WEEK
 }

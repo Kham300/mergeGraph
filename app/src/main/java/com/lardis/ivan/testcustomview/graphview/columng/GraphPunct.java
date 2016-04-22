@@ -1,18 +1,20 @@
-package com.lardis.ivan.testcustomview.View.Graph.GraphPunct;
+package com.lardis.ivan.testcustomview.graphview.columng;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 
-import com.lardis.ivan.testcustomview.Model.ModelDataGraph;
-import com.lardis.ivan.testcustomview.View.Graph.CallbackDrawGraph;
-import com.lardis.ivan.testcustomview.View.Graph.BaseGraph;
+import com.lardis.ivan.testcustomview.graphview.base.BaseGraph;
+import com.lardis.ivan.testcustomview.graphview.base.CallbackDrawGraph;
+import com.lardis.ivan.testcustomview.graphview.base.ViewType;
+import com.lardis.ivan.testcustomview.model.ModelDataGraph;
+
 
 /**
  * Created by aleksey.ivanov on 11.04.2016.
  */
 public class GraphPunct extends BaseGraph {
-    public GraphPunct(Context context,CallbackDrawGraph callbackDrawGraph, AttributeSet attrs) {
+    public GraphPunct(Context context, CallbackDrawGraph callbackDrawGraph, AttributeSet attrs) {
     }
 
     @Override
@@ -36,12 +38,17 @@ public class GraphPunct extends BaseGraph {
     }
 
     @Override
+    protected ViewType[] getSupportedGraphTypes() {
+        return new ViewType[0];
+    }
+
+    @Override
     protected void drawGraph(Canvas canvas) {
 
     }
 
     @Override
-    protected void drawTopLines(Canvas canvas) {
+    protected void drawOnLeftPanel(Canvas canvas) {
 
     }
 

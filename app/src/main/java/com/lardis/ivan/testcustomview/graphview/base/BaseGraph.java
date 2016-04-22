@@ -1,8 +1,8 @@
-package com.lardis.ivan.testcustomview.View.Graph;
+package com.lardis.ivan.testcustomview.graphview.base;
+import com.lardis.ivan.testcustomview.model.ModelDataGraph;
 
 import android.graphics.Canvas;
 
-import com.lardis.ivan.testcustomview.Model.ModelDataGraph;
 
 /**
  * Created by i.larin on 11.04.2016.
@@ -15,14 +15,15 @@ public abstract class BaseGraph {
 
     protected abstract void setData(ModelDataGraph modelDataGraph);
 
-
     protected abstract void updateOffset(float v);
     protected abstract void click(int n);
     protected abstract void setCallback(CallbackDrawGraph callbackDrawGrapg);
+    protected abstract ViewType[] getSupportedGraphTypes();
     protected abstract void drawGraph(Canvas canvas);
-    protected abstract void drawTopLines(Canvas canvas);
+    protected abstract void drawOnLeftPanel(Canvas canvas);
     protected abstract void measure();
     protected abstract void measureWithOffset();
+
     void setWH(int w, int h, int realW) {
         this.w = w;
         this.h = h;

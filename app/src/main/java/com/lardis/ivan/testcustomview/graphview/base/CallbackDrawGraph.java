@@ -1,4 +1,4 @@
-package com.lardis.ivan.testcustomview.View.Graph;
+package com.lardis.ivan.testcustomview.graphview.base;
 
 import java.util.ArrayList;
 
