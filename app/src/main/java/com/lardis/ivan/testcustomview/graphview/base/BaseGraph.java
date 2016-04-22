@@ -8,23 +8,23 @@ import android.graphics.Canvas;
  * Created by i.larin on 11.04.2016.
  */
 public abstract class BaseGraph {
-    protected int h;
-    protected int w;
-    protected int realW;
-    protected boolean isAnimationFinished;
+    public int h;
+    public int w;
+    public int realW;
+    public boolean isAnimationFinished;
 
-    protected abstract void setData(ModelDataGraph modelDataGraph);
+    public abstract void setData(ModelDataGraph modelDataGraph);
 
-    protected abstract void updateOffset(float v);
-    protected abstract void click(int n);
-    protected abstract void setCallback(CallbackDrawGraph callbackDrawGrapg);
-    protected abstract ViewType[] getSupportedGraphTypes();
-    protected abstract void drawGraph(Canvas canvas);
-    protected abstract void drawOnLeftPanel(Canvas canvas);
-    protected abstract void measure();
-    protected abstract void measureWithOffset();
+    public abstract void updateOffset(float v);
+    public abstract void click(int n);
+    public abstract void setCallback(CallbackDrawGraph callbackDrawGrapg);
+    public abstract ViewType[] getSupportedGraphTypes();
+    public abstract void drawGraph(Canvas canvas);
+    public abstract void drawOnLeftPanel(Canvas canvas);
+    public abstract void measure();
+    public abstract void measureWithOffset();
 
-    void setWH(int w, int h, int realW) {
+    public void setWH(int w, int h, int realW) {
         this.w = w;
         this.h = h;
         this.realW = realW;

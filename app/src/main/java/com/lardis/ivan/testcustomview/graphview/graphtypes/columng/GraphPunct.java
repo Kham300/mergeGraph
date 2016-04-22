@@ -1,4 +1,4 @@
-package com.lardis.ivan.testcustomview.graphview.columng;
+package com.lardis.ivan.testcustomview.graphview.graphtypes.columng;
 
 import android.content.Context;
 import android.graphics.Canvas;

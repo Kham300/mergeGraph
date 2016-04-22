@@ -1,4 +1,4 @@
-package com.lardis.ivan.testcustomview.graphview.helper;
+package com.lardis.ivan.testcustomview.graphview.helpers;
 
 
 import com.lardis.ivan.testcustomview.model.ModelDataGraph;

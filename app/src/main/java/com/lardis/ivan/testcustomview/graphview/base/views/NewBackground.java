@@ -1,4 +1,4 @@
-package com.lardis.ivan.testcustomview.graphview.base;
+package com.lardis.ivan.testcustomview.graphview.base.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -15,9 +15,13 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.lardis.ivan.testcustomview.R;
+import com.lardis.ivan.testcustomview.graphview.base.BaseGraph;
+import com.lardis.ivan.testcustomview.graphview.base.CallbackDrawGraph;
+import com.lardis.ivan.testcustomview.graphview.base.TypeGraph;
+import com.lardis.ivan.testcustomview.graphview.base.ViewType;
 import com.lardis.ivan.testcustomview.graphview.columng.GraphPunct;
-import com.lardis.ivan.testcustomview.graphview.lineg.HelperLayoutClass;
-import com.lardis.ivan.testcustomview.graphview.lineg.UnoGraphView;
+import com.lardis.ivan.testcustomview.graphview.helpers.HelperLayoutClass;
+import com.lardis.ivan.testcustomview.graphview.graphtypes.lineg.UnoGraphView;
 import com.lardis.ivan.testcustomview.model.ModelDataGraph;
 
 import java.util.ArrayList;
@@ -54,6 +58,8 @@ public class NewBackground extends View implements CallbackDrawGraph {
     private float bufX2 = 0;
 
     int nSelectedTouch = -1;
+    private boolean showZoomAndBlockInfo;
+    private boolean viewZoomAndBlockInfo;
 
     private boolean isTouch() {
         return !(nSelectedTouch < 0 || (labels != null && nSelectedTouch >= labels.length));
@@ -196,6 +202,9 @@ public class NewBackground extends View implements CallbackDrawGraph {
         setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         initPaints();
 
+        setLongClickable(true);
+        setOnLongClickListener(onLongClickListener);
+
         graph = new BaseGraph() {
             @Override
             public void setData(ModelDataGraph modelDataGraph) {
@@ -203,45 +212,45 @@ public class NewBackground extends View implements CallbackDrawGraph {
             }
 
             @Override
-            protected void updateOffset(float v) {
+            public void updateOffset(float v) {
 
             }
 
             @Override
-            protected void click(int n) {
-
-            }
-
-
-            @Override
-            public void setCallback(CallbackDrawGraph callbackDrawGraph) {
+            public void click(int n) {
 
             }
 
             @Override
-            protected ViewType[] getSupportedGraphTypes() {
+            public void setCallback(CallbackDrawGraph callbackDrawGrapg) {
+
+            }
+
+            @Override
+            public ViewType[] getSupportedGraphTypes() {
                 return new ViewType[0];
             }
 
             @Override
-            protected void drawGraph(Canvas canvas) {
+            public void drawGraph(Canvas canvas) {
 
             }
 
             @Override
-            protected void drawOnLeftPanel(Canvas canvas) {
+            public void drawOnLeftPanel(Canvas canvas) {
 
             }
 
             @Override
-            protected void measure() {
+            public void measure() {
 
             }
 
             @Override
-            protected void measureWithOffset() {
+            public void measureWithOffset() {
 
             }
+
         };
 
 
@@ -467,13 +476,12 @@ public class NewBackground extends View implements CallbackDrawGraph {
 
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
-
         switch (motionEvent.getAction()) {
             case (MotionEvent.ACTION_DOWN):
-
                 X = motionEvent.getX();
                 Y = motionEvent.getY();
-
+                viewZoomAndBlockInfo = false;
+                showZoomAndBlockInfo = true;
                 bufOffsetX = offsetX;
                 bufX2 = motionEvent.getX();
 
@@ -482,23 +490,34 @@ public class NewBackground extends View implements CallbackDrawGraph {
                 X = motionEvent.getX();
                 Y = motionEvent.getY();
 
+                if ((Math.abs(bufOffsetX - offsetX) > 4))
+                    showZoomAndBlockInfo = false;
 
-                updateOffsetX();
+                if (viewZoomAndBlockInfo) {
+                    workFromZoomAndBlockInfo.setCoordinate(motionEvent.getX(), motionEvent.getY(), nSelectedTouch);
 
+                    int nselbuf = nSelectedTouch;
+                    updateNSelectedTouch(X);
+                    if (nselbuf != nSelectedTouch) workFromZoomAndBlockInfo.updatePrtScn();
+                }
+                else {
+                    updateOffsetX();
+                }
+                invalidate();
                 break;
             case (MotionEvent.ACTION_UP):
+                if (viewZoomAndBlockInfo) {
+                    workFromZoomAndBlockInfo.hideZoomAndBlockInfo();
+                }
 
                 updateOffsetX();
-                if (Math.abs(offsetX - bufOffsetX) < 10) updateNSelectedTouch(X);
+                if (Math.abs(offsetX - bufOffsetX) < 4) updateNSelectedTouch(X);
 
+                invalidate();
                 break;
+
         }
-
-
-        invalidate();
-        requestLayout();
-        return true;
-
+        return super.onTouchEvent(motionEvent);
     }
 
     private void updateOffsetX() {
@@ -520,5 +539,51 @@ public class NewBackground extends View implements CallbackDrawGraph {
             nSelectedTouch = (int) ((X - bufOffsetX - leftStripe) / (itemWidth));
     }
 
+
+    // Working with zoom
+
+    /**
+     * интерефейс для работы с Zoom view и Блоком текста из графика
+     */
+    public interface WorkFromZoomAndBlockInfo {
+
+        void showZoomAndBlockInfo();
+
+        void hideZoomAndBlockInfo();
+
+        void setCoordinate(float x, float y, int nTouch);
+
+        void updatePrtScn();
+    }
+
+    /**
+     * интерефейс для работы с Zoom view и Блоком текста из графика
+     */
+    public void setWorkFromZoomAndBlockInfo(WorkFromZoomAndBlockInfo workFromZoomAndBlockInfo) {
+        this.workFromZoomAndBlockInfo = workFromZoomAndBlockInfo;
+    }
+
+    /**
+     * интерефейс для работы с Zoom view и Блоком текста из графика
+     */
+    WorkFromZoomAndBlockInfo workFromZoomAndBlockInfo;
+
+    /**
+     * слушатель долгого касания для вызова лупы и блока с текстом
+     */
+    OnLongClickListener onLongClickListener = new OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View v) {
+            if (showZoomAndBlockInfo && workFromZoomAndBlockInfo!=null) {
+                workFromZoomAndBlockInfo.setCoordinate(X, Y, nSelectedTouch);
+                workFromZoomAndBlockInfo.updatePrtScn();
+                workFromZoomAndBlockInfo.showZoomAndBlockInfo();
+                viewZoomAndBlockInfo = true;
+                updateNSelectedTouch(X);
+                invalidate();
+            }
+            return false;
+        }
+    };
 
 }

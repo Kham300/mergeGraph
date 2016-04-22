@@ -1,5 +1,5 @@
 
-package com.lardis.ivan.testcustomview.graphview.lineg;
+package com.lardis.ivan.testcustomview.graphview.graphtypes.lineg;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -21,6 +21,7 @@ import com.lardis.ivan.testcustomview.R;
 import com.lardis.ivan.testcustomview.graphview.base.BaseGraph;
 import com.lardis.ivan.testcustomview.graphview.base.CallbackDrawGraph;
 import com.lardis.ivan.testcustomview.graphview.base.ViewType;
+import com.lardis.ivan.testcustomview.graphview.helpers.HelperLayoutClass;
 import com.lardis.ivan.testcustomview.model.ModelDataGraph;
 
 /**
@@ -831,7 +832,7 @@ public class UnoGraphView extends BaseGraph {
     }
 
     @Override
-    protected ViewType[] getSupportedGraphTypes() {
+    public ViewType[] getSupportedGraphTypes() {
         return new ViewType[]{ViewType.MESH_DAY_ITEM_DAY,
                 ViewType.MESH_WEEK_ITEM_WEEK,
                 ViewType.MESH_MONTH_ITEM_MONTH};

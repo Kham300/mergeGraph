@@ -2,7 +2,7 @@ package com.lardis.ivan.testcustomview.model;
 
 
 import com.lardis.ivan.testcustomview.graphview.base.ViewType;
-import com.lardis.ivan.testcustomview.graphview.helper.HelperGraphInfo;
+import com.lardis.ivan.testcustomview.graphview.helpers.HelperGraphInfo;
 
 import java.util.ArrayList;
 
@@ -20,7 +20,6 @@ public class ModelDataGraph {
 
     }
 
-
     private int day;
     private int month;
     private int year;
@@ -28,6 +27,7 @@ public class ModelDataGraph {
     private ArrayList<Integer> arrayListGraph2;
     private ArrayList<String> labels;
     private ViewType typeViewGraph;
+    public ArrayList<ModelBlockInfo> arrayListForInfo;
 
     public ArrayList<String> getLabels() {
         return labels;
@@ -83,6 +83,14 @@ public class ModelDataGraph {
 
     public void setTypeViewGraph(ViewType typeViewGraph) {
         this.typeViewGraph = typeViewGraph;
+    }
+
+    public ArrayList<ModelBlockInfo> getArrayListForInfo() {
+        return arrayListForInfo;
+    }
+
+    public void setArrayListForInfo(ArrayList<ModelBlockInfo> arrayListForInfo) {
+        this.arrayListForInfo = arrayListForInfo;
     }
 
 }
