@@ -25,7 +25,7 @@ public class HelperGraphInfo {
             case MESH_WEEK_ITEM_DAY_PERIOD_MONTH:
                 Calendar calendar = Calendar.getInstance();
                 calendar.set(modelDataGraph.getYear(), modelDataGraph.getMonth(), modelDataGraph.getDay());
-                if (modelDataGraph.getArrayListGraph1().size() != calendar.getActualMaximum(Calendar.DATE))
+                if (modelDataGraph.getGraph1values().size() != calendar.getActualMaximum(Calendar.DATE))
                     return false;
 
 
@@ -86,7 +86,7 @@ public class HelperGraphInfo {
         Calendar myCalendar = Calendar.getInstance();
         myCalendar.set(modelDataGraph.getYear(), modelDataGraph.getMonth(), modelDataGraph.getDay());
         ArrayList<String> arrayList = new ArrayList<>();
-        for (int i = 0; i < modelDataGraph.getArrayListGraph1().size(); i++) {
+        for (int i = 0; i < modelDataGraph.getGraph1values().size(); i++) {
             arrayList.add(myCalendar.get(Calendar.DATE) + " " + months[myCalendar.get(Calendar.MONTH)]);
             myCalendar.add(Calendar.DATE, 1);
         }
@@ -100,7 +100,7 @@ public class HelperGraphInfo {
         myCalendar.set(modelDataGraph.getYear(), modelDataGraph.getMonth(), 1);
         ArrayList<String> arrayList = new ArrayList<>();
 
-        for (int i = 0; i < modelDataGraph.getArrayListGraph1().size(); i++) {
+        for (int i = 0; i < modelDataGraph.getGraph1values().size(); i++) {
 
             arrayList.add(months[myCalendar.get(Calendar.MONTH)]);
             myCalendar.add(Calendar.MONTH, 1);
@@ -119,7 +119,7 @@ public class HelperGraphInfo {
         else myCalendar.add(Calendar.DATE, (2 - myCalendar.get(Calendar.DAY_OF_WEEK)));
 
 
-        for (int i = 0; i < modelDataGraph.getArrayListGraph1().size(); i++)
+        for (int i = 0; i < modelDataGraph.getGraph1values().size(); i++)
 
 
         {
@@ -152,7 +152,7 @@ public class HelperGraphInfo {
         else myCalendar.add(Calendar.DATE, (2 - myCalendar.get(Calendar.DAY_OF_WEEK)));
         arrayListLabel1.add(months[myCalendar.get(Calendar.MONTH)]);
         int k = myCalendar.get(Calendar.MONTH);
-        for (int i = 1; i < modelDataGraph.getArrayListGraph1().size(); i++) {
+        for (int i = 1; i < modelDataGraph.getGraph1values().size(); i++) {
             myCalendar.add(Calendar.DATE, 7);
             if (k != myCalendar.get(Calendar.MONTH))
 
@@ -217,7 +217,7 @@ public class HelperGraphInfo {
         int k = myCalendar.get(Calendar.MONTH);
 
         myCalendar.add(Calendar.DATE, 6);
-        for (int i = 1; i < modelDataGraph.getArrayListGraph1().size(); i++) {
+        for (int i = 1; i < modelDataGraph.getGraph1values().size(); i++) {
             myCalendar.add(Calendar.DATE, 7);
             if (k != myCalendar.get(Calendar.MONTH))
 

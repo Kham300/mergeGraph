@@ -10,11 +10,11 @@ import java.util.ArrayList;
  * Created by i.larin on 05.04.2016.
  */
 public class ModelDataGraph {
-    public ModelDataGraph(int day, int month, int year, ArrayList<Integer> arrayListGraph1, ArrayList<Integer> arrayListGraph2, ViewType typeViewGraph) {
+    public ModelDataGraph(int day, int month, int year, ArrayList<Integer> graph1values, ArrayList<Integer> arrayListGraph2, ViewType typeViewGraph) {
         this.day = day;
         this.month = month;
         this.year = year;
-        this.arrayListGraph1 = arrayListGraph1;
+        this.graph1values = graph1values;
         this.typeViewGraph = typeViewGraph;
         labels = HelperGraphInfo.getLabel(this).getLabels();
 
@@ -23,11 +23,11 @@ public class ModelDataGraph {
     private int day;
     private int month;
     private int year;
-    private ArrayList<Integer> arrayListGraph1;
-    private ArrayList<Integer> arrayListGraph2;
+    private ArrayList<Integer> graph1values;
+    private ArrayList<Integer> graph2values;
     private ArrayList<String> labels;
     private ViewType typeViewGraph;
-    public ArrayList<ModelBlockInfo> arrayListForInfo;
+    public ArrayList<ModelBlockInfo> blockInfoValues;
 
     public ArrayList<String> getLabels() {
         return labels;
@@ -61,20 +61,20 @@ public class ModelDataGraph {
         this.year = year;
     }
 
-    public ArrayList<Integer> getArrayListGraph1() {
-        return arrayListGraph1;
+    public ArrayList<Integer> getGraph1values() {
+        return graph1values;
     }
 
-    public void setArrayListGraph1(ArrayList<Integer> arrayListGraph1) {
-        this.arrayListGraph1 = arrayListGraph1;
+    public void setGraph1values(ArrayList<Integer> graph1values) {
+        this.graph1values = graph1values;
     }
 
-    public ArrayList<Integer> getArrayListGraph2() {
-        return arrayListGraph2;
+    public ArrayList<Integer> getGraph2values() {
+        return graph2values;
     }
 
-    public void setArrayListGraph2(ArrayList<Integer> arrayListGraph2) {
-        this.arrayListGraph2 = arrayListGraph2;
+    public void setGraph2values(ArrayList<Integer> graph2values) {
+        this.graph2values = graph2values;
     }
 
     public ViewType getTypeViewGraph() {
@@ -86,11 +86,11 @@ public class ModelDataGraph {
     }
 
     public ArrayList<ModelBlockInfo> getArrayListForInfo() {
-        return arrayListForInfo;
+        return blockInfoValues;
     }
 
     public void setArrayListForInfo(ArrayList<ModelBlockInfo> arrayListForInfo) {
-        this.arrayListForInfo = arrayListForInfo;
+        this.blockInfoValues = arrayListForInfo;
     }
 
 }

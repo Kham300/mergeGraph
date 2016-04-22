@@ -8,6 +8,7 @@ import android.widget.Button;
 import com.lardis.ivan.testcustomview.graphview.base.TypeGraph;
 import com.lardis.ivan.testcustomview.graphview.base.ViewType;
 import com.lardis.ivan.testcustomview.graphview.base.views.GraphViewGroup;
+import com.lardis.ivan.testcustomview.model.ModelBlockInfo;
 import com.lardis.ivan.testcustomview.model.ModelDataGraph;
 
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ public class MainActivityMerge extends AppCompatActivity {
 
     int idx;
     ModelDataGraph[] data;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,17 +36,26 @@ public class MainActivityMerge extends AppCompatActivity {
         button1 = (Button) findViewById(R.id.button1);
         button2 = (Button) findViewById(R.id.button2);
 
-        data = new ModelDataGraph[] { new ModelDataGraph(1, 1, 1, new ArrayList<>(Arrays.asList(
+        data = new ModelDataGraph[]{new ModelDataGraph(1, 1, 1, new ArrayList<>(Arrays.asList(
                 95, 86, 70, 65, 59, 49, 45, 65, 59, 49, 65, 59)), new ArrayList<>(Arrays.asList(
                 95, 86, 70, 65, 59, 49, 45, 65, 59, 49, 65, 59)),
                 ViewType.MESH_DAY_ITEM_DAY),
                 new ModelDataGraph(2, 3, 10, new ArrayList<>(Arrays.asList(
-                95, 86, 70, 65, 59, 49, 45, 65, 59, 49, 65, 59)), new ArrayList<>(Arrays.asList(
-                95, 86, 70, 65, 59, 49, 45, 65, 59, 49, 65, 59)),
-                ViewType.MESH_MONTH_ITEM_MONTH),  new ModelDataGraph(2, 3, 10, new ArrayList<>(Arrays.asList(
+                        95, 86, 70, 65, 59, 49, 45, 65, 59, 49, 65, 59)), new ArrayList<>(Arrays.asList(
+                        95, 86, 70, 65, 59, 49, 45, 65, 59, 49, 65, 59)),
+                        ViewType.MESH_MONTH_ITEM_MONTH), new ModelDataGraph(2, 3, 10, new ArrayList<>(Arrays.asList(
                 95, 86, 70, 65, 59, 49, 45, 65, 59, 49, 65, 59)), new ArrayList<>(Arrays.asList(
                 95, 86, 70, 65, 59, 49, 45, 65, 59, 49, 65, 59)),
                 ViewType.MESH_WEEK_ITEM_WEEK)};
+        for (ModelDataGraph modelDataGraph : data) {
+            modelDataGraph.setArrayListForInfo(new ArrayList<ModelBlockInfo>() {{
+                for (int i = 0; i < 12; i++) {
+                    add(new ModelBlockInfo("uno" + i, "due" + i,
+                            "tre" + i, "quantro" + i, "cinque" + i));
+                }
+            }});
+
+        }
 
         button1.setOnClickListener(new View.OnClickListener() {
             @Override

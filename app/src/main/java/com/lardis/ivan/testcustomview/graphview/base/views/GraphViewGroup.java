@@ -29,7 +29,8 @@ public class GraphViewGroup extends RelativeLayout {
     /**
      * радиус лупы
      */
-    public int ZOOM_RADIUS;
+    public static int ZOOM_RADIUS;
+    public static int FINGER_RADIUS;
 
 
     public GraphViewGroup(Context context) {
@@ -204,22 +205,31 @@ public class GraphViewGroup extends RelativeLayout {
 
 
                 @Override
-                public void showZoomAndBlockInfo() {
+                public void showZoom() {
                     myZoomView.show();
-
-                    showBlockInfo();
                 }
 
                 @Override
-                public void hideZoomAndBlockInfo() {
+                public void showZoomInfo() {
+                    showBlockInfo();
+                    if (!myZoomView.isShown())
+                        ZOOM_RADIUS = FINGER_RADIUS;
+                }
+
+                @Override
+                public void hideZoom() {
                     myZoomView.hide();
+                }
+
+                @Override
+                public void hideZoomInfo() {
                     hideBlockInfo();
                 }
 
                 @Override
                 public void setCoordinate(float x, float y, int nTouch) {
-                    myZoomView.setData(x, y);
                     setmyXandYandNTouch(x, y, nTouch);
+                    myZoomView.setData(x, y);
 
                 }
 
@@ -239,10 +249,9 @@ public class GraphViewGroup extends RelativeLayout {
     }
 
 
-    void init()
-
-    {
+    void init() {
         ZOOM_RADIUS = (int) HelperLayoutClass.dpToPixels(getResources(), 50);
+        FINGER_RADIUS = (int) HelperLayoutClass.dpToPixels(getResources(), 25);
         myGraphView = new NewBackground(getContext());
         myViewGroupInfo = new MyViewGroupInfo(getContext());
         myZoomView = new MyZoomView(getContext());

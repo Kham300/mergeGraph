@@ -19,9 +19,9 @@ import com.lardis.ivan.testcustomview.graphview.base.BaseGraph;
 import com.lardis.ivan.testcustomview.graphview.base.CallbackDrawGraph;
 import com.lardis.ivan.testcustomview.graphview.base.TypeGraph;
 import com.lardis.ivan.testcustomview.graphview.base.ViewType;
-import com.lardis.ivan.testcustomview.graphview.columng.GraphPunct;
-import com.lardis.ivan.testcustomview.graphview.helpers.HelperLayoutClass;
+import com.lardis.ivan.testcustomview.graphview.graphtypes.columng.GraphPunct;
 import com.lardis.ivan.testcustomview.graphview.graphtypes.lineg.UnoGraphView;
+import com.lardis.ivan.testcustomview.graphview.helpers.HelperLayoutClass;
 import com.lardis.ivan.testcustomview.model.ModelDataGraph;
 
 import java.util.ArrayList;
@@ -118,6 +118,9 @@ public class NewBackground extends View implements CallbackDrawGraph {
     BaseGraph graph;
     ModelDataGraph modelDataGraph;
 
+    private boolean neverShowZoomInfo;
+    private boolean neverShowZoom;
+
     // Strings
     private String[] labels;
 
@@ -172,11 +175,17 @@ public class NewBackground extends View implements CallbackDrawGraph {
                 break;
         }
 
-        // Check if graph supports current view type
+        // Check that graph supports current view type
         if (!Arrays.asList(graph.getSupportedGraphTypes()).contains(modelDataGraph.getTypeViewGraph()))
             throw new IllegalArgumentException(typeGraph
                     + " graph type doesn't support " + modelDataGraph.getTypeViewGraph() + " yet.");
 
+        // Check that graph blockInfoData is provided
+        if (graph.getUsesBlockInfo() && modelDataGraph.getArrayListForInfo() == null)
+            throw new IllegalArgumentException(typeGraph + " requires blockInfoValues to be set.");
+
+        this.neverShowZoom = !graph.getZoomPermission();
+        this.neverShowZoomInfo = !graph.getUsesBlockInfo();
 
         // Set various graph parameters
         graph.setWH(oldW, oldH, realW);
@@ -229,6 +238,16 @@ public class NewBackground extends View implements CallbackDrawGraph {
             @Override
             public ViewType[] getSupportedGraphTypes() {
                 return new ViewType[0];
+            }
+
+            @Override
+            public boolean getZoomPermission() {
+                return false;
+            }
+
+            @Override
+            public boolean getUsesBlockInfo() {
+                return false;
             }
 
             @Override
@@ -485,12 +504,13 @@ public class NewBackground extends View implements CallbackDrawGraph {
                 bufOffsetX = offsetX;
                 bufX2 = motionEvent.getX();
 
+                updateNSelectedTouch(X);
                 break;
             case (MotionEvent.ACTION_MOVE):
                 X = motionEvent.getX();
                 Y = motionEvent.getY();
 
-                if ((Math.abs(bufOffsetX - offsetX) > 4))
+                if ((Math.abs(bufOffsetX - offsetX) > 10))
                     showZoomAndBlockInfo = false;
 
                 if (viewZoomAndBlockInfo) {
@@ -498,20 +518,22 @@ public class NewBackground extends View implements CallbackDrawGraph {
 
                     int nselbuf = nSelectedTouch;
                     updateNSelectedTouch(X);
-                    if (nselbuf != nSelectedTouch) workFromZoomAndBlockInfo.updatePrtScn();
-                }
-                else {
+
+                    if (nselbuf != nSelectedTouch)
+                        workFromZoomAndBlockInfo.updatePrtScn();
+                } else {
                     updateOffsetX();
                 }
                 invalidate();
                 break;
             case (MotionEvent.ACTION_UP):
                 if (viewZoomAndBlockInfo) {
-                    workFromZoomAndBlockInfo.hideZoomAndBlockInfo();
+                    workFromZoomAndBlockInfo.hideZoomInfo();
+                    workFromZoomAndBlockInfo.hideZoom();
                 }
 
                 updateOffsetX();
-                if (Math.abs(offsetX - bufOffsetX) < 4) updateNSelectedTouch(X);
+                if (Math.abs(offsetX - bufOffsetX) < 10) updateNSelectedTouch(X);
 
                 invalidate();
                 break;
@@ -536,7 +558,8 @@ public class NewBackground extends View implements CallbackDrawGraph {
 
     private void updateNSelectedTouch(Float X) {
         if (graph.isAnimationFinished)
-            nSelectedTouch = (int) ((X - bufOffsetX - leftStripe) / (itemWidth));
+            if (X < w - leftStripe)
+                nSelectedTouch = (int) ((X - bufOffsetX - leftStripe) / (itemWidth));
     }
 
 
@@ -547,9 +570,11 @@ public class NewBackground extends View implements CallbackDrawGraph {
      */
     public interface WorkFromZoomAndBlockInfo {
 
-        void showZoomAndBlockInfo();
+        void showZoom();
+        void showZoomInfo();
 
-        void hideZoomAndBlockInfo();
+        void hideZoom();
+        void hideZoomInfo();
 
         void setCoordinate(float x, float y, int nTouch);
 
@@ -574,15 +599,22 @@ public class NewBackground extends View implements CallbackDrawGraph {
     OnLongClickListener onLongClickListener = new OnLongClickListener() {
         @Override
         public boolean onLongClick(View v) {
-            if (showZoomAndBlockInfo && workFromZoomAndBlockInfo!=null) {
+            if (showZoomAndBlockInfo && workFromZoomAndBlockInfo != null) {
                 workFromZoomAndBlockInfo.setCoordinate(X, Y, nSelectedTouch);
                 workFromZoomAndBlockInfo.updatePrtScn();
-                workFromZoomAndBlockInfo.showZoomAndBlockInfo();
                 viewZoomAndBlockInfo = true;
+
+                if (!neverShowZoom)
+                    workFromZoomAndBlockInfo.showZoom();
+
+                if (!neverShowZoomInfo)
+                    workFromZoomAndBlockInfo.showZoomInfo();
+
+
                 updateNSelectedTouch(X);
                 invalidate();
             }
-            return false;
+            return true;
         }
     };
 

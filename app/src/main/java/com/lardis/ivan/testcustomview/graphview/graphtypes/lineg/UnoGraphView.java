@@ -803,9 +803,9 @@ public class UnoGraphView extends BaseGraph {
 
     @Override
     public void setData(ModelDataGraph modelDataGraph) {
-        this.values = new double[modelDataGraph.getArrayListGraph1().size()];
+        this.values = new double[modelDataGraph.getGraph1values().size()];
         for (int i = 0; i < values.length; ++i) {
-            values[i] = modelDataGraph.getArrayListGraph1().get(i);
+            values[i] = modelDataGraph.getGraph1values().get(i);
         }
 
         this.labels = new String[modelDataGraph.getLabels().size()];
@@ -836,6 +836,16 @@ public class UnoGraphView extends BaseGraph {
         return new ViewType[]{ViewType.MESH_DAY_ITEM_DAY,
                 ViewType.MESH_WEEK_ITEM_WEEK,
                 ViewType.MESH_MONTH_ITEM_MONTH};
+    }
+
+    @Override
+    public boolean getZoomPermission() {
+        return false;
+    }
+
+    @Override
+    public boolean getUsesBlockInfo() {
+        return true;
     }
 
 

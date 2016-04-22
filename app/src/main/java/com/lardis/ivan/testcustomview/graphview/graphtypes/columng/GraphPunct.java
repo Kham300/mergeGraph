@@ -44,6 +44,16 @@ public class GraphPunct extends BaseGraph {
     }
 
     @Override
+    public boolean getZoomPermission() {
+        return false;
+    }
+
+    @Override
+    public boolean getUsesBlockInfo() {
+        return false;
+    }
+
+    @Override
     public void drawGraph(Canvas canvas) {
 
     }

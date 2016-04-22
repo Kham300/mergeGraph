@@ -1,7 +1,7 @@
 package com.lardis.ivan.testcustomview.graphview.base;
-import com.lardis.ivan.testcustomview.model.ModelDataGraph;
-
 import android.graphics.Canvas;
+
+import com.lardis.ivan.testcustomview.model.ModelDataGraph;
 
 
 /**
@@ -19,6 +19,8 @@ public abstract class BaseGraph {
     public abstract void click(int n);
     public abstract void setCallback(CallbackDrawGraph callbackDrawGrapg);
     public abstract ViewType[] getSupportedGraphTypes();
+    public abstract boolean getZoomPermission();
+    public abstract boolean getUsesBlockInfo();
     public abstract void drawGraph(Canvas canvas);
     public abstract void drawOnLeftPanel(Canvas canvas);
     public abstract void measure();

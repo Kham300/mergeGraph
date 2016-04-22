@@ -23,7 +23,7 @@ public class MyZoomView extends View {
     /**
      * показывать или нет Zoom
      */
-    private boolean show = false;
+    private boolean isShown = false;
     /**
      * скрин view графика
      */
@@ -81,12 +81,12 @@ public class MyZoomView extends View {
     }
 
     public void show() {
-        this.show = true;
+        this.isShown = true;
         invalidate();
     }
 
     public void hide() {
-        this.show = false;
+        this.isShown = false;
         invalidate();
     }
 
@@ -131,7 +131,7 @@ public class MyZoomView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (show) {
+        if (isShown) {
             circle.reset();
             circle.addCircle(x, y, radius / 2, Path.Direction.CW);
             canvas.scale(2, 2, x, y);
@@ -144,5 +144,8 @@ public class MyZoomView extends View {
         }
     }
 
-
+    @Override
+    public boolean isShown() {
+        return isShown;
+    }
 }
