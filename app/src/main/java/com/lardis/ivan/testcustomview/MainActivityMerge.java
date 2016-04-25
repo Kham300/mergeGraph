@@ -24,8 +24,10 @@ public class MainActivityMerge extends AppCompatActivity {
     Button button1;
     Button button2;
 
-    int idx;
-    ModelDataGraph[] data;
+    int idx1;
+    int idx2;
+    ModelDataGraph[] data1;
+    ModelDataGraph[] data2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +38,7 @@ public class MainActivityMerge extends AppCompatActivity {
         button1 = (Button) findViewById(R.id.button1);
         button2 = (Button) findViewById(R.id.button2);
 
-        data = new ModelDataGraph[]{new ModelDataGraph(1, 1, 1, new ArrayList<>(Arrays.asList(
+        data1 = new ModelDataGraph[]{new ModelDataGraph(1, 1, 1, new ArrayList<>(Arrays.asList(
                 95, 86, 70, 65, 59, 49, 45, 65, 59, 49, 65, 59)), new ArrayList<>(Arrays.asList(
                 95, 86, 70, 65, 59, 49, 45, 65, 59, 49, 65, 59)),
                 ViewType.MESH_DAY_ITEM_DAY),
@@ -47,7 +49,30 @@ public class MainActivityMerge extends AppCompatActivity {
                 95, 86, 70, 65, 59, 49, 45, 65, 59, 49, 65, 59)), new ArrayList<>(Arrays.asList(
                 95, 86, 70, 65, 59, 49, 45, 65, 59, 49, 65, 59)),
                 ViewType.MESH_WEEK_ITEM_WEEK)};
-        for (ModelDataGraph modelDataGraph : data) {
+
+        data2 = new ModelDataGraph[]{new ModelDataGraph(1, 1, 1, new ArrayList<>(Arrays.asList(
+                95, 86, 70, 65, 59, 49, 45, 65, 59, 49, 65, 59)), new ArrayList<>(Arrays.asList(
+                95, 86, 70, 65, 59, 49, 45, 65, 59, 49, 65, 59)),
+                ViewType.MESH_WEEK_ITEM_DAY_PERIOD_MONTH),
+                new ModelDataGraph(2, 3, 10, new ArrayList<>(Arrays.asList(
+                        95, 86, 70, 65, 59, 49, 45, 65, 59, 49, 65, 59)), new ArrayList<>(Arrays.asList(
+                        95, 86, 70, 65, 59, 49, 45, 65, 59, 49, 65, 59)),
+                        ViewType.MESH_MONTH_ITEM_WEEK), new ModelDataGraph(2, 3, 10, new ArrayList<>(Arrays.asList(
+                95, 86, 70, 65, 59, 49, 45, 65, 59, 49, 65, 59)), new ArrayList<>(Arrays.asList(
+                95, 86, 70, 65, 59, 49, 45, 65, 59, 49, 65, 59)),
+                ViewType.MESH_WEEK_ITEM_WEEK)};
+
+        for (ModelDataGraph modelDataGraph : data1) {
+            modelDataGraph.setArrayListForInfo(new ArrayList<ModelBlockInfo>() {{
+                for (int i = 0; i < 12; i++) {
+                    add(new ModelBlockInfo("uno" + i, "due" + i,
+                            "tre" + i, "quantro" + i, "cinque" + i));
+                }
+            }});
+
+        }
+
+        for (ModelDataGraph modelDataGraph : data2) {
             modelDataGraph.setArrayListForInfo(new ArrayList<ModelBlockInfo>() {{
                 for (int i = 0; i < 12; i++) {
                     add(new ModelBlockInfo("uno" + i, "due" + i,
@@ -60,9 +85,9 @@ public class MainActivityMerge extends AppCompatActivity {
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (++idx >= data.length)
-                    idx = 0;
-                graphViewGroup.setDataGraphAndInfo(data[idx], TypeGraph.CIRCLED_UNO);
+                if (++idx1 >= data1.length)
+                    idx1 = 0;
+                graphViewGroup.setDataGraphAndInfo(data1[idx1], TypeGraph.CIRCLED_UNO);
             }
         });
 
@@ -70,9 +95,9 @@ public class MainActivityMerge extends AppCompatActivity {
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (++idx >= data.length)
-                    idx = 0;
-                graphViewGroup.setDataGraphAndInfo(data[idx], TypeGraph.GraphPunct);
+                if (++idx2 >= data1.length)
+                    idx2 = 0;
+                graphViewGroup.setDataGraphAndInfo(data2[idx2], TypeGraph.GraphPunct);
             }
         });
 

@@ -95,7 +95,6 @@ public class MyZoomView extends View {
      *
      * @param x      Координата распошложения
      * @param y      Координата распошложения
-     * @param bitmap Картинка view которую увеличиваем
      */
     public void setData(float x, float y) {
         this.x = x;

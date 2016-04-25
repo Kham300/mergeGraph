@@ -9,6 +9,9 @@ import java.util.ArrayList;
 /**
  * Created by i.larin on 05.04.2016.
  */
+/*
+    Class for data that is displayed by graphs
+ */
 public class ModelDataGraph {
     public ModelDataGraph(int day, int month, int year, ArrayList<Integer> graph1values, ArrayList<Integer> arrayListGraph2, ViewType typeViewGraph) {
         this.day = day;
@@ -16,18 +19,26 @@ public class ModelDataGraph {
         this.year = year;
         this.graph1values = graph1values;
         this.typeViewGraph = typeViewGraph;
-        labels = HelperGraphInfo.getLabel(this).getLabels();
-
+        this.labels = HelperGraphInfo.getLabel(this).getLabels();
+        this.stripesPositions = HelperGraphInfo.getArrayWidthCoefficient(this);
     }
 
-    private int day;
-    private int month;
-    private int year;
+    // First day of the period
+    private int day, month, year;
+
+    // Main values for graphs
     private ArrayList<Integer> graph1values;
+    // Additional values for graphs
     private ArrayList<Integer> graph2values;
+
+    // Labels under stripes
     private ArrayList<String> labels;
+    // Desired type of the graph
     private ViewType typeViewGraph;
+    // Data for detailed block view
     public ArrayList<ModelBlockInfo> blockInfoValues;
+    // Array of stripes to be drawn
+    public ArrayList<Float> stripesPositions;
 
     public ArrayList<String> getLabels() {
         return labels;

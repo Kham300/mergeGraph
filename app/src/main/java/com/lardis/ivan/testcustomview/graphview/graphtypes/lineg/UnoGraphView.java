@@ -91,13 +91,11 @@ public class UnoGraphView extends BaseGraph {
     Paint mLinePaint;
     Paint mGoalPaint;
     TextPaint mGoalTextPaint;
-    Paint mArrowPaint;
 
     float[] intervals;
 
     // Paths
     Path mGoalPath;
-    Path mArrowPath;
 
 
     // Layout sizes
@@ -128,8 +126,6 @@ public class UnoGraphView extends BaseGraph {
     public static final float headerRatio = 0.05f;
     public static final float borderRatio = 0.1f;
     public static final float stripLength = 5f;
-    public static final float lineRatio = 0.01f;
-    public static final float marginRatio = 0.025f;
     public static int graphStep = 10;
     public final double graphRatio = (float) 1 - headerRatio - footerRatio - 2 * borderRatio;
     public static final int minStripeDp = 50;
@@ -146,9 +142,6 @@ public class UnoGraphView extends BaseGraph {
 
     // Saved data
     Context context;
-
-    // Callback to backgroundView
-    CallbackDrawGraph callbackToBack;
 
     // Supported
 
@@ -232,10 +225,6 @@ public class UnoGraphView extends BaseGraph {
 
         mGoalTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
 
-        mArrowPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mArrowPaint.setColor(Color.BLACK);
-        mArrowPaint.setStyle(Paint.Style.STROKE);
-        mArrowPath = new Path();
 
         mGraphPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mGraphPaint.setColor(mGraphLineColor);
@@ -266,10 +255,6 @@ public class UnoGraphView extends BaseGraph {
         mHighlightPathPaint.setColor(mBackLineColor);
         mHighlightPathPaint.setStyle(Paint.Style.STROKE);
         mHighlightPathPaint.setShadowLayer(10f, 0.0f, 0.0f, Color.BLACK);
-
-        mArrowPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mArrowPaint.setColor(Color.BLACK);
-        mArrowPaint.setStyle(Paint.Style.STROKE);
 
         mGoalPaint.setColor(mGraphLineColor);
         mGoalTextPaint.setColor(mGraphLineColor);
@@ -310,7 +295,6 @@ public class UnoGraphView extends BaseGraph {
                 graphStrokeWidth = h / 100;
                 mLinePaint.setStrokeWidth(graphStrokeWidth / 4);
                 mGoalPaint.setStrokeWidth(graphStrokeWidth / 2);
-                mArrowPaint.setStrokeWidth(h * lineRatio);
 
                 callbackToBack.updateDrawByQ(stripeWidth, values.length, cornerStripe);
 
@@ -499,7 +483,6 @@ public class UnoGraphView extends BaseGraph {
         drawGoalText(canvas, 0);
         drawLimitedHorizontalLines(canvas, cornerStripe);
         drawGoalLineLimited(canvas, cornerStripe);
-        drawArrows(canvas);
 
         // Hidden feature of scrolling
         if (curTime < animationDuration) {
@@ -516,12 +499,6 @@ public class UnoGraphView extends BaseGraph {
     }
 
 
-    protected void drawArrows(Canvas canvas) {
-        if (offset != 0)
-            drawLeftArrow(canvas, cornerStripe);
-        if (offset + realW + cornerStripe != w)
-            drawRightArrow(canvas, w);
-    }
 
     // Remove multiplication
     protected void drawAdditionalBackground(Canvas canvas) {
@@ -737,25 +714,7 @@ public class UnoGraphView extends BaseGraph {
 
     }
 
-    private void drawLeftArrow(Canvas canvas, float globalIndent) {
-        float indent = marginRatio * canvas.getHeight();
-        float belowIndent = footerRatio * canvas.getHeight();
-        mArrowPath.reset();
-        mArrowPath.moveTo(globalIndent + 3 * indent, canvas.getHeight() - belowIndent - 3 * indent);
-        mArrowPath.lineTo(globalIndent + 2 * indent, canvas.getHeight() - belowIndent - 2 * indent);
-        mArrowPath.lineTo(globalIndent + 3 * indent, canvas.getHeight() - belowIndent - indent);
-        canvas.drawPath(mArrowPath, mArrowPaint);
-    }
 
-    private void drawRightArrow(Canvas canvas, float globalIndent) {
-        float indent = marginRatio * canvas.getHeight();
-        float belowIndent = footerRatio * canvas.getHeight();
-        mArrowPath.reset();
-        mArrowPath.moveTo(globalIndent - 3 * indent, canvas.getHeight() - belowIndent - 3 * indent);
-        mArrowPath.lineTo(globalIndent - 2 * indent, canvas.getHeight() - belowIndent - 2 * indent);
-        mArrowPath.lineTo(globalIndent - 3 * indent, canvas.getHeight() - belowIndent - indent);
-        canvas.drawPath(mArrowPath, mArrowPaint);
-    }
 
 
     public int getColor() {
@@ -827,7 +786,7 @@ public class UnoGraphView extends BaseGraph {
 
     @Override
     public void setCallback(CallbackDrawGraph callbackDrawGrapg) {
-        callbackToBack = callbackDrawGrapg;
+        super.setCallback(callbackDrawGrapg);
         measure();
     }
 

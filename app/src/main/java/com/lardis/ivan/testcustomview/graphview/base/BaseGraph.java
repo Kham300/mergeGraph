@@ -13,11 +13,13 @@ public abstract class BaseGraph {
     public int realW;
     public boolean isAnimationFinished;
 
+    // Callback to backgroundView
+    protected CallbackDrawGraph callbackToBack;
+
     public abstract void setData(ModelDataGraph modelDataGraph);
 
     public abstract void updateOffset(float v);
     public abstract void click(int n);
-    public abstract void setCallback(CallbackDrawGraph callbackDrawGrapg);
     public abstract ViewType[] getSupportedGraphTypes();
     public abstract boolean getZoomPermission();
     public abstract boolean getUsesBlockInfo();
@@ -25,6 +27,10 @@ public abstract class BaseGraph {
     public abstract void drawOnLeftPanel(Canvas canvas);
     public abstract void measure();
     public abstract void measureWithOffset();
+
+    public void setCallback(CallbackDrawGraph callbackDrawGrapg) {
+        callbackToBack = callbackDrawGrapg;
+    }
 
     public void setWH(int w, int h, int realW) {
         this.w = w;

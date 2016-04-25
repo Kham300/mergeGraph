@@ -13,8 +13,10 @@ import com.lardis.ivan.testcustomview.model.ModelDataGraph;
 /**
  * Created by aleksey.ivanov on 11.04.2016.
  */
-public class GraphPunct extends BaseGraph {
-    public GraphPunct(Context context, CallbackDrawGraph callbackDrawGraph, AttributeSet attrs) {
+public class ColumnGraph extends BaseGraph {
+
+    public ColumnGraph(Context context, CallbackDrawGraph callbackDrawGraph, AttributeSet attrs) {
+        this.isAnimationFinished = true;
     }
 
 
@@ -35,12 +37,17 @@ public class GraphPunct extends BaseGraph {
 
     @Override
     public void setCallback(CallbackDrawGraph callbackDrawGrapg) {
-
+        super.setCallback(callbackDrawGrapg);
+        measure();
     }
 
     @Override
     public ViewType[] getSupportedGraphTypes() {
-        return new ViewType[0];
+        return new ViewType[]{ViewType.MESH_DAY_ITEM_DAY,
+                ViewType.MESH_WEEK_ITEM_WEEK,
+                ViewType.MESH_MONTH_ITEM_MONTH,
+                ViewType.MESH_WEEK_ITEM_DAY_PERIOD_MONTH,
+                ViewType.MESH_MONTH_ITEM_WEEK};
     }
 
     @Override
@@ -50,7 +57,7 @@ public class GraphPunct extends BaseGraph {
 
     @Override
     public boolean getUsesBlockInfo() {
-        return false;
+        return true;
     }
 
     @Override
@@ -65,7 +72,8 @@ public class GraphPunct extends BaseGraph {
 
     @Override
     public void measure() {
-
+        if (w != 0 && h != 0 && callbackToBack != null)
+            callbackToBack.updateDrawByQ(150, 12, 50);
     }
 
     @Override

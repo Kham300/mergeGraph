@@ -235,7 +235,6 @@ public class HelperGraphInfo {
     public static ArrayList<Float> getArrayWidthCoefficient(ModelDataGraph modelDataGraph) {
 
         switch (modelDataGraph.getTypeViewGraph())
-
         {
             case MESH_MONTH_ITEM_WEEK:
                 return getArrayWidthCoefficientMeshMonthItemWeek(modelDataGraph);
