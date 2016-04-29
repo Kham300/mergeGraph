@@ -1,4 +1,4 @@
-How to extend your own graph for your needs from BaseGraph
+## Guide - How to extend your own graph for your needs from BaseGraph
 
 1. Implement all abstract methods
 2. Remember to add offset which comes from updateOffset method to all your drawings, which are moved while scrolling
@@ -29,8 +29,9 @@ case YOUR_GRAPH_NAME:
     graph = new YourGraph(getContext(), attributeSet);
 ```
 
+## Some examples
 
-Basic extending with no drawing and only zoom feature
+####Basic extending with no drawing and only zoom feature
 ```java
 public class ExampleGraph extends BaseGraph {
 
@@ -102,7 +103,7 @@ public class ExampleGraph extends BaseGraph {
 }
 ```
 
-Using your brand new graph in main activity
+####Using your brand new graph in main activity
 ```java
     graphViewGroup = (GraphViewGroup) findViewById(R.id.mygroop);
 
