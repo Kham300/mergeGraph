@@ -42,7 +42,7 @@ public class ExampleGraph extends BaseGraph {
     }
 
     @Override
-    public ViewType[] getSupportedGraphTypes() {
+    public ViewType[] getSupportedViewTypes() {
         return new ViewType[]{ViewType.MESH_DAY_ITEM_DAY,
                 ViewType.MESH_WEEK_ITEM_WEEK,
                 ViewType.MESH_MONTH_ITEM_MONTH,

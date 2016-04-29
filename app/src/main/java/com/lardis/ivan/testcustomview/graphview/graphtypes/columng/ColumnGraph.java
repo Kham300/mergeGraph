@@ -694,7 +694,7 @@ public class ColumnGraph extends BaseGraph {
     }
 
     @Override
-    public ViewType[] getSupportedGraphTypes() {
+    public ViewType[] getSupportedViewTypes() {
         return ViewType.getAllTypes();
     }
 

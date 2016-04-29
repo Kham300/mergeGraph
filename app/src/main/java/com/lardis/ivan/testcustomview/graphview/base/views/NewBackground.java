@@ -191,7 +191,7 @@ public class NewBackground extends View implements CallbackDrawGraph {
         }
 
         // Check that graph supports current view type
-        if (!Arrays.asList(graph.getSupportedGraphTypes()).contains(modelDataGraph.getTypeViewGraph()))
+        if (!Arrays.asList(graph.getSupportedViewTypes()).contains(modelDataGraph.getTypeViewGraph()))
             throw new IllegalArgumentException(typeGraph
                     + " graph type doesn't support " + modelDataGraph.getTypeViewGraph() + " yet.");
 
@@ -252,7 +252,7 @@ public class NewBackground extends View implements CallbackDrawGraph {
             }
 
             @Override
-            public ViewType[] getSupportedGraphTypes() {
+            public ViewType[] getSupportedViewTypes() {
                 return new ViewType[0];
             }
 

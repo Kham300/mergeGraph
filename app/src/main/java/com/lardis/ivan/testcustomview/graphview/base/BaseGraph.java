@@ -25,8 +25,8 @@ public abstract class BaseGraph {
     // Handling click by item number
     public abstract void click(int n);
 
-    // You should return desired graph types here
-    public abstract ViewType[] getSupportedGraphTypes();
+    // Returns desired graph types here
+    public abstract ViewType[] getSupportedViewTypes();
 
     // Return true if want to enable zoom
     public abstract boolean getZoomPermission();
@@ -37,7 +37,7 @@ public abstract class BaseGraph {
     // Main drawing happens there
     public abstract void drawGraph(Canvas canvas);
 
-    // Drawing on left panel happends there
+    // Drawing on left panel happens there
     public abstract void drawOnLeftPanel(Canvas canvas);
 
     // Initial measuring happens here

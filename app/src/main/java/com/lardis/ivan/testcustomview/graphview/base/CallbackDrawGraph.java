@@ -1,7 +1,7 @@
 package com.lardis.ivan.testcustomview.graphview.base;
 
 /**
- * Created by i.larin on 11.04.2016.
+ * Shows how graphs could communicate with view
  */
 public interface CallbackDrawGraph {
     void sendInvalidate();
