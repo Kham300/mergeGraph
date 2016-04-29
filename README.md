@@ -42,17 +42,17 @@ public class ExampleGraph extends BaseGraph {
 
     @Override
     public void setData(ModelDataGraph modelDataGraph) {
-
+	// Data saving logic
     }
 
     @Override
     public void updateOffset(float v) {
-
+	// Update your offset
     }
 
     @Override
     public void click(int n) {
-
+	// Handle click on item
     }
 
     @Override
@@ -82,12 +82,13 @@ public class ExampleGraph extends BaseGraph {
 
     @Override
     public void drawGraph(Canvas canvas) {
-
+	// Do main part of your drawings
     }
 
     @Override
     public void drawOnLeftPanel(Canvas canvas) {
-
+	// Draw on the left panel, which is pinned, 
+	// so you don't need to use offset
     }
 
     @Override
@@ -98,7 +99,8 @@ public class ExampleGraph extends BaseGraph {
 
     @Override
     public void measureWithOffset() {
-
+	// Do your measuring with offset
+	// Warning - this method is called in onDraw
     }
 }
 ```
