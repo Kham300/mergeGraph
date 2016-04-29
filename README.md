@@ -94,8 +94,10 @@ public class ExampleGraph extends BaseGraph {
 
     @Override
     public void measure() {
-        if (w != 0 && h != 0 && callbackToBack != null)
+        if (w != 0 && h != 0 && callbackToBack != null) {
             callbackToBack.updateDrawByQ(150, 50);
+            // Your measurements go there
+        }
     }
 
     @Override
