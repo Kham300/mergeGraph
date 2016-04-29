@@ -528,7 +528,7 @@ public class NewBackground extends View implements CallbackDrawGraph {
         mArrowPaint.setStrokeWidth(h * lineRatio);
         if (offsetX < 0)
             drawLeftArrow(canvas, leftStripe);
-        if (-offsetX + graph.getW() < graph.getRealW())
+        if (-offsetX + graph.getW() - leftStripe < graph.getRealW())
             drawRightArrow(canvas, w);
     }
 

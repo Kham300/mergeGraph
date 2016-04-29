@@ -45,7 +45,7 @@ public class MainActivityMerge extends AppCompatActivity {
             modelDataGraph.setArrayListForInfo(new ArrayList<ModelBlockInfo>() {{
                 for (int i = 0; i < 12; i++) {
                     add(new ModelBlockInfo("uno" + i, "due" + i,
-                            "tre" + i, "quantro" + i, "cinque" + i));
+                            "tre" + i, "quatro" + i, "cinque" + i));
                 }
             }});
 
@@ -55,7 +55,7 @@ public class MainActivityMerge extends AppCompatActivity {
             modelDataGraph.setArrayListForInfo(new ArrayList<ModelBlockInfo>() {{
                 for (int i = 0; i < 12; i++) {
                     add(new ModelBlockInfo("uno" + i, "due" + i,
-                            "tre" + i, "quantro" + i, "cinque" + i));
+                            "tre" + i, "quatro" + i, "cinque" + i));
                 }
             }});
 

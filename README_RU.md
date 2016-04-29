@@ -95,6 +95,7 @@ public class ExampleGraph extends BaseGraph {
     public void measure() {
         if (w != 0 && h != 0 && callbackToBack != null) {
             callbackToBack.updateDrawByQ(150, 50);
+            // Обычное onMeasure, большинство вычислений разметки должны быть здесь
         }
     }
 

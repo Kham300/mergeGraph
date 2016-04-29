@@ -663,6 +663,8 @@ public class ColumnGraph extends BaseGraph {
 
                 }
             }
+
+            realW = (int) (widthBlock * nBlock + borderLeft);
         }
     }
 
@@ -1001,9 +1003,11 @@ public class ColumnGraph extends BaseGraph {
 
                     nItemInOneMesh = 4;
                     break;
+
                 case MESH_WEEK_ITEM_DAY_PERIOD_MONTH:
                     nItemInOneMesh = 7;
                     break;
+
                 case MESH_WEEK_ITEM_WEEK:
                 case MESH_MONTH_ITEM_MONTH:
                 case MESH_DAY_ITEM_DAY:
