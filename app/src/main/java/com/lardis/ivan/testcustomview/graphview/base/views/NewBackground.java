@@ -359,9 +359,15 @@ public class NewBackground extends View implements CallbackDrawGraph {
         if (averageLen > 10)
             textRatio = 0.9f;
 
+
         // Calculate text size for labels
-        HelperLayoutClass.calculateOKTextSize(mTextPaint, textRatio * itemWidth, labels,
-                belowIndent * textBorder);
+        if (modelDataGraph.getTypeViewGraph() != ViewType.MESH_MONTH_ITEM_WEEK)
+            HelperLayoutClass.calculateOKTextSize(mTextPaint, textRatio * itemWidth, labels,
+                    belowIndent * textBorder);
+        else
+            HelperLayoutClass.calculateOKTextSize(mTextPaint,
+                    textRatio * graph.getRealW() / labels.length, labels,
+                    belowIndent * textBorder);
 
         invalidate();
         requestLayout();
@@ -433,7 +439,7 @@ public class NewBackground extends View implements CallbackDrawGraph {
             if (modelDataGraph.getTypeViewGraph() != ViewType.MESH_WEEK_ITEM_DAY_PERIOD_MONTH) {
                 specialChosen = meshSelectedTouch;
                 for (int i = 0; i < labels.length; ++i) {
-                    if (meshSizes[i] - mTextPaint.measureText(labels[i]) > 0) {
+                    if (textRatio * meshSizes[i] - mTextPaint.measureText(labels[i]) > 0) {
                         if (i == 0) {
                             labelsUnderX[i] = leftStripe + offsetX
                                     + 0.5f * (meshSizes[i] - mTextPaint.measureText(labels[i]));
@@ -456,20 +462,40 @@ public class NewBackground extends View implements CallbackDrawGraph {
                 }
             }
 
+
+            calculateStaticTextsLayout();
+
+        }
+    }
+
+    private void calculateStaticTextsLayout() {
+        textUnderStripes = new StaticLayout[labels.length];
+
+        // If labels should be drawn under meshes
+        if (labels.length == meshSizes.length) {
+            if (specialChosen != -1) {
+                goalUnderStripes = new StaticLayout(labels[specialChosen], mGoalTextPaint,
+                        (int) (textRatio * meshSizes[specialChosen]),
+                        Layout.Alignment.ALIGN_NORMAL, 1, 1, true);
+            }
+
+            for (int i = 0; i < labels.length; ++i)
+                textUnderStripes[i] = new StaticLayout(labels[i], mTextPaint,
+                        (int) (textRatio * meshSizes[i]),
+                        Layout.Alignment.ALIGN_NORMAL, 1, 1, true);
+        }
+        // If they should be under items
+        else {
             if (specialChosen != -1) {
                 goalUnderStripes = new StaticLayout(labels[specialChosen], mGoalTextPaint,
                         (int) (textRatio * itemWidth),
                         Layout.Alignment.ALIGN_NORMAL, 1, 1, true);
             }
 
-            // Calculating static layouts
-            textUnderStripes = new StaticLayout[labels.length];
             for (int i = 0; i < labels.length; ++i)
-                textUnderStripes[i] = new StaticLayout(labels[i], mTextPaint,
-                        (int) (textRatio * itemWidth),
-                        Layout.Alignment.ALIGN_NORMAL, 1, 1, true);
-
-
+            textUnderStripes[i] = new StaticLayout(labels[i], mTextPaint,
+                    (int) (textRatio * itemWidth),
+                    Layout.Alignment.ALIGN_NORMAL, 1, 1, true);
         }
     }
 
@@ -502,7 +528,7 @@ public class NewBackground extends View implements CallbackDrawGraph {
         mArrowPaint.setStrokeWidth(h * lineRatio);
         if (offsetX < 0)
             drawLeftArrow(canvas, leftStripe);
-        if (-offsetX + graph.getW() - leftStripe < graph.getRealW())
+        if (-offsetX + graph.getW() < graph.getRealW())
             drawRightArrow(canvas, w);
     }
 

@@ -34,19 +34,6 @@ public class ColumnGraph extends BaseGraph {
     int day;
     int month;
     int year;
-
-    /**
-     * показываем view блока текста и  view лупы
-     */
-    private boolean showZoomAndBlockInfo = false;
-    /**
-     * координаты Х
-     */
-    float X;
-    /**
-     * координата У
-     */
-    float Y;
     /**
      * сдвиг по X
      */
@@ -118,10 +105,7 @@ public class ColumnGraph extends BaseGraph {
      * размер текста
      */
     int textSizeAll;
-    /**
-     * максимальная ширина текста
-     */
-    float maxTextWidth;
+
     /**
      * максимальная высота текста
      */
@@ -246,10 +230,6 @@ public class ColumnGraph extends BaseGraph {
      */
     private Paint mPaintPunctirAverage;
     /**
-     * маркер блоков фона
-     */
-    private Paint mPaintMesh;
-    /**
      * маркер треугольников
      */
     private Paint mPaintTriangle;
@@ -320,7 +300,6 @@ public class ColumnGraph extends BaseGraph {
      */
     private ViewType typeGraph;
 
-    private ModelDataGraph dataGraph;
 
     private ValueAnimator animator;
 
@@ -519,7 +498,7 @@ public class ColumnGraph extends BaseGraph {
         minHeightBetweenBlock = getPx(20);
 
         borderTop = widthBorder / 3;
-        calculateBorderButtom(typeGraph);
+        calculateBorderBottom(typeGraph);
         borderLeft = widthBorder;
         borderRight = w - widthBorder;
         workRegionGrafikHeight = (borderBottom - borderTop - maxTextHeight * 5);
@@ -591,7 +570,6 @@ public class ColumnGraph extends BaseGraph {
         initData(modelDataGraph.getDay(), modelDataGraph.getMonth(), modelDataGraph.getYear(),
                 modelDataGraph.getGraph1values(), modelDataGraph.getGraph2values(),
                 modelDataGraph.getTypeViewGraph(), modelDataGraph.getLabels());
-        this.dataGraph = modelDataGraph;
 
         calculateNameForValue();
     }
@@ -694,14 +672,12 @@ public class ColumnGraph extends BaseGraph {
      *
      * @param enumTypeViewGraph
      */
-    public void calculateBorderButtom(ViewType enumTypeViewGraph) {
+    public void calculateBorderBottom(ViewType enumTypeViewGraph) {
         if (enumTypeViewGraph == ViewType.MESH_WEEK_ITEM_WEEK) {
             borderBottom = h - maxTextHeight * 6 - 3;
 
         } else {
             borderBottom = h - maxTextHeight * 4 - 3;
-
-
         }
 
 
@@ -719,7 +695,7 @@ public class ColumnGraph extends BaseGraph {
 
     @Override
     public ViewType[] getSupportedGraphTypes() {
-        return ViewType.supportAll();
+        return ViewType.getAllTypes();
     }
 
     @Override
