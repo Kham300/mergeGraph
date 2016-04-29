@@ -30,5 +30,13 @@ public enum ViewType {
     /**
      * столбцы графика месяцы, задняя сетка недели
      */
-    MESH_MONTH_ITEM_WEEK
+    MESH_MONTH_ITEM_WEEK;
+
+    public static ViewType[] supportAll() {
+        return new ViewType[]{ViewType.MESH_DAY_ITEM_DAY,
+                ViewType.MESH_WEEK_ITEM_WEEK,
+                ViewType.MESH_MONTH_ITEM_MONTH,
+                ViewType.MESH_WEEK_ITEM_DAY_PERIOD_MONTH,
+                ViewType.MESH_MONTH_ITEM_WEEK};
+    }
 }

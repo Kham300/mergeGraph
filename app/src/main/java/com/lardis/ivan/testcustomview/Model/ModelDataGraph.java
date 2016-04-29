@@ -40,6 +40,9 @@ public class ModelDataGraph {
     // Array of stripes to be drawn
     public ArrayList<Float> stripesPositions;
 
+    // Goal value
+    public int mGoal;
+
     public ArrayList<String> getLabels() {
         return labels;
     }
@@ -104,4 +107,11 @@ public class ModelDataGraph {
         this.blockInfoValues = arrayListForInfo;
     }
 
+    public int getmGoal() {
+        return mGoal;
+    }
+
+    public void setmGoal(int mGoal) {
+        this.mGoal = mGoal;
+    }
 }

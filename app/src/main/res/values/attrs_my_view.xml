@@ -1,5 +1,14 @@
 <resources>
-    <declare-styleable name="Myview">
+    <declare-styleable name="Background">
+        <attr name="meshOneColor" format="color" />
+        <attr name="meshTwoColor" format="color" />
+        <attr name="selectedColumnShadowLayerColor" format="color" />
+        <attr name="back_line_color" format="integer"/>
+        <attr name="graph_line_color" format="integer"/>
+        <attr name="text_color" format="integer"/>
+    </declare-styleable>
+
+    <declare-styleable name="ColumnGraph">
         <attr name="borderColor" format="color" />
         <attr name="borderLineColor" format="color" />
 
@@ -13,9 +22,6 @@
         <attr name="itemSelectedTopColor2" format="color" />
         <attr name="itemSelectedBottomColor2" format="color" />
 
-        <attr name="meshOneColor" format="color" />
-        <attr name="meshTwoColor" format="color" />
-
         <attr name="punctireLineAverageColor" format="color" />
         <attr name="punctireLineSelectedColor" format="color" />
         <attr name="punctirLineColor" format="color" />
@@ -26,10 +32,7 @@
 
         <attr name="triangleColor" format="color" />
 
-        <attr name="selectedColumnShadowLayerColor" format="color" />
         <attr name="centerDelimeterColor" format="color" />
-
-        <attr name="back_line_color" format="integer"/>
     </declare-styleable>
 
     <declare-styleable name="MyView">
@@ -42,9 +45,9 @@
     <declare-styleable name="UnoGraphView">
         <attr name="back_color1" format="integer"/>
         <attr name="back_color2" format="integer"/>
-        <attr name="graph_line_color" format="integer"/>
+        <attr name="graph_color" format="integer"/>
         <attr name="hor_line_color" format="integer"/>
-        <attr name="text_color" format="integer"/>
+        <attr name="text_color_graph" format="integer"/>
         <attr name="real_width" format="integer"/>
         <attr name="fill_na" format="boolean"/>
     </declare-styleable>

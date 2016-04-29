@@ -143,28 +143,22 @@ public class UnoGraphView extends BaseGraph {
     // Saved data
     Context context;
 
-    // Supported
-
     public UnoGraphView(Context context, AttributeSet attrs) {
         TypedArray a = context.getTheme().obtainStyledAttributes(
                 attrs,
                 R.styleable.UnoGraphView,
                 0, 0
         );
+
         mBackColor1 = a.getInteger(R.styleable.UnoGraphView_back_color1, Color.parseColor("#f0f1f2"));
         mBackColor2 = a.getInteger(R.styleable.UnoGraphView_back_color2, Color.parseColor("#e7e9eb"));
         mBackLineColor = a.getInteger(R.styleable.UnoGraphView_hor_line_color, Color.parseColor("#cdd1d6"));
-        mTextColor = a.getInteger(R.styleable.UnoGraphView_text_color, Color.parseColor("#2a2a2a"));
-        mGraphLineColor = a.getInteger(R.styleable.UnoGraphView_graph_line_color, Color.parseColor("#a58143"));
+        mTextColor = a.getInteger(R.styleable.UnoGraphView_text_color_graph, Color.parseColor("#2a2a2a"));
+        mGraphLineColor = a.getInteger(R.styleable.UnoGraphView_graph_color, Color.parseColor("#a58143"));
         mDesiredWidth = a.getInteger(R.styleable.UnoGraphView_real_width, 0);
         mFillNa = a.getBoolean(R.styleable.UnoGraphView_fill_na, false);
         a.recycle();
 
-    }
-
-    public UnoGraphView(Context context, AttributeSet attrs, double mGoal) {
-        this(context, attrs);
-        this.mGoal = mGoal;
         this.localMeasurementSystem = context.getString(R.string.localMeasurementSystem);
         this.testText = "705 " + localMeasurementSystem;
 
@@ -174,13 +168,11 @@ public class UnoGraphView extends BaseGraph {
         isAnimationFinished = false;
     }
 
-
     protected void init() {
 
         mGoalPath = new Path();
 
         initPaints();
-
 
         mHighRectF = new RectF();
 
@@ -296,7 +288,7 @@ public class UnoGraphView extends BaseGraph {
                 mLinePaint.setStrokeWidth(graphStrokeWidth / 4);
                 mGoalPaint.setStrokeWidth(graphStrokeWidth / 2);
 
-                callbackToBack.updateDrawByQ(stripeWidth, values.length, cornerStripe);
+                callbackToBack.updateDrawByQ(stripeWidth, cornerStripe);
 
                 // Precalc textSizes
                 monthsMeasured = new float[labels.length];
@@ -442,9 +434,9 @@ public class UnoGraphView extends BaseGraph {
                 localMin = values[i];
         }
 
-        if (localMax < mGoal)
+        if (localMax < mGoal && mGoal != 0)
             localMax = mGoal;
-        if (localMin > mGoal)
+        if (localMin > mGoal && mGoal != 0)
             localMin = mGoal;
 
         linesMax = localMax;
@@ -460,7 +452,7 @@ public class UnoGraphView extends BaseGraph {
             if (valuesAndGoal[i] != 0 && valuesAndGoal[i] < min)
                 min = valuesAndGoal[i];
 
-        if (mGoal < min)
+        if (mGoal < min && mGoal != 0)
             min = mGoal;
         return min;
     }
@@ -500,9 +492,7 @@ public class UnoGraphView extends BaseGraph {
 
 
 
-    // Remove multiplication
     protected void drawAdditionalBackground(Canvas canvas) {
-        // drawHighlightedStripe(canvas);
         drawGoalLine(canvas);
         drawHorizontalLines(canvas);
     }
@@ -762,6 +752,8 @@ public class UnoGraphView extends BaseGraph {
 
     @Override
     public void setData(ModelDataGraph modelDataGraph) {
+        this.mGoal = modelDataGraph.getmGoal();
+
         this.values = new double[modelDataGraph.getGraph1values().size()];
         for (int i = 0; i < values.length; ++i) {
             values[i] = modelDataGraph.getGraph1values().get(i);

@@ -14,11 +14,6 @@ import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 /**
  * Created by aleksey.ivanov on 21.03.2016.
  */
@@ -94,5 +89,19 @@ public class HelperLayoutClass {
         return metrics.widthPixels;
     }
 
+    public static float getRateDpToPixel( Context context){
+        Resources resources = context.getResources();
+        DisplayMetrics metrics = resources.getDisplayMetrics();
+        float rateDpToPixel =    ((float)metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+        return rateDpToPixel;
+    }
 
+    public static float getTextHeight(Paint paint)
+    {
+        Rect rectSizeText = new Rect();
+        paint.getTextBounds("s", 0, "s".length(), rectSizeText);
+
+        return paint.measureText("s");
+
+    }
 }

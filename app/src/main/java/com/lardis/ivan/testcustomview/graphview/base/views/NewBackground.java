@@ -21,6 +21,7 @@ import com.lardis.ivan.testcustomview.graphview.base.CallbackDrawGraph;
 import com.lardis.ivan.testcustomview.graphview.base.TypeGraph;
 import com.lardis.ivan.testcustomview.graphview.base.ViewType;
 import com.lardis.ivan.testcustomview.graphview.graphtypes.columng.ColumnGraph;
+import com.lardis.ivan.testcustomview.graphview.graphtypes.exampleg.ExampleGraph;
 import com.lardis.ivan.testcustomview.graphview.graphtypes.lineg.UnoGraphView;
 import com.lardis.ivan.testcustomview.graphview.helpers.HelperLayoutClass;
 import com.lardis.ivan.testcustomview.model.ModelDataGraph;
@@ -114,7 +115,6 @@ public class NewBackground extends View implements CallbackDrawGraph {
     Path mArrowPath;
 
 
-
     // Layout
     float[] labelsUnderX;
     float[] labelsUnderY;
@@ -179,12 +179,15 @@ public class NewBackground extends View implements CallbackDrawGraph {
         // Set appropriate graph class
         switch (typeGraph) {
             case CIRCLED_UNO:
-                graph = new UnoGraphView(getContext(), attributeSet, 50);
+                graph = new UnoGraphView(getContext(), attributeSet);
                 break;
 
-            case GraphPunct:
-                graph = new ColumnGraph(getContext(), this, attributeSet);
+            case EMPTY:
+                graph = new ExampleGraph(getContext(), attributeSet);
                 break;
+
+            case COLUMN_VANYA:
+                graph = new ColumnGraph(getContext(), attributeSet);
         }
 
         // Check that graph supports current view type
@@ -210,6 +213,7 @@ public class NewBackground extends View implements CallbackDrawGraph {
 
         graph.setCallback(this);
 
+
         requestLayout();
     }
 
@@ -217,7 +221,7 @@ public class NewBackground extends View implements CallbackDrawGraph {
     void init(AttributeSet attrs, int defStyle) {
         this.attributeSet = attrs;
         final TypedArray a = getContext().obtainStyledAttributes(
-                attrs, R.styleable.Myview, defStyle, 0);
+                attrs, R.styleable.Background, defStyle, 0);
 
         initColor(a);
         setLayerType(View.LAYER_TYPE_SOFTWARE, null);
@@ -337,7 +341,7 @@ public class NewBackground extends View implements CallbackDrawGraph {
     }
 
     @Override
-    public void updateDrawByQ(float widthBlock, int n, float offsetBorder) {
+    public void updateDrawByQ(float widthBlock, float offsetBorder) {
         itemWidth = widthBlock;
         leftStripe = offsetBorder;
 
@@ -370,19 +374,19 @@ public class NewBackground extends View implements CallbackDrawGraph {
 
     private void initColor(TypedArray a) {
         colorMeshOne = a.getColor(
-                R.styleable.Myview_meshOneColor,
+                R.styleable.Background_meshOneColor,
                 ContextCompat.getColor(getContext(), R.color.meshOneColorExample));
         colorMeshTwo = a.getColor(
-                R.styleable.Myview_meshTwoColor,
+                R.styleable.Background_meshTwoColor,
                 ContextCompat.getColor(getContext(), R.color.meshTwoColorExample));
-        mBackLineColor = a.getInteger(R.styleable.Myview_back_line_color, Color.parseColor("#cdd1d6"));
+        mBackLineColor = a.getInteger(R.styleable.Background_back_line_color, Color.parseColor("#cdd1d6"));
 
         colorSelectedItemShadowLayer = a.getColor(
-                R.styleable.Myview_selectedColumnShadowLayerColor,
+                R.styleable.Background_selectedColumnShadowLayerColor,
                 ContextCompat.getColor(getContext(), R.color.selectedColumnShadowLayerColorExample));
 
-        mTextColor = a.getInteger(R.styleable.UnoGraphView_text_color, Color.parseColor("#2a2a2a"));
-        mGraphLineColor = a.getInteger(R.styleable.UnoGraphView_graph_line_color, Color.parseColor("#a58143"));
+        mTextColor = a.getInteger(R.styleable.Background_text_color, Color.parseColor("#2a2a2a"));
+        mGraphLineColor = a.getInteger(R.styleable.Background_graph_line_color, Color.parseColor("#a58143"));
 
     }
 
@@ -537,10 +541,14 @@ public class NewBackground extends View implements CallbackDrawGraph {
                     drawMesh(canvas, i, mPaintMesh);
                 }
                 break;
-
-
         }
+        if (meshSelectedTouch % 2 == 0)
+            mPaintSelectedColumn.setColor(colorMeshOne);
+        if (meshSelectedTouch % 2 == 1)
+            mPaintSelectedColumn.setColor(colorMeshTwo);
 
+        if (isTouch()) drawMesh(canvas, meshSelectedTouch, new Paint());
+        if (isTouch()) drawMesh(canvas, meshSelectedTouch, mPaintSelectedColumn);
     }
 
 //    private void drawStripes(Canvas canvas) {
@@ -639,6 +647,7 @@ public class NewBackground extends View implements CallbackDrawGraph {
                 bufX2 = motionEvent.getX();
 
                 updateSelectedTouch(X);
+                updateMeshTouch(X);
                 break;
             case (MotionEvent.ACTION_MOVE):
                 X = motionEvent.getX();

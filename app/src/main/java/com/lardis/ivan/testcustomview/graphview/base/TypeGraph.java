@@ -5,5 +5,6 @@ package com.lardis.ivan.testcustomview.graphview.base;
  */
 public enum TypeGraph {
     CIRCLED_UNO,
-    GraphPunct
+    COLUMN_VANYA,
+    EMPTY
 }
