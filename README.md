@@ -112,6 +112,6 @@ public class ExampleGraph extends BaseGraph {
 	ModelDataGraph data = new ModelDataGraph(1, 1, 1, new ArrayList<>(Arrays.asList(
                 95, 86, 70, 65, 59, 49, 45, 65, 59, 49, 65, 59)), new ArrayList<>(Arrays.asList(
                 95, 86, 70, 65, 59, 49, 45, 65, 59, 49, 65, 59)),
-                ViewType.MESH_DAY_ITEM_DAY)
+                ViewType.MESH_DAY_ITEM_DAY);
     graphViewGroup.setDataGraphAndInfo(data, TypeGraph.YOUR_GRAPH);
 ```
