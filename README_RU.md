@@ -95,6 +95,7 @@ public class ExampleGraph extends BaseGraph {
     public void measure() {
         if (w != 0 && h != 0 && callbackToBack != null) {
             callbackToBack.updateDrawByQ(150, 50);
+            // Большинство вычислений должны быть здесь
         }
     }
 
@@ -115,8 +116,8 @@ public class ExampleGraph extends BaseGraph {
                 95, 86, 70, 65, 59, 49, 45, 65, 59, 49, 65, 59)),
                 ViewType.MESH_DAY_ITEM_DAY);
                 
-//  If you use BlockInfo feature you should provide a list of ModelBlockInfo to data
-//  It may look like this
+// Если ваш график использует BlockInfo вы должны засеттить лист данных ModelBlockInfo
+//  Это может выглядеть примерно так
 //
 //			data.setArrayListForInfo(new ArrayList<ModelBlockInfo>() {{
 //                for (int i = 0; i < 12; i++) {
