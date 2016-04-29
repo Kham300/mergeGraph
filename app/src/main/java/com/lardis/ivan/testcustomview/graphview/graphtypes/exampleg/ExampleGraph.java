@@ -52,12 +52,12 @@ public class ExampleGraph extends BaseGraph {
 
     @Override
     public boolean getZoomPermission() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean getUsesBlockInfo() {
-        return true;
+        return false;
     }
 
     @Override
