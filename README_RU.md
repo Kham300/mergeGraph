@@ -114,6 +114,7 @@ public class ExampleGraph extends BaseGraph {
                 95, 86, 70, 65, 59, 49, 45, 65, 59, 49, 65, 59)), new ArrayList<>(Arrays.asList(
                 95, 86, 70, 65, 59, 49, 45, 65, 59, 49, 65, 59)),
                 ViewType.MESH_DAY_ITEM_DAY);
+                
 //  If you use BlockInfo feature you should provide a list of ModelBlockInfo to data
 //  It may look like this
 //
