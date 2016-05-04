@@ -11,6 +11,10 @@ public abstract class BaseGraph {
     public int h;
     public int w;
     public int realW;
+
+    public int headerHeight;
+    public int footerHeight;
+
     public boolean isAnimationFinished;
 
     // Callback to backgroundView
@@ -55,6 +59,11 @@ public abstract class BaseGraph {
         this.w = w;
         this.h = h;
         this.realW = realW;
+    }
+
+    public void setHeaderFooter(int h, int f) {
+        this.headerHeight = h;
+        this.footerHeight = f;
     }
 
     public int getH() {

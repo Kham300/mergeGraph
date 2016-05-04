@@ -494,7 +494,7 @@ public class ColumnGraph extends BaseGraph {
         minWidthBlock = getPx(50);
         minHeightBetweenBlock = getPx(20);
 
-        borderTop = widthBorder / 3;
+        borderTop = headerHeight;
         calculateBorderBottom(typeGraph);
         borderLeft = widthBorder;
         borderRight = w - widthBorder;
@@ -671,14 +671,7 @@ public class ColumnGraph extends BaseGraph {
      * @param enumTypeViewGraph
      */
     public void calculateBorderBottom(ViewType enumTypeViewGraph) {
-        if (enumTypeViewGraph == ViewType.MESH_WEEK_ITEM_WEEK) {
-            borderBottom = h - maxTextHeight * 6 - 3;
-
-        } else {
-            borderBottom = h - maxTextHeight * 4 - 3;
-        }
-
-
+        borderBottom = h - footerHeight;
     }
 
     @Override

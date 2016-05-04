@@ -204,6 +204,7 @@ public class NewBackground extends View implements CallbackDrawGraph {
 
         // Set various graph parameters
         graph.setWH(oldW, oldH, realW);
+        graph.setHeaderFooter((int) (headerRatio * h), (int) (footerRatio * h));
         graph.setData(modelDataGraph);
         graph.updateOffset(0);
 
@@ -378,6 +379,7 @@ public class NewBackground extends View implements CallbackDrawGraph {
         return mTextPaint.getTextSize();
     }
 
+
     private void initColor(TypedArray a) {
         colorMeshOne = a.getColor(
                 R.styleable.Background_meshOneColor,
@@ -506,7 +508,7 @@ public class NewBackground extends View implements CallbackDrawGraph {
             measureText();
 
             // Basic background
-            drawMeshAllNoSelected(canvas);
+            drawMesh(canvas);
             drawRectsTopAndBelow(canvas);
             drawBorderLines(canvas);
 
@@ -533,7 +535,7 @@ public class NewBackground extends View implements CallbackDrawGraph {
     }
 
 
-    private void drawMeshAllNoSelected(Canvas canvas) {
+    private void drawMesh(Canvas canvas) {
         if (modelDataGraph == null)
             return;
 
@@ -568,40 +570,27 @@ public class NewBackground extends View implements CallbackDrawGraph {
                 }
                 break;
         }
-        if (meshSelectedTouch % 2 == 0)
-            mPaintSelectedColumn.setColor(colorMeshOne);
-        if (meshSelectedTouch % 2 == 1)
-            mPaintSelectedColumn.setColor(colorMeshTwo);
-
-        if (isTouch()) drawMesh(canvas, meshSelectedTouch, new Paint());
-        if (isTouch()) drawMesh(canvas, meshSelectedTouch, mPaintSelectedColumn);
+        drawSelectedItem(canvas);
     }
-
-//    private void drawStripes(Canvas canvas) {
-//        if (labels != null) {
-//            for (int i = 0; i < labels.length; i++) {
-//                if (i % 2 == 0)
-//                    mPaintMesh.setColor(colorMeshOne);
-//                else
-//                    mPaintMesh.setColor(colorMeshTwo);
-//
-//                drawMesh(canvas, i, mPaintMesh);
-//            }
-//            if (itemSelectedTouch % 2 == 0)
-//                mPaintSelectedColumn.setColor(colorMeshOne);
-//            if (itemSelectedTouch % 2 == 1)
-//                mPaintSelectedColumn.setColor(colorMeshTwo);
-//
-//            if (isTouch()) drawMesh(canvas, itemSelectedTouch, new Paint());
-//            if (isTouch()) drawMesh(canvas, itemSelectedTouch, mPaintSelectedColumn);
-//        }
-//    }
 
     private void drawMesh(Canvas canvas, int i, Paint paint) {
         if (i == 0)
             canvas.drawRect(leftStripe + offsetX, 0, meshStopLines[i], getHeight(), paint);
         else
             canvas.drawRect(meshStopLines[i - 1], 0, meshStopLines[i], getHeight(), paint);
+    }
+
+    private void drawSelectedItem(Canvas canvas) {
+        if (itemSelectedTouch != -1) {
+            if (meshSelectedTouch % 2 == 0)
+                mPaintSelectedColumn.setColor(colorMeshOne);
+            if (meshSelectedTouch % 2 == 1)
+                mPaintSelectedColumn.setColor(colorMeshTwo);
+
+            canvas.drawRect(leftStripe + offsetX + itemWidth * itemSelectedTouch, 0,
+                    leftStripe + offsetX + itemWidth * (itemSelectedTouch + 1),
+                    getHeight(), mPaintSelectedColumn);
+        }
     }
 
     protected void drawRectsTopAndBelow(Canvas canvas) {
@@ -688,6 +677,8 @@ public class NewBackground extends View implements CallbackDrawGraph {
 
                     int nselbuf = itemSelectedTouch;
                     updateSelectedTouch(X);
+                    updateMeshTouch(X);
+
 
                     if (nselbuf != itemSelectedTouch)
                         workFromZoomAndBlockInfo.updatePrtScn();
