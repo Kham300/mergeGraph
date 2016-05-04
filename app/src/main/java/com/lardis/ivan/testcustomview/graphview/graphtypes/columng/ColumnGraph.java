@@ -660,7 +660,7 @@ public class ColumnGraph extends BaseGraph {
                 }
             }
 
-            realW = (int) ((widthBlock / nItemInOneMesh) * nItem + borderLeft);
+            realW = (int) (widthBlock / nItemInOneMesh) * nItem;
         }
     }
 

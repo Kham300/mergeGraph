@@ -439,7 +439,7 @@ public class NewBackground extends View implements CallbackDrawGraph {
             if (modelDataGraph.getTypeViewGraph() != ViewType.MESH_WEEK_ITEM_DAY_PERIOD_MONTH) {
                 specialChosen = meshSelectedTouch;
                 for (int i = 0; i < labels.length; ++i) {
-                    if (textRatio * meshSizes[i] - mTextPaint.measureText(labels[i]) > 0) {
+                    if (textRatio * meshSizes[i] - mTextPaint.measureText(labels[i]) >= 0) {
                         if (i == 0) {
                             labelsUnderX[i] = leftStripe + offsetX
                                     + 0.5f * (meshSizes[i] - mTextPaint.measureText(labels[i]));
@@ -528,7 +528,7 @@ public class NewBackground extends View implements CallbackDrawGraph {
         mArrowPaint.setStrokeWidth(h * lineRatio);
         if (offsetX < 0)
             drawLeftArrow(canvas, leftStripe);
-        if (-offsetX + graph.getW() - leftStripe < graph.getRealW())
+        if (-offsetX + graph.getW() - 2 * leftStripe < graph.getRealW())
             drawRightArrow(canvas, w);
     }
 

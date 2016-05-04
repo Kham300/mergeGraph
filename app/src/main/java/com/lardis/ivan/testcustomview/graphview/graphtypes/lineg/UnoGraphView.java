@@ -284,6 +284,11 @@ public class UnoGraphView extends BaseGraph {
                 mTextPaint.setTextSize(mTextSize);
                 cornerStripe = mTextPaint.measureText(testText) + mTextSize / 2;
                 stripeWidth = (realW - cornerStripe) / labels.length;
+
+                // Updating realW
+                realW = (int) stripeWidth * labels.length;
+
+                // Setting line widths
                 graphStrokeWidth = h / 100;
                 mLinePaint.setStrokeWidth(graphStrokeWidth / 4);
                 mGoalPaint.setStrokeWidth(graphStrokeWidth / 2);

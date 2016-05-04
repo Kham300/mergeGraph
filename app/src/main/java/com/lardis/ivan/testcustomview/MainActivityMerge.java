@@ -41,7 +41,7 @@ public class MainActivityMerge extends AppCompatActivity {
         setData();
 
         for (ModelDataGraph modelDataGraph : data1) {
-//            modelDataGraph.setmGoal(50);
+            modelDataGraph.setmGoal(50);
             modelDataGraph.setArrayListForInfo(new ArrayList<ModelBlockInfo>() {{
                 for (int i = 0; i < 12; i++) {
                     add(new ModelBlockInfo("uno" + i, "due" + i,

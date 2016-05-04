@@ -76,7 +76,7 @@ public class HelperLayoutClass {
         if (minTextSize > maxAllowedTextSize)
             paint.setTextSize(maxAllowedTextSize);
         else
-            paint.setTextSize(minTextSize);
+            paint.setTextSize((int) minTextSize);
     }
 
     public static int getScreenWidth(Context context)
