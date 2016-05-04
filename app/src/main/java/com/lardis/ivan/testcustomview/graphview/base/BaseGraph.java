@@ -38,6 +38,9 @@ public abstract class BaseGraph {
     // Return true if want to enable block info
     public abstract boolean getUsesBlockInfo();
 
+    // Graph tells background whether he needs upper selection
+    public abstract boolean requestsUpperSelection();
+
     // Main drawing happens there
     public abstract void drawGraph(Canvas canvas);
 

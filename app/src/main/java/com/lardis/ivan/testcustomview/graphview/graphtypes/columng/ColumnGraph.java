@@ -206,12 +206,6 @@ public class ColumnGraph extends BaseGraph {
      * количество шагов для горизонтальных линий информации для 2 графика
      */
     private float nStep2;
-
-    /**
-     * путь для треугольников
-     */
-    private Path mPathTriangule;
-
     /**
      * маркер  для горизхонтальных линий статистики
      */
@@ -369,10 +363,6 @@ public class ColumnGraph extends BaseGraph {
                 R.styleable.ColumnGraph_triangleColor,
                 ContextCompat.getColor(context, R.color.triangleColorExample));
 
-
-        mPathTriangule = new Path();
-
-
         animator = ValueAnimator.ofFloat(0, 1);
         animator.setInterpolator(new AccelerateInterpolator());
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -424,17 +414,17 @@ public class ColumnGraph extends BaseGraph {
 
         mPaintLinePunctire = new Paint();
         mPaintLinePunctire.setAntiAlias(true);
-        mPaintLinePunctire.setStrokeWidth(4);
+        mPaintLinePunctire.setStrokeWidth(h / 50);
 
         mPaintLinePunctireSelected = new Paint();
         mPaintLinePunctireSelected.setAntiAlias(true);
-        mPaintLinePunctireSelected.setStrokeWidth(4);
+        mPaintLinePunctireSelected.setStrokeWidth(h / 50);
 
         mPaintPunctirAverage = new Paint();
-        mPaintPunctirAverage.setPathEffect(new DashPathEffect(new float[]{3.0f, 8.0f}, 0));
+        mPaintPunctirAverage.setPathEffect(new DashPathEffect(new float[]{2.0f, 3.0f}, 0));
         mPaintPunctirAverage.setAntiAlias(true);
         mPaintPunctirAverage.setTextSize(100);
-        mPaintPunctirAverage.setStrokeWidth(5);
+        mPaintPunctirAverage.setStrokeWidth(h / 50);
 
 
         mPaintTriangle = new Paint();
@@ -700,6 +690,11 @@ public class ColumnGraph extends BaseGraph {
     }
 
     @Override
+    public boolean requestsUpperSelection() {
+        return true;
+    }
+
+    @Override
     public void drawGraph(Canvas canvas) {
         if (nItem != 0) {
             leftRectSelectedMesh = widthBorder + offsetX +
@@ -722,7 +717,6 @@ public class ColumnGraph extends BaseGraph {
                 myDrawItem(canvas, nSelectedTouch, false, mPaintItemSelected);
             }
 
-            myDrawTriangle(canvas);
         }
         if (twoGraph) {
             myDrawPunctireLine(canvas, -step, nStep2, averageValueData2, 0,
@@ -808,41 +802,6 @@ public class ColumnGraph extends BaseGraph {
                     startGorizontalGraph, itemRadius), paint);
         }
 
-
-    }
-
-    /**
-     * рисование треугольников
-     *
-     * @param canvas
-     */
-    private void myDrawTriangle(Canvas canvas) {
-        if (!hasSelected()) return;
-        canvas.clipRect(borderLeft, 0, w, h, regionReplace);
-        mPathTriangule.reset();
-        float lr = (rightRectSelectedMesh - leftRectSelectedMesh) / 3;
-        if ((typeGraph == ViewType.MESH_WEEK_ITEM_DAY_PERIOD_MONTH)
-                || (typeGraph == ViewType.MESH_MONTH_ITEM_WEEK))
-            lr = 0;
-        if (typeGraph == ViewType.MESH_WEEK_ITEM_WEEK) {
-            mPathTriangule.moveTo(leftRectSelectedMesh + lr, borderBottom + 6 * maxTextHeight - 3);
-            mPathTriangule.lineTo(rightRectSelectedMesh - lr, borderBottom + 6 * maxTextHeight - 3);
-            mPathTriangule.lineTo((leftRectSelectedMesh + rightRectSelectedMesh) / 2, borderBottom + maxTextHeight * 4);
-        } else {
-            mPathTriangule.moveTo(leftRectSelectedMesh + lr, borderBottom + 4 * maxTextHeight);
-            mPathTriangule.lineTo(rightRectSelectedMesh - lr, borderBottom + 4 * maxTextHeight);
-            mPathTriangule.lineTo((leftRectSelectedMesh + rightRectSelectedMesh) / 2, borderBottom + maxTextHeight * 2);
-        }
-        canvas.drawPath(mPathTriangule, mPaintTriangle);
-        mPathTriangule.reset();
-        mPathTriangule.moveTo(leftRectSelectedMesh + lr, borderTop + 3);
-        mPathTriangule.lineTo(rightRectSelectedMesh - lr, borderTop + 3);
-        mPathTriangule.lineTo((leftRectSelectedMesh + rightRectSelectedMesh) / 2, borderTop + maxTextHeight * 2 + 3);
-
-        canvas.drawPath(mPathTriangule, mPaintTriangle);
-
-
-//end  треугольник снизу и сверху выделеного блока
 
     }
 

@@ -74,9 +74,9 @@ public class MainActivityMerge extends AppCompatActivity {
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (++idx2 >= data1.length)
+                if (++idx2 >= data2.length)
                     idx2 = 0;
-                graphViewGroup.setDataGraphAndInfo(data2[idx2], TypeGraph.COLUMN_VANYA  );
+                graphViewGroup.setDataGraphAndInfo(data2[idx2], TypeGraph.COLUMN_VANYA);
             }
         });
 
@@ -99,9 +99,9 @@ public class MainActivityMerge extends AppCompatActivity {
 
         data2 = new ModelDataGraph[]{new ModelDataGraph(1, 1, 1, new ArrayList<>(Arrays.asList(
                 95, 86, 70, 65, 59, 49, 45, 65, 59, 49, 65, 59,
-                95, 86, 70, 65, 59, 49, 45, 65, 59, 49, 65, 59)), new ArrayList<>(Arrays.asList(
+                95, 86, 70, 65, 59, 49, 0, 0, 0, 0, 0, 0)), new ArrayList<>(Arrays.asList(
                 95, 86, 70, 65, 59, 49, 45, 65, 59, 49, 65, 59,
-                95, 86, 70, 65, 59, 49, 45, 65, 59, 49, 65, 59)),
+                95, 86, 70, 65, 59, 49, 0, 0, 0, 0, 0, 0)),
                 ViewType.MESH_WEEK_ITEM_DAY_PERIOD_MONTH),
                 new ModelDataGraph(2, 3, 10, new ArrayList<>(Arrays.asList(
                         95, 86, 70, 65, 59, 49, 45, 65, 59, 49, 65, 59,
@@ -113,6 +113,16 @@ public class MainActivityMerge extends AppCompatActivity {
                 95, 86, 70, 65, 59, 49, 45, 65, 59, 49, 65, 59)), new ArrayList<>(Arrays.asList(
                 95, 86, 70, 65, 59, 49, 45, 65, 59, 49, 65, 59,
                 95, 86, 70, 65, 59, 49, 45, 65, 59, 49, 65, 59)),
-                ViewType.MESH_WEEK_ITEM_WEEK)};
+                ViewType.MESH_WEEK_ITEM_WEEK), new ModelDataGraph(2, 3, 10, new ArrayList<>(Arrays.asList(
+                95, 86, 70, 65, 59, 49, 45, 65, 59, 49, 65, 59,
+                95, 86, 70, 65, 59, 49, 45, 65, 59, 49, 65, 59)), new ArrayList<>(Arrays.asList(
+                95, 86, 70, 65, 59, 49, 45, 65, 59, 49, 65, 59,
+                95, 86, 70, 65, 59, 49, 45, 65, 59, 49, 65, 59)),
+                ViewType.MESH_DAY_ITEM_DAY), new ModelDataGraph(2, 3, 10, new ArrayList<>(Arrays.asList(
+                95, 86, 70, 65, 59, 49, 45, 65, 59, 49, 65, 59,
+                95, 86, 70, 65, 59, 49, 45, 65, 59, 49, 65, 59)), new ArrayList<>(Arrays.asList(
+                95, 86, 70, 65, 59, 49, 45, 65, 59, 49, 65, 59,
+                95, 86, 70, 65, 59, 49, 45, 65, 59, 49, 65, 59)),
+                ViewType.MESH_MONTH_ITEM_MONTH)};
     }
 }

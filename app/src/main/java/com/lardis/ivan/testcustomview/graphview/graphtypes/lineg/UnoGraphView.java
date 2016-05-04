@@ -9,7 +9,6 @@ import android.graphics.DashPathEffect;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.Point;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.text.Layout;
@@ -53,7 +52,6 @@ public class UnoGraphView extends BaseGraph {
     Paint mGraphPaint;
     Paint mBigCirclePaint;
     Paint mSmallCirclePaint;
-    Paint mTrianglePaint;
     Paint mGradPaint;
     Paint mHighlightStripePaint;
     Paint mHighlightPathPaint;
@@ -61,11 +59,7 @@ public class UnoGraphView extends BaseGraph {
     // Paths
     Path mGraphPath;
     Path mGradPath;
-    Path mUpperTrianglePath;
-    Path mLowerTrianglePath;
     Path mHighlightPath;
-    Point[] lowerTrianglePoints;
-    Point[] upperTrianglePoints;
     int stripeId;
 
     // Layout
@@ -82,7 +76,6 @@ public class UnoGraphView extends BaseGraph {
     // Constants
     public static final float bigCircleRatio = 0.025f;
     public static final float smallCircleRatio = 0.0125f;
-    public static int framesPerSecond = 60;
     public static long segmentDuration = 250;
 
     // Paints
@@ -181,21 +174,7 @@ public class UnoGraphView extends BaseGraph {
         mGradPath = new Path();
         mHighlightPath = new Path();
 
-
-        mUpperTrianglePath = new Path();
-        mUpperTrianglePath.setFillType(Path.FillType.EVEN_ODD);
-
-        mLowerTrianglePath = new Path();
-        mLowerTrianglePath.setFillType(Path.FillType.EVEN_ODD);
-
         stripeId = -1;
-        lowerTrianglePoints = new Point[3];
-        for (int i = 0; i < 3; ++i)
-            lowerTrianglePoints[i] = new Point();
-
-        upperTrianglePoints = new Point[3];
-        for (int i = 0; i < 3; ++i)
-            upperTrianglePoints[i] = new Point();
 
         startTime = System.currentTimeMillis();
     }
@@ -235,10 +214,6 @@ public class UnoGraphView extends BaseGraph {
         mSmallCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mSmallCirclePaint.setColor(Color.WHITE);
         mSmallCirclePaint.setStyle(Paint.Style.FILL_AND_STROKE);
-
-        mTrianglePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mTrianglePaint.setColor(mGraphLineColor);
-        mTrianglePaint.setStyle(Paint.Style.FILL_AND_STROKE);
 
         mHighlightStripePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mHighlightStripePaint.setStyle(Paint.Style.FILL_AND_STROKE);
@@ -321,33 +296,6 @@ public class UnoGraphView extends BaseGraph {
             animationDuration = segmentDuration * (labels.length - 1);
 
             precalculateLayoutArrays(h);
-            calculateTriangles(h);
-        }
-    }
-
-
-    private void calculateTriangles(int h) {
-        float lowerTrianglePadding = mTextSize / 2;
-        float upperTrianglePadding = mTextSize / 4;
-        float lowerTriangleBound = belowIndent / 10;
-
-
-        if (stripeId != -1 && curTime / segmentDuration >= stripeId) {
-            lowerTrianglePoints[0].set((int) (offset + cornerStripe + stripeId * stripeWidth + stripeWidth / 2),
-                    (int) (h - belowIndent + mTextSize + lowerTrianglePadding));
-            lowerTrianglePoints[1].set((int) (offset + cornerStripe + stripeId * stripeWidth + 3 * stripeWidth / 4),
-                    (int) (h - lowerTriangleBound));
-            lowerTrianglePoints[2].set((int) (offset + cornerStripe + stripeId * stripeWidth + stripeWidth / 4),
-                    (int) (h - lowerTriangleBound));
-
-            float lowerTrHeight = lowerTrianglePoints[1].y - lowerTrianglePoints[0].y;
-
-            upperTrianglePoints[0].set((int) (offset + cornerStripe + stripeId * stripeWidth + stripeWidth / 2),
-                    (int) (topIndent + upperTrianglePadding + lowerTrHeight));
-            upperTrianglePoints[1].set((int) (offset + cornerStripe + stripeId * stripeWidth + 3 * stripeWidth / 4),
-                    (int) (topIndent + upperTrianglePadding));
-            upperTrianglePoints[2].set((int) (offset + cornerStripe + stripeId * stripeWidth + stripeWidth / 4),
-                    (int) (topIndent + upperTrianglePadding));
         }
     }
 
@@ -645,9 +593,6 @@ public class UnoGraphView extends BaseGraph {
             canvas.drawCircle(originalX[stripeId], originalY[stripeId],
                     2 * smallCircleRatio * canvas.getHeight(), mSmallCirclePaint);
 
-            buildAndDrawTriangle(canvas, lowerTrianglePoints, mLowerTrianglePath, mTrianglePaint);
-            buildAndDrawTriangle(canvas, upperTrianglePoints, mUpperTrianglePath, mTrianglePaint);
-
         }
     }
 
@@ -697,19 +642,6 @@ public class UnoGraphView extends BaseGraph {
             }
         }
     }
-
-    private void buildAndDrawTriangle(Canvas canvas, Point[] trianglePoints, Path trianglePath, Paint trianglePaint) {
-        trianglePath.reset();
-
-        trianglePath.moveTo(trianglePoints[1].x, trianglePoints[1].y);
-        trianglePath.lineTo(trianglePoints[0].x, trianglePoints[0].y);
-        trianglePath.lineTo(trianglePoints[2].x, trianglePoints[2].y);
-        trianglePath.close();
-        canvas.drawPath(trianglePath, trianglePaint);
-
-    }
-
-
 
 
     public int getColor() {
@@ -801,6 +733,11 @@ public class UnoGraphView extends BaseGraph {
 
     @Override
     public boolean getUsesBlockInfo() {
+        return true;
+    }
+
+    @Override
+    public boolean requestsUpperSelection() {
         return true;
     }
 

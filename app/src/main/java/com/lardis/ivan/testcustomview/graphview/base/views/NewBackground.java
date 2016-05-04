@@ -80,6 +80,7 @@ public class NewBackground extends View implements CallbackDrawGraph {
     private float offsetX;
     private Paint mPaintSelectedColumn;
     private Paint mPaintMesh;
+    private Paint selectionPaint;
 
     /**
      * цвет пуктов фона 1
@@ -91,11 +92,14 @@ public class NewBackground extends View implements CallbackDrawGraph {
     /**
      * цвет тени выделеный блока на сетки фона
      */
+
+    // Colors
     private int colorSelectedItemShadowLayer;
     private int mBackLineColor;
     private int colorMeshTwo;
     private int mTextColor;
-    int mGraphLineColor;
+    private int mGraphLineColor;
+    private int selectionColor;
 
 
     private AttributeSet attributeSet;
@@ -139,6 +143,8 @@ public class NewBackground extends View implements CallbackDrawGraph {
     public static final float marginRatio = 0.025f;
     public static final float headerRatio = 0.05f;
     public static final float lineRatio = 0.01f;
+    public static final float upperSelectionHeightRatio = 0.02f;
+    public static final float upperSelectionIndentRatio = 0.05f;
     public static float textRatio = 0.62f;
     public float textBorder = 0.5f;
 
@@ -268,6 +274,11 @@ public class NewBackground extends View implements CallbackDrawGraph {
             }
 
             @Override
+            public boolean requestsUpperSelection() {
+                return false;
+            }
+
+            @Override
             public void drawGraph(Canvas canvas) {
 
             }
@@ -302,6 +313,9 @@ public class NewBackground extends View implements CallbackDrawGraph {
 
         mPaintMesh = new Paint();
         mStripePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+        selectionPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        selectionPaint.setColor(selectionColor);
 
         mRectPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mRectPaint.setColor(colorMeshTwo);
@@ -389,6 +403,7 @@ public class NewBackground extends View implements CallbackDrawGraph {
                 ContextCompat.getColor(getContext(), R.color.meshTwoColorExample));
         mBackLineColor = a.getInteger(R.styleable.Background_back_line_color, Color.parseColor("#cdd1d6"));
 
+        selectionColor = a.getInteger(R.styleable.Background_back_line_color, Color.parseColor("#bba279"));
         colorSelectedItemShadowLayer = a.getColor(
                 R.styleable.Background_selectedColumnShadowLayerColor,
                 ContextCompat.getColor(getContext(), R.color.selectedColumnShadowLayerColorExample));
@@ -513,6 +528,7 @@ public class NewBackground extends View implements CallbackDrawGraph {
             drawBorderLines(canvas);
 
             drawTextLabelsUnderStripes(canvas);
+            drawUpperSelection(canvas);
 
             if (isTouch())
                 graph.click(itemSelectedTouch);
@@ -532,6 +548,19 @@ public class NewBackground extends View implements CallbackDrawGraph {
             drawLeftArrow(canvas, leftStripe);
         if (-offsetX + graph.getW() - 2 * leftStripe < graph.getRealW())
             drawRightArrow(canvas, w);
+    }
+
+    private void drawUpperSelection(Canvas canvas) {
+        if (itemSelectedTouch != -1 && graph.requestsUpperSelection()) {
+            float xPos1 = leftStripe + offsetX + itemSelectedTouch * itemWidth
+                    + upperSelectionIndentRatio * itemWidth;
+            float xPos2 = xPos1 + (1 - 2 * upperSelectionIndentRatio) * itemWidth;
+            float calculatedIndent = upperSelectionHeightRatio * h;
+            RectF rect = new RectF(xPos1, topIndent , xPos2, topIndent + calculatedIndent);
+            canvas.drawRoundRect(rect, calculatedIndent / 2, calculatedIndent / 2, selectionPaint);
+            canvas.drawRect(xPos1, topIndent, xPos2, topIndent + calculatedIndent / 2,
+                    selectionPaint);
+        }
     }
 
 

@@ -2,6 +2,7 @@
     <declare-styleable name="Background">
         <attr name="meshOneColor" format="color" />
         <attr name="meshTwoColor" format="color" />
+        <attr name="selectionColor" format="integer" />
         <attr name="selectedColumnShadowLayerColor" format="color" />
         <attr name="back_line_color" format="integer"/>
         <attr name="graph_line_color" format="integer"/>

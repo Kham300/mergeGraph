@@ -61,6 +61,11 @@ public class ExampleGraph extends BaseGraph {
     }
 
     @Override
+    public boolean requestsUpperSelection() {
+        return false;
+    }
+
+    @Override
     public void drawGraph(Canvas canvas) {
 
     }
