@@ -274,10 +274,6 @@ public class ColumnGraph extends BaseGraph {
      */
     private ArrayList<String> arrayListName = new ArrayList<String>();
     /**
-     * лист дополнительных названий для  графика если в графике две строчки названий
-     */
-    private ArrayList<String> arrayListTwoName;
-    /**
      * лист значений для 1 графика
      */
     private ArrayList<Integer> arrayListStolbValue1 = new ArrayList<Integer>();
@@ -294,6 +290,7 @@ public class ColumnGraph extends BaseGraph {
      */
     private ArrayList<Integer> arrayListStolbValueBuf2 = new ArrayList<Integer>();
 
+    private ArrayList<Float> layoutCoefs;
 
     /**
      * тип графика
@@ -660,11 +657,10 @@ public class ColumnGraph extends BaseGraph {
                     widthBlock = maxWidthBlock;
                 if (typeGraph == ViewType.MESH_MONTH_ITEM_WEEK) {
                     widthBlock = (w - widthBorder * 2) / arrayListStolbValueBuf1.size() * 4;
-
                 }
             }
 
-            realW = (int) (widthBlock * nBlock + borderLeft);
+            realW = (int) ((widthBlock / nItemInOneMesh) * nItem + borderLeft);
         }
     }
 

@@ -37,6 +37,15 @@ public class ModelDataGraph {
     private ViewType typeViewGraph;
     // Data for detailed block view
     public ArrayList<ModelBlockInfo> blockInfoValues;
+
+    public ArrayList<Float> getStripesPositions() {
+        return stripesPositions;
+    }
+
+    public void setStripesPositions(ArrayList<Float> stripesPositions) {
+        this.stripesPositions = stripesPositions;
+    }
+
     // Array of stripes to be drawn
     public ArrayList<Float> stripesPositions;
 
