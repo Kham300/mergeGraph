@@ -18,7 +18,6 @@
 		if (w != 0 && h != 0 && callbackToBack != null) {
 	        callbackToBack.updateDrawByQ(150, 50);
 	        // Other measurments here
->>>>>>> 5077ad2d0f73cb3a3a6f01f888772a4e9b1a4ab7
 	    }
 	}
 	```
