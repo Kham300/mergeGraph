@@ -8,12 +8,12 @@
         "source": "C:\\Users\\aleksey.ivanov\\AndroidStudioProjects\\mergeGraph\\diagramslibrary\\src\\main\\res\\layout\\merge_main_activity.xml"
     },
     {
-        "merged": "C:\\Users\\aleksey.ivanov\\AndroidStudioProjects\\mergeGraph\\diagramslibrary\\build\\intermediates\\res\\merged\\debug\\layout\\abc_select_dialog_material.xml",
-        "source": "C:\\Users\\aleksey.ivanov\\AndroidStudioProjects\\mergeGraph\\diagramslibrary\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\layout\\abc_select_dialog_material.xml"
-    },
-    {
         "merged": "C:\\Users\\aleksey.ivanov\\AndroidStudioProjects\\mergeGraph\\diagramslibrary\\build\\intermediates\\res\\merged\\debug\\layout\\support_simple_spinner_dropdown_item.xml",
         "source": "C:\\Users\\aleksey.ivanov\\AndroidStudioProjects\\mergeGraph\\diagramslibrary\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\layout\\support_simple_spinner_dropdown_item.xml"
+    },
+    {
+        "merged": "C:\\Users\\aleksey.ivanov\\AndroidStudioProjects\\mergeGraph\\diagramslibrary\\build\\intermediates\\res\\merged\\debug\\layout\\abc_select_dialog_material.xml",
+        "source": "C:\\Users\\aleksey.ivanov\\AndroidStudioProjects\\mergeGraph\\diagramslibrary\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\layout\\abc_select_dialog_material.xml"
     },
     {
         "merged": "C:\\Users\\aleksey.ivanov\\AndroidStudioProjects\\mergeGraph\\diagramslibrary\\build\\intermediates\\res\\merged\\debug\\layout\\abc_screen_content_include.xml",

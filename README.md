@@ -18,7 +18,6 @@
 		if (w != 0 && h != 0 && callbackToBack != null) {
 	        callbackToBack.updateDrawByQ(150, 50);
 	        // Other measurments here
->>>>>>> 5077ad2d0f73cb3a3a6f01f888772a4e9b1a4ab7
 	    }
 	}
 	```
@@ -94,8 +93,10 @@ public class ExampleGraph extends BaseGraph {
 
     @Override
     public void measure() {
-        if (w != 0 && h != 0 && callbackToBack != null)
+        if (w != 0 && h != 0 && callbackToBack != null) {
             callbackToBack.updateDrawByQ(150, 50);
+            // Your measurements go there
+        }
     }
 
     @Override
@@ -114,5 +115,14 @@ public class ExampleGraph extends BaseGraph {
                 95, 86, 70, 65, 59, 49, 45, 65, 59, 49, 65, 59)), new ArrayList<>(Arrays.asList(
                 95, 86, 70, 65, 59, 49, 45, 65, 59, 49, 65, 59)),
                 ViewType.MESH_DAY_ITEM_DAY);
+//  If you use BlockInfo feature you should provide a list of ModelBlockInfo to data
+//  It may look like this
+//
+//          data.setArrayListForInfo(new ArrayList<ModelBlockInfo>() {{
+//                for (int i = 0; i < 12; i++) {
+//                    add(new ModelBlockInfo("uno" + i, "due" + i,
+//                            "tre" + i, "quantro" + i, "cinque" + i));
+//                }
+//            }});
     graphViewGroup.setDataGraphAndInfo(data, TypeGraph.YOUR_GRAPH);
 ```

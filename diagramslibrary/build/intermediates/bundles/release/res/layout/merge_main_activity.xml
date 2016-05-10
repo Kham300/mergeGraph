@@ -34,7 +34,7 @@
             android:text="Multi" />
     </LinearLayout>
 
-    <com.lardis.ivan.testcustomview.graphview.base.views.GraphViewGroup
+    <com.lardis.ivan.diagramslibrary.graphview.base.views.GraphViewGroup
         android:id="@+id/mygroop"
         android:layout_width="match_parent"
         android:layout_height="0px"
