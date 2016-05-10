@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="catlist">
+        <item>Барсик</item>
+        <item>Мурзик</item>
+        <item>Васька</item>
+        <item>Рыжик</item>
+    </string-array>
+    <string-array name="period">
+        <item>Неделя</item>
+        <item>Месяц</item>
+        <item>6 месяцев</item>
+        <item>нет</item>
+    </string-array>
+    <string-array name="time">
+        <item>по дням</item>
+        <item>по месяцам</item>
+
+    </string-array>
+    <color name="borderColorExample">#E7E9EB</color>
+    <color name="borderLineColorExample">#989b9698</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="colorCenterDelimeterExample">#b7b9bc</color>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="det_stat_text_color_name">#6B6D70</color>
+    <color name="det_stat_text_color_value">#262A31</color>
+    <color name="fontAllColorExample">#000000</color>
+    <color name="fontAverageColorExample">#006F74</color>
+    <color name="itemBottomColor2Example">#0048a0</color>
+    <color name="itemBottomColorExample">#009AA0</color>
+    <color name="itemSelectedBottomColor2Example">#a7b9ce</color>
+    <color name="itemSelectedBottomColorExample">#89D8DA</color>
+    <color name="itemSelectedTopColor2Example">#729ebc</color>
+    <color name="itemSelectedTopColorExample">#019CA2</color>
+    <color name="itemTopColor2Example">#044b7b</color>
+    <color name="itemTopColorExample">#006D71</color>
+    <color name="meshOneColorExample">#F0F1F2</color>
+    <color name="meshTwoColorExample">#E7E9EB</color>
+    <color name="myViewBackgroundInfo">#FAFAFA</color>
+    <color name="punctirLineColorIntExample">#DFE1E4</color>
+    <color name="punctireLineAverageColorExample">#006F74</color>
+    <color name="punctireLineSelectedColorExample">#5cdfe1e4</color>
+    <color name="razminka">#257F0C</color>
+    <color name="selectedColumnShadowLayerColorExample">#43000000</color>
+    <color name="test">#66d3d922</color>
+    <color name="triangleColorExample">#009BA1</color>
+    <declare-styleable name="Background"><attr format="color" name="meshOneColor"/><attr format="color" name="meshTwoColor"/><attr format="integer" name="selectionColor"/><attr format="color" name="selectedColumnShadowLayerColor"/><attr format="integer" name="back_line_color"/><attr format="integer" name="graph_line_color"/><attr format="integer" name="text_color"/></declare-styleable>
+    <declare-styleable name="ColumnGraph"><attr format="color" name="borderColor"/><attr format="color" name="borderLineColor"/><attr format="color" name="itemTopColor"/><attr format="color" name="itemBottomColor"/><attr format="color" name="itemSelectedTopColor"/><attr format="color" name="itemSelectedBottomColor"/><attr format="color" name="itemTopColor2"/><attr format="color" name="itemBottomColor2"/><attr format="color" name="itemSelectedTopColor2"/><attr format="color" name="itemSelectedBottomColor2"/><attr format="color" name="punctireLineAverageColor"/><attr format="color" name="punctireLineSelectedColor"/><attr format="color" name="punctirLineColor"/><attr format="color" name="fontAllColor"/><attr format="color" name="fontAverageColor"/><attr format="color" name="triangleColor"/><attr format="color" name="centerDelimeterColor"/></declare-styleable>
+    <declare-styleable name="MyView"><attr format="string" name="exampleString"/><attr format="dimension" name="exampleDimension"/><attr format="color" name="exampleColor"/><attr format="color|reference" name="exampleDrawable"/></declare-styleable>
+    <declare-styleable name="UnoGraphView"><attr format="integer" name="back_color1"/><attr format="integer" name="back_color2"/><attr format="integer" name="graph_color"/><attr format="integer" name="hor_line_color"/><attr format="integer" name="text_color_graph"/><attr format="integer" name="real_width"/><attr format="boolean" name="fill_na"/></declare-styleable>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="layout_info_height">160dp</dimen>
+    <dimen name="layout_info_padding">15dp</dimen>
+    <dimen name="layout_info_text_size">16dp</dimen>
+    <dimen name="layout_info_width">160dp</dimen>
+    <string name="app_name">testcustomview</string>
+    <string name="graphError">Use setMonths AND setValues to properly display the graph</string>
+    <string name="localMeasurementSystem">кг</string>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+</resources>

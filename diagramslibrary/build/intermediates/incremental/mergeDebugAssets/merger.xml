@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet config="main"><source path="C:\Users\aleksey.ivanov\AndroidStudioProjects\mergeGraph\diagramslibrary\src\main\assets"/><source path="C:\Users\aleksey.ivanov\AndroidStudioProjects\mergeGraph\diagramslibrary\build\generated\assets\shaders\debug"/></dataSet><dataSet config="debug"><source path="C:\Users\aleksey.ivanov\AndroidStudioProjects\mergeGraph\diagramslibrary\src\debug\assets"/></dataSet></merger>
