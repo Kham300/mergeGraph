@@ -4,20 +4,20 @@
         "source": "C:\\Users\\aleksey.ivanov\\AndroidStudioProjects\\mergeGraph\\diagramslibrary\\build\\intermediates\\bundles\\debug\\res\\drawable\\distance.png"
     },
     {
-        "merged": "C:\\Users\\aleksey.ivanov\\AndroidStudioProjects\\mergeGraph\\diagramslibrary\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\abc_list_selector_background_transition_holo_light.xml",
-        "source": "C:\\Users\\aleksey.ivanov\\AndroidStudioProjects\\mergeGraph\\diagramslibrary\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\drawable\\abc_list_selector_background_transition_holo_light.xml"
-    },
-    {
-        "merged": "C:\\Users\\aleksey.ivanov\\AndroidStudioProjects\\mergeGraph\\diagramslibrary\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\sleep.png",
-        "source": "C:\\Users\\aleksey.ivanov\\AndroidStudioProjects\\mergeGraph\\diagramslibrary\\build\\intermediates\\bundles\\debug\\res\\drawable\\sleep.png"
+        "merged": "C:\\Users\\aleksey.ivanov\\AndroidStudioProjects\\mergeGraph\\diagramslibrary\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\pulse.png",
+        "source": "C:\\Users\\aleksey.ivanov\\AndroidStudioProjects\\mergeGraph\\diagramslibrary\\build\\intermediates\\bundles\\debug\\res\\drawable\\pulse.png"
     },
     {
         "merged": "C:\\Users\\aleksey.ivanov\\AndroidStudioProjects\\mergeGraph\\diagramslibrary\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\calories.png",
         "source": "C:\\Users\\aleksey.ivanov\\AndroidStudioProjects\\mergeGraph\\diagramslibrary\\build\\intermediates\\bundles\\debug\\res\\drawable\\calories.png"
     },
     {
-        "merged": "C:\\Users\\aleksey.ivanov\\AndroidStudioProjects\\mergeGraph\\diagramslibrary\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\pulse.png",
-        "source": "C:\\Users\\aleksey.ivanov\\AndroidStudioProjects\\mergeGraph\\diagramslibrary\\build\\intermediates\\bundles\\debug\\res\\drawable\\pulse.png"
+        "merged": "C:\\Users\\aleksey.ivanov\\AndroidStudioProjects\\mergeGraph\\diagramslibrary\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\sleep.png",
+        "source": "C:\\Users\\aleksey.ivanov\\AndroidStudioProjects\\mergeGraph\\diagramslibrary\\build\\intermediates\\bundles\\debug\\res\\drawable\\sleep.png"
+    },
+    {
+        "merged": "C:\\Users\\aleksey.ivanov\\AndroidStudioProjects\\mergeGraph\\diagramslibrary\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\abc_list_selector_background_transition_holo_light.xml",
+        "source": "C:\\Users\\aleksey.ivanov\\AndroidStudioProjects\\mergeGraph\\diagramslibrary\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.3.0\\res\\drawable\\abc_list_selector_background_transition_holo_light.xml"
     },
     {
         "merged": "C:\\Users\\aleksey.ivanov\\AndroidStudioProjects\\mergeGraph\\diagramslibrary\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\abc_switch_thumb_material.xml",
