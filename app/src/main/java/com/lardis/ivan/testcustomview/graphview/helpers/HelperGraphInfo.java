@@ -152,7 +152,10 @@ public class HelperGraphInfo {
         else myCalendar.add(Calendar.DATE, (2 - myCalendar.get(Calendar.DAY_OF_WEEK)));
         arrayListLabel1.add(months[myCalendar.get(Calendar.MONTH)]);
         int k = myCalendar.get(Calendar.MONTH);
-        for (int i = 1; i < modelDataGraph.getGraph1values().size(); i++) {
+
+        int dataLength = computeSizeForMeshMonthItemWeek(modelDataGraph);
+
+        for (int i = 1; i < dataLength; i++) {
             myCalendar.add(Calendar.DATE, 7);
             if (k != myCalendar.get(Calendar.MONTH))
 
@@ -217,7 +220,10 @@ public class HelperGraphInfo {
         int k = myCalendar.get(Calendar.MONTH);
 
         myCalendar.add(Calendar.DATE, 6);
-        for (int i = 1; i < modelDataGraph.getGraph1values().size(); i++) {
+
+        int dataLength = computeSizeForMeshMonthItemWeek(modelDataGraph);
+
+        for (int i = 1; i < dataLength; i++) {
             myCalendar.add(Calendar.DATE, 7);
             if (k != myCalendar.get(Calendar.MONTH))
 
@@ -230,6 +236,18 @@ public class HelperGraphInfo {
         arrayList.set(arrayList.size() - 1, (float) myCalendar.get(Calendar.DATE) / 7);
 
         return arrayList;
+    }
+
+    private static int computeSizeForMeshMonthItemWeek(ModelDataGraph modelDataGraph) {
+        int dataLength = 0;
+        if (modelDataGraph.getValues() != null)
+            dataLength = modelDataGraph.getValues().get(0).size();
+        if (modelDataGraph.getGraph1values() != null)
+            dataLength = modelDataGraph.getGraph1values().size();
+
+        if (dataLength == 0)
+            throw new IllegalStateException("No data provided at all");
+        return dataLength;
     }
 
     public static ArrayList<Float> getArrayWidthCoefficient(ModelDataGraph modelDataGraph) {

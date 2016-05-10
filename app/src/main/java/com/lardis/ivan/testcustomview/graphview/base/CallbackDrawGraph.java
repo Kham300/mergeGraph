@@ -11,5 +11,7 @@ public interface CallbackDrawGraph {
     void updateDrawByQ(float mywidth, float ofssetborder);
 
     float getTextSize();
+
+
 }
 

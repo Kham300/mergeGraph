@@ -20,9 +20,10 @@ import com.lardis.ivan.testcustomview.graphview.base.BaseGraph;
 import com.lardis.ivan.testcustomview.graphview.base.CallbackDrawGraph;
 import com.lardis.ivan.testcustomview.graphview.base.TypeGraph;
 import com.lardis.ivan.testcustomview.graphview.base.ViewType;
-import com.lardis.ivan.testcustomview.graphview.graphtypes.columng.ColumnGraph;
-import com.lardis.ivan.testcustomview.graphview.graphtypes.exampleg.ExampleGraph;
-import com.lardis.ivan.testcustomview.graphview.graphtypes.lineg.UnoGraphView;
+import com.lardis.ivan.testcustomview.graphview.graphtypes.ColumnGraph;
+import com.lardis.ivan.testcustomview.graphview.graphtypes.ExampleGraph;
+import com.lardis.ivan.testcustomview.graphview.graphtypes.SimpleGraph;
+import com.lardis.ivan.testcustomview.graphview.graphtypes.UnoGraphView;
 import com.lardis.ivan.testcustomview.graphview.helpers.HelperLayoutClass;
 import com.lardis.ivan.testcustomview.model.ModelDataGraph;
 
@@ -114,6 +115,7 @@ public class NewBackground extends View implements CallbackDrawGraph {
     Paint mLinePaint;
     Paint mArrowPaint;
     TextPaint mTextPaint;
+    TextPaint warfogPaint;
     TextPaint mGoalTextPaint;
 
     Path mArrowPath;
@@ -194,6 +196,10 @@ public class NewBackground extends View implements CallbackDrawGraph {
 
             case COLUMN_VANYA:
                 graph = new ColumnGraph(getContext(), attributeSet);
+                break;
+            case MULTI:
+                graph = new SimpleGraph(getContext(), attributeSet);
+                break;
         }
 
         // Check that graph supports current view type
@@ -279,6 +285,16 @@ public class NewBackground extends View implements CallbackDrawGraph {
             }
 
             @Override
+            public boolean requestsLeftAndTopPanel() {
+                return false;
+            }
+
+            @Override
+            public float getArrowsYPosition() {
+                return 0;
+            }
+
+            @Override
             public void drawGraph(Canvas canvas) {
 
             }
@@ -329,6 +345,9 @@ public class NewBackground extends View implements CallbackDrawGraph {
 
         mTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
         mTextPaint.setColor(mTextColor);
+
+        warfogPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+        warfogPaint.setColor(mBackLineColor);
 
         mGoalTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
         mGoalTextPaint.setColor(mGraphLineColor);
@@ -428,6 +447,7 @@ public class NewBackground extends View implements CallbackDrawGraph {
     private void measureText() {
         if (labels != null) {
             mGoalTextPaint.setTextSize(mTextPaint.getTextSize());
+            warfogPaint.setTextSize(mTextPaint.getTextSize());
 
             // Calculating stop lines for mesh selected
             float sum = leftStripe + offsetX;
@@ -473,8 +493,15 @@ public class NewBackground extends View implements CallbackDrawGraph {
             } else {
                 specialChosen = itemSelectedTouch;
                 for (int i = 0; i < labels.length; ++i) {
-                    labelsUnderX[i] = offsetX + leftStripe + itemWidth * i
-                            + 0.5f * (itemWidth - mTextPaint.measureText(labels[i]));
+                    if (i == specialChosen) {
+
+                        labelsUnderX[i] = offsetX + leftStripe + itemWidth * i
+                                + 0.5f * (itemWidth - mTextPaint.measureText(generateMissingDate(labels, i)));
+                    }
+                    else {
+                        labelsUnderX[i] = offsetX + leftStripe + itemWidth * i
+                                + 0.5f * (itemWidth - mTextPaint.measureText(labels[i]));
+                    }
                     labelsUnderY[i] = h - belowIndent;
                 }
             }
@@ -504,16 +531,43 @@ public class NewBackground extends View implements CallbackDrawGraph {
         // If they should be under items
         else {
             if (specialChosen != -1) {
-                goalUnderStripes = new StaticLayout(labels[specialChosen], mGoalTextPaint,
+                String highlightedLabel = labels[specialChosen];
+
+                // If there is no date provided, will generate it base on other given dates
+                if (labels[specialChosen].equals(""))
+                    highlightedLabel = generateMissingDate(labels, specialChosen);
+
+                goalUnderStripes = new StaticLayout(highlightedLabel, mGoalTextPaint,
                         (int) (textRatio * itemWidth),
                         Layout.Alignment.ALIGN_NORMAL, 1, 1, true);
             }
 
-            for (int i = 0; i < labels.length; ++i)
-            textUnderStripes[i] = new StaticLayout(labels[i], mTextPaint,
-                    (int) (textRatio * itemWidth),
-                    Layout.Alignment.ALIGN_NORMAL, 1, 1, true);
+            for (int i = 0; i < labels.length; ++i) {
+                TextPaint currentTextPaint = mTextPaint;
+
+                // True hardcore
+                if (modelDataGraph.getTypeViewGraph() == ViewType.MESH_WEEK_ITEM_DAY_PERIOD_MONTH
+                        && ((i >= modelDataGraph.getGraph1values().size()) || (i < modelDataGraph.getGraph1values().size()
+                        && modelDataGraph.getGraph1values().get(i) == 0 && ((modelDataGraph.getGraph2values() == null)
+                        || modelDataGraph.getGraph2values().get(i) == 0))))
+                    currentTextPaint = warfogPaint;
+
+                textUnderStripes[i] = new StaticLayout(labels[i], currentTextPaint,
+                        (int) (textRatio * itemWidth), Layout.Alignment.ALIGN_NORMAL, 1, 1, true);
+                mTextPaint.setColor(mTextColor);
+            }
         }
+    }
+
+    private String generateMissingDate(String[] labels, int dateId) {
+        String highlightedLabel;
+        int k = 0;
+        while (labels[k].equals(""))
+            ++k;
+
+        int firstDate = Integer.parseInt(labels[k]);
+        highlightedLabel = Integer.toString(firstDate + dateId - k);
+        return highlightedLabel;
     }
 
     @Override
@@ -544,10 +598,12 @@ public class NewBackground extends View implements CallbackDrawGraph {
 
     protected void drawArrows(Canvas canvas) {
         mArrowPaint.setStrokeWidth(h * lineRatio);
-        if (offsetX < 0)
-            drawLeftArrow(canvas, leftStripe);
-        if (-offsetX + graph.getW() - 2 * leftStripe < graph.getRealW())
-            drawRightArrow(canvas, w);
+        if (graph.getArrowsYPosition() != 0) {
+            if (offsetX < 0)
+                drawLeftArrow(canvas, leftStripe, graph.getArrowsYPosition());
+            if (-offsetX + graph.getW() - 2 * leftStripe < graph.getRealW())
+                drawRightArrow(canvas, w, graph.getArrowsYPosition());
+        }
     }
 
     private void drawUpperSelection(Canvas canvas) {
@@ -556,7 +612,7 @@ public class NewBackground extends View implements CallbackDrawGraph {
                     + upperSelectionIndentRatio * itemWidth;
             float xPos2 = xPos1 + (1 - 2 * upperSelectionIndentRatio) * itemWidth;
             float calculatedIndent = upperSelectionHeightRatio * h;
-            RectF rect = new RectF(xPos1, topIndent , xPos2, topIndent + calculatedIndent);
+            RectF rect = new RectF(xPos1, topIndent, xPos2, topIndent + calculatedIndent);
             canvas.drawRoundRect(rect, calculatedIndent / 2, calculatedIndent / 2, selectionPaint);
             canvas.drawRect(xPos1, topIndent, xPos2, topIndent + calculatedIndent / 2,
                     selectionPaint);
@@ -623,9 +679,11 @@ public class NewBackground extends View implements CallbackDrawGraph {
     }
 
     protected void drawRectsTopAndBelow(Canvas canvas) {
-        mStripeRectF.set(0, 0, canvas.getWidth(), topIndent);
-        mStripePaint.setColor(colorMeshTwo);
-        canvas.drawRect(mStripeRectF, mStripePaint);
+        if (graph.requestsLeftAndTopPanel()) {
+            mStripeRectF.set(0, 0, canvas.getWidth(), topIndent);
+            mStripePaint.setColor(colorMeshTwo);
+            canvas.drawRect(mStripeRectF, mStripePaint);
+        }
 
         mStripeRectF.set(0, canvas.getHeight() - belowIndent, canvas.getWidth(), canvas.getHeight());
         mStripePaint.setColor(colorMeshTwo);
@@ -633,7 +691,9 @@ public class NewBackground extends View implements CallbackDrawGraph {
     }
 
     private void drawBorderLines(Canvas canvas) {
-        canvas.drawLine(0, topIndent, canvas.getWidth(), topIndent, mLinePaint);
+        if (graph.requestsLeftAndTopPanel())
+            canvas.drawLine(0, topIndent, canvas.getWidth(), topIndent, mLinePaint);
+
         canvas.drawLine(0, canvas.getHeight() - belowIndent, canvas.getWidth(),
                 canvas.getHeight() - belowIndent, mLinePaint);
     }
@@ -659,23 +719,21 @@ public class NewBackground extends View implements CallbackDrawGraph {
         }
     }
 
-    private void drawLeftArrow(Canvas canvas, float globalIndent) {
+    private void drawLeftArrow(Canvas canvas, float globalIndentLeft, float position) {
         float indent = marginRatio * canvas.getHeight();
-        float belowIndent = footerRatio * canvas.getHeight();
         mArrowPath.reset();
-        mArrowPath.moveTo(globalIndent + 3 * indent, canvas.getHeight() - belowIndent - 3 * indent);
-        mArrowPath.lineTo(globalIndent + 2 * indent, canvas.getHeight() - belowIndent - 2 * indent);
-        mArrowPath.lineTo(globalIndent + 3 * indent, canvas.getHeight() - belowIndent - indent);
+        mArrowPath.moveTo(globalIndentLeft + 3 * indent, canvas.getHeight() - position - 2 * indent);
+        mArrowPath.lineTo(globalIndentLeft + 2 * indent, canvas.getHeight() - position - indent);
+        mArrowPath.lineTo(globalIndentLeft + 3 * indent, canvas.getHeight() - position);
         canvas.drawPath(mArrowPath, mArrowPaint);
     }
 
-    private void drawRightArrow(Canvas canvas, float globalIndent) {
+    private void drawRightArrow(Canvas canvas, float globalIndentRight, float position) {
         float indent = marginRatio * canvas.getHeight();
-        float belowIndent = footerRatio * canvas.getHeight();
         mArrowPath.reset();
-        mArrowPath.moveTo(globalIndent - 3 * indent, canvas.getHeight() - belowIndent - 3 * indent);
-        mArrowPath.lineTo(globalIndent - 2 * indent, canvas.getHeight() - belowIndent - 2 * indent);
-        mArrowPath.lineTo(globalIndent - 3 * indent, canvas.getHeight() - belowIndent - indent);
+        mArrowPath.moveTo(globalIndentRight - 3 * indent, canvas.getHeight() - position - 2 * indent);
+        mArrowPath.lineTo(globalIndentRight - 2 * indent, canvas.getHeight() - position - indent);
+        mArrowPath.lineTo(globalIndentRight - 3 * indent, canvas.getHeight() - position);
         canvas.drawPath(mArrowPath, mArrowPaint);
     }
 
@@ -746,15 +804,16 @@ public class NewBackground extends View implements CallbackDrawGraph {
 
     private void updateMaxX() {
         if (modelDataGraph != null)
-            maxX = leftStripe * 2 + itemWidth * modelDataGraph.getGraph1values().size() - w;
+            maxX = leftStripe * 2 + itemWidth * modelDataGraph.getDatasetSize() - w;
 
     }
 
     private void updateSelectedTouch(Float X) {
         if (graph.isAnimationFinished) {
-            if (X < w - leftStripe)
+            if (X < w)
                 itemSelectedTouch = (int) ((X - bufOffsetX - leftStripe) / (itemWidth));
-
+            if (itemSelectedTouch >= modelDataGraph.getDatasetSize())
+                itemSelectedTouch = -1;
         }
     }
 
@@ -765,6 +824,7 @@ public class NewBackground extends View implements CallbackDrawGraph {
                     meshSelectedTouch = i;
                     return;
                 }
+            meshSelectedTouch = -1;
         }
     }
 

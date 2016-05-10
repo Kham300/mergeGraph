@@ -9,6 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="0px"
         android:layout_weight="1"
+        android:weightSum="3"
         android:orientation="horizontal">
 
         <Button
@@ -25,7 +26,12 @@
             android:layout_weight="1"
             android:text="GraphPunct" />
 
-
+        <Button
+            android:id="@+id/button3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Multi" />
     </LinearLayout>
 
     <com.lardis.ivan.testcustomview.graphview.base.views.GraphViewGroup

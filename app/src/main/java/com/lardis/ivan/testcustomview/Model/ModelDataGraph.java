@@ -13,23 +13,52 @@ import java.util.ArrayList;
     Class for data that is displayed by graphs
  */
 public class ModelDataGraph {
-    public ModelDataGraph(int day, int month, int year, ArrayList<Integer> graph1values, ArrayList<Integer> arrayListGraph2, ViewType typeViewGraph) {
+    public ModelDataGraph(int day, int month, int year, ArrayList<Integer> graph1values,
+                          ArrayList<Integer> graph2values, ArrayList<ArrayList<Integer>> values,
+                          ViewType typeViewGraph) {
         this.day = day;
         this.month = month;
         this.year = year;
         this.graph1values = graph1values;
+        this.graph2values = graph2values;
         this.typeViewGraph = typeViewGraph;
+        this.setValues(values);
         this.labels = HelperGraphInfo.getLabel(this).getLabels();
         this.stripesPositions = HelperGraphInfo.getArrayWidthCoefficient(this);
+
+        if (graph1values != null && graph2values != null) {
+            // Trimming if there are too much data for one month
+            if (typeViewGraph == ViewType.MESH_WEEK_ITEM_DAY_PERIOD_MONTH
+                    && graph1values.size() > labels.size())
+                graph1values.subList(labels.size(), graph1values.size()).clear();
+            if (typeViewGraph == ViewType.MESH_WEEK_ITEM_DAY_PERIOD_MONTH
+                    && (graph2values.size() > labels.size()))
+                graph2values.subList(labels.size(), graph2values.size()).clear();
+        }
+
+        // Update size of graph according to graph1values AND optional values
+        if (graph1values != null)
+            datasetSize = graph1values.size();
+        else 
+            datasetSize = values.get(0).size();
     }
 
     // First day of the period
     private int day, month, year;
 
+    // Size of data (for background)
+    private int datasetSize;
+
     // Main values for graphs
     private ArrayList<Integer> graph1values;
     // Additional values for graphs
     private ArrayList<Integer> graph2values;
+
+    // Advanced data for multiline graphs
+    private ArrayList<ArrayList<Integer>> values;
+
+    // Colors data for multiline graphs
+    private ArrayList<Integer> colors;
 
     // Labels under stripes
     private ArrayList<String> labels;
@@ -122,5 +151,34 @@ public class ModelDataGraph {
 
     public void setmGoal(int mGoal) {
         this.mGoal = mGoal;
+    }
+
+    public ArrayList<ArrayList<Integer>> getValues() {
+        return values;
+    }
+
+    public void setValues(ArrayList<ArrayList<Integer>> values) {
+        if (values != null && typeViewGraph != ViewType.MESH_MONTH_ITEM_WEEK)
+            throw new IllegalStateException("Multiline graphs now supports only MESH_MONTH_ITEM_WEEK");
+        this.values = values;
+    }
+
+    public ArrayList<Integer> getColors() {
+        return colors;
+    }
+
+    public void setColors(ArrayList<Integer> colors) {
+        if (typeViewGraph != ViewType.MESH_MONTH_ITEM_WEEK)
+            throw new IllegalStateException("Multiline graphs are now supported only for MESH_MONTH_ITEM_WEEK");
+        this.colors = colors;
+    }
+
+
+    public int getDatasetSize() {
+        return datasetSize;
+    }
+
+    public void setDatasetSize(int datasetSize) {
+        this.datasetSize = datasetSize;
     }
 }

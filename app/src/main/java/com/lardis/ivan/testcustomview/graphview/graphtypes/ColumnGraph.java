@@ -1,4 +1,4 @@
-package com.lardis.ivan.testcustomview.graphview.graphtypes.columng;
+package com.lardis.ivan.testcustomview.graphview.graphtypes;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
@@ -262,6 +262,7 @@ public class ColumnGraph extends BaseGraph {
     private Paint mPaintCenterDelimeter;
 
 
+
     private ArrayList<Integer> daysInPunctArrayList = new ArrayList<Integer>();
     /**
      * лист названий для   графика
@@ -293,6 +294,10 @@ public class ColumnGraph extends BaseGraph {
 
 
     private ValueAnimator animator;
+
+    // Some constants
+    public static final float marginRatio = 0.025f;
+
 
     public ColumnGraph(Context context, AttributeSet attrs) {
         this.isAnimationFinished = false;
@@ -692,6 +697,17 @@ public class ColumnGraph extends BaseGraph {
     @Override
     public boolean requestsUpperSelection() {
         return true;
+    }
+
+    @Override
+    public boolean requestsLeftAndTopPanel() {
+        return true;
+    }
+
+    @Override
+    public float getArrowsYPosition() {
+        return (twoGraph) ? h - startGorizontalGraph - marginRatio * h
+                : h - borderBottom + marginRatio * h;
     }
 
     @Override

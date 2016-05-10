@@ -1,4 +1,4 @@
-package com.lardis.ivan.testcustomview.graphview.graphtypes.exampleg;
+package com.lardis.ivan.testcustomview.graphview.graphtypes;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -14,6 +14,7 @@ import com.lardis.ivan.testcustomview.model.ModelDataGraph;
  * Created by aleksey.ivanov on 11.04.2016.
  */
 public class ExampleGraph extends BaseGraph {
+    ModelDataGraph data;
 
     public ExampleGraph(Context context,  AttributeSet attrs) {
         this.isAnimationFinished = true;
@@ -22,7 +23,7 @@ public class ExampleGraph extends BaseGraph {
 
     @Override
     public void setData(ModelDataGraph modelDataGraph) {
-
+        data = modelDataGraph;
     }
 
     @Override
@@ -66,6 +67,16 @@ public class ExampleGraph extends BaseGraph {
     }
 
     @Override
+    public boolean requestsLeftAndTopPanel() {
+        return true;
+    }
+
+    @Override
+    public float getArrowsYPosition() {
+        return (float) (footerHeight + 0.02 * h);
+    }
+
+    @Override
     public void drawGraph(Canvas canvas) {
 
     }
@@ -77,8 +88,11 @@ public class ExampleGraph extends BaseGraph {
 
     @Override
     public void measure() {
-        if (w != 0 && h != 0 && callbackToBack != null)
+        if (w != 0 && h != 0 && callbackToBack != null) {
             callbackToBack.updateDrawByQ(150, 50);
+
+            realW = 150 * data.getDatasetSize();
+        }
     }
 
     @Override

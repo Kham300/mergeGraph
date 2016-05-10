@@ -31,6 +31,7 @@ public enum ViewType {
      */
     MESH_MONTH_ITEM_WEEK;
 
+
     public static ViewType[] getAllTypes() {
         return new ViewType[]{ViewType.MESH_DAY_ITEM_DAY,
                 ViewType.MESH_WEEK_ITEM_WEEK,
@@ -49,4 +50,5 @@ public enum ViewType {
         return new ViewType[] {ViewType.MESH_WEEK_ITEM_DAY_PERIOD_MONTH,
             ViewType.MESH_MONTH_ITEM_WEEK};
     }
+
 }

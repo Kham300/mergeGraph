@@ -1,5 +1,5 @@
 
-package com.lardis.ivan.testcustomview.graphview.graphtypes.lineg;
+package com.lardis.ivan.testcustomview.graphview.graphtypes;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -116,6 +116,7 @@ public class UnoGraphView extends BaseGraph {
     // Constants
     public float footerRatio = 0.1f;
     public static float cornerStripe;
+    public static final float marginRatio = 0.025f;
     public static final float headerRatio = 0.05f;
     public static final float borderRatio = 0.1f;
     public static final float stripLength = 5f;
@@ -739,6 +740,16 @@ public class UnoGraphView extends BaseGraph {
     @Override
     public boolean requestsUpperSelection() {
         return true;
+    }
+
+    @Override
+    public boolean requestsLeftAndTopPanel() {
+        return true;
+    }
+
+    @Override
+    public float getArrowsYPosition() {
+        return footerRatio * h + marginRatio * h;
     }
 
 

@@ -41,6 +41,12 @@ public abstract class BaseGraph {
     // Graph tells background whether he needs upper selection
     public abstract boolean requestsUpperSelection();
 
+    public abstract boolean requestsLeftAndTopPanel();
+
+    // Transmit arrows position to background
+    // (Return zero if you don't want to display data
+    public abstract float getArrowsYPosition();
+
     // Main drawing happens there
     public abstract void drawGraph(Canvas canvas);
 
